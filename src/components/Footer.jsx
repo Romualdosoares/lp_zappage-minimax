@@ -12,8 +12,16 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-3">
           <div>
             <a href="#top" className="flex items-center gap-2.5">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-neon shadow-neon-sm">
-                <IconWhatsapp className="h-5 w-5 text-bg-primary" />
+              <span className="inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-neon/25 bg-bg-primary shadow-neon-sm">
+                <img
+                  src={siteConfig.logoSrc}
+                  alt={`${siteConfig.brandName} logo`}
+                  width={256}
+                  height={256}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
               </span>
               <span className="text-xl font-extrabold tracking-tight text-white">
                 {siteConfig.brandName}

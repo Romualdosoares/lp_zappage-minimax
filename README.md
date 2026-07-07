@@ -1,4 +1,4 @@
-# VendeZap™ — Landing Page
+# Zap Page — Landing Page
 
 Landing page premium, mobile-first e otimizada para conversão, feita em **React + Vite + Tailwind CSS**, com identidade visual em **preto + verde fluorescente**. Pronta pra subir no **Vercel** com um clique.
 
@@ -69,7 +69,7 @@ A CLI detecta o `vercel.json` e usa os comandos/paths que estão lá.
 Cole isto no seu README público se quiser:
 
 ```markdown
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/SEU-USER/vendezap)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/SEU-USER/zap-page)
 ```
 
 ---
@@ -300,4 +300,4 @@ Nada de depoimentos ou números inventados.
 
 ---
 
-© 2026 VendeZap™.
+© 2026 Zap Page.

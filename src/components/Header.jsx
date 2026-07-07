@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { siteConfig, buildWhatsappUrl } from '../siteConfig'
-import { IconMenu, IconClose, IconBolt, IconWhatsapp } from './Icons'
+import { IconMenu, IconClose, IconBolt } from './Icons'
 
 const NAV = [
   { label: 'Benefícios', href: '#beneficios' },
@@ -31,8 +31,16 @@ export default function Header() {
       <div className="container-page flex h-16 items-center justify-between sm:h-20">
         {/* Logo */}
         <a href="#top" className="group flex items-center gap-2.5">
-          <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg bg-neon shadow-neon-sm transition-transform duration-300 group-hover:scale-105">
-            <IconWhatsapp className="h-5 w-5 text-bg-primary" />
+          <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl border border-neon/25 bg-bg-primary shadow-neon-sm transition-transform duration-300 group-hover:scale-105">
+            <img
+              src={siteConfig.logoSrc}
+              alt={`${siteConfig.brandName} logo`}
+              width={256}
+              height={256}
+              decoding="async"
+              fetchPriority="high"
+              className="h-full w-full object-cover"
+            />
             <span className="absolute -inset-1 -z-10 rounded-xl bg-neon/30 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
           </span>
           <div className="flex flex-col leading-tight">

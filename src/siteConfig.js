@@ -1,5 +1,5 @@
 // =============================================================
-//  VendeZap™ - Configuração global editável
+//  Zap Page - Configuração global editável
 //  Centralize aqui TODAS as informações que mudam com frequência:
 //  preços, links de checkout, número do WhatsApp, mensagens,
 //  marca, contatos e copy principal.
@@ -7,12 +7,14 @@
 
 export const siteConfig = {
   // --------- Identidade ---------
-  brandName: 'VendeZap™',
+  brandName: 'Zap Page',
+  logoSrc: '/assets/zap-page-logo-256.png',
+  shareImageSrc: '/assets/zap-page-logo-512.png',
   tagline: 'Páginas profissionais com WhatsApp para negócios locais',
-  domain: 'https://vendezap.com.br',
+  domain: 'https://zappage.com.br',
 
   // --------- Contato / WhatsApp ---------
-  whatsappNumber: '5543999999999', // DDI + DDD + número
+  whatsappNumber: '5543991229181', // DDI + DDD + número
   whatsappMessage:
     'Olá! Quero criar minha página profissional com WhatsApp.',
 
@@ -43,7 +45,7 @@ export const siteConfig = {
   },
 
   // --------- Rodapé / institucional ---------
-  copyright: '© 2026 VendeZap™. Todos os direitos reservados.',
+  copyright: '© 2026 Zap Page. Todos os direitos reservados.',
 
   // --------- FAQ – respostas dinâmicas (se preferir customizar) ---------
   faqCustomAnswers: {

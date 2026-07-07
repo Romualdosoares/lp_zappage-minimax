@@ -39,7 +39,7 @@ function MockupPhone() {
               <div className="relative h-20 w-full bg-gradient-to-r from-neon/20 via-neon-secondary/10 to-transparent">
                 <div className="absolute inset-0 bg-grid-lines bg-grid opacity-30" />
                 <div className="absolute bottom-2 left-3 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neon/40 bg-neon/15 text-[10px] font-extrabold text-neon">
-                  VZ
+                  ZP
                 </div>
               </div>
               <div className="px-3 pb-3 pt-2">
@@ -142,7 +142,7 @@ function MockupLaptop() {
             <span className="h-2 w-2 rounded-full bg-yellow-400/80" />
             <span className="h-2 w-2 rounded-full bg-neon/80" />
             <div className="ml-2 h-4 flex-1 rounded bg-bg-primary text-center text-[9px] leading-4 text-ink-light">
-              vendezap.com/seu-negocio
+              zappage.com/seu-negocio
             </div>
           </div>
           {/* Conteúdo */}
@@ -195,6 +195,26 @@ export default function HeroSection() {
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           {/* Texto */}
           <div className="relative z-10 animate-fade-up">
+            <div className="mb-5 flex items-center gap-4">
+              <img
+                src={siteConfig.logoSrc}
+                alt={`${siteConfig.brandName} logo`}
+                width={256}
+                height={256}
+                decoding="async"
+                fetchPriority="high"
+                className="h-20 w-20 rounded-2xl border border-neon/30 bg-bg-primary object-cover shadow-neon-sm sm:h-24 sm:w-24"
+              />
+              <div className="min-w-0">
+                <p className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                  {siteConfig.brandName}
+                </p>
+                <p className="mt-1 text-xs font-bold uppercase tracking-wider text-neon sm:text-sm">
+                  Páginas que vendem. Conversas que convertem.
+                </p>
+              </div>
+            </div>
+
             <span className="badge-neon mb-5">
               <IconDevice className="h-3.5 w-3.5" />
               Para negócios locais que vendem pelo WhatsApp

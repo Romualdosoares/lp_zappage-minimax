@@ -148,7 +148,9 @@ function PlanCard({ plan, popular }) {
       {/* CTA */}
       <div className="mt-7 pt-2">
         <a
-          href={buildWhatsappUrl(`Tenho interesse no plano ${plan.name}`)}
+          href={buildWhatsappUrl(
+            `Botão clicado: ${plan.cta}\nPlano escolhido: ${plan.name}\nValor exibido: ${plan.price}`,
+          )}
           target="_blank"
           rel="noreferrer noopener"
           className={popular ? 'btn-primary w-full animate-pulse-glow' : 'btn-secondary w-full'}
