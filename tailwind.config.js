@@ -34,10 +34,10 @@ export default {
         ],
       },
       boxShadow: {
-        neon: '0 0 25px rgba(57, 255, 20, 0.45), 0 0 60px rgba(57, 255, 20, 0.25)',
-        'neon-sm': '0 0 12px rgba(57, 255, 20, 0.5)',
+        neon: '0 0 18px rgba(57, 255, 20, 0.32), 0 0 42px rgba(57, 255, 20, 0.16)',
+        'neon-sm': '0 0 9px rgba(57, 255, 20, 0.34)',
         'neon-strong':
-          '0 0 30px rgba(57, 255, 20, 0.6), 0 0 80px rgba(57, 255, 20, 0.3)',
+          '0 0 22px rgba(57, 255, 20, 0.42), 0 0 56px rgba(57, 255, 20, 0.2)',
       },
       borderColor: {
         neon: 'rgba(57, 255, 20, 0.25)',
@@ -61,11 +61,11 @@ export default {
         'pulse-glow': {
           '0%, 100%': {
             boxShadow:
-              '0 0 18px rgba(57, 255, 20, 0.45), 0 0 40px rgba(57, 255, 20, 0.18)',
+              '0 0 14px rgba(57, 255, 20, 0.32), 0 0 30px rgba(57, 255, 20, 0.12)',
           },
           '50%': {
             boxShadow:
-              '0 0 28px rgba(57, 255, 20, 0.75), 0 0 70px rgba(57, 255, 20, 0.32)',
+              '0 0 20px rgba(57, 255, 20, 0.48), 0 0 46px rgba(57, 255, 20, 0.2)',
           },
         },
         'fade-up': {
