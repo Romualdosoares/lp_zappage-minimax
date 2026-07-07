@@ -1,0 +1,13 @@
+# arquivos/pastas que o Vercel deve ignorar no upload
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+.env
+.env.*
+*.md
+.vscode
+.idea
+.DS_Store
+*.log
