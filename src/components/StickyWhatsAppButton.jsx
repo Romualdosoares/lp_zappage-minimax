@@ -15,7 +15,7 @@ export default function StickyWhatsAppButton() {
   if (hidden) return null
 
   return (
-    <div className="fixed bottom-5 right-4 z-50 flex items-end gap-2 sm:bottom-6 sm:right-6">
+    <div className="fixed bottom-5 right-4 z-50 hidden items-end gap-2 sm:bottom-6 sm:right-6 sm:flex">
       {/* Label desktop que some */}
       {showLabel && (
         <button

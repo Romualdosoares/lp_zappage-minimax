@@ -1,5 +1,5 @@
 import { buildWhatsappUrl } from '../siteConfig'
-import { IconBolt, IconWhatsapp } from './Icons'
+import { IconWhatsapp } from './Icons'
 
 export default function MobileStickyCTA() {
   return (
@@ -23,7 +23,7 @@ export default function MobileStickyCTA() {
           className="btn-primary ml-auto animate-pulse-glow px-4 py-2.5 text-sm"
         >
           <IconWhatsapp className="h-4 w-4" />
-          Começar agora
+          WhatsApp
         </a>
       </div>
     </div>
