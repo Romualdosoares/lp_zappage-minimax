@@ -52,6 +52,8 @@ create table if not exists public.briefings (
   brand_colors text,
   logo_status text default 'Tenho logo',
   photos_status text default 'Tenho fotos',
+  logo_file jsonb,
+  page_images jsonb not null default '[]'::jsonb,
   required_sections text[] default array['Serviços', 'Diferenciais', 'Contato WhatsApp'],
   reference_links text,
   objections text,
@@ -65,6 +67,10 @@ create table if not exists public.briefings (
 alter table public.briefings
   add column if not exists order_number bigint;
 alter table public.briefings
+  add column if not exists logo_file jsonb;
+alter table public.briefings
+  add column if not exists page_images jsonb not null default '[]'::jsonb;
+alter table public.briefings
   alter column order_number set default nextval('public.briefing_order_number_seq'::regclass);
 update public.briefings
 set order_number = nextval('public.briefing_order_number_seq'::regclass)
@@ -74,6 +80,21 @@ alter table public.briefings
 alter sequence public.briefing_order_number_seq owned by public.briefings.order_number;
 create unique index if not exists briefings_order_number_key
 on public.briefings(order_number);
+
+insert into storage.buckets
+  (id, name, public, file_size_limit, allowed_mime_types)
+values
+  (
+    'briefing-assets',
+    'briefing-assets',
+    true,
+    10485760,
+    array['image/png', 'image/jpeg', 'image/webp', 'image/gif']::text[]
+  )
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
 
 create or replace function public.touch_updated_at()
 returns trigger
@@ -194,6 +215,49 @@ create policy "briefings_update_own_or_admin"
 on public.briefings for update
 using (user_id = auth.uid() or public.is_admin())
 with check (user_id = auth.uid() or public.is_admin());
+
+drop policy if exists "briefing_assets_public_read" on storage.objects;
+create policy "briefing_assets_public_read"
+on storage.objects for select
+using (bucket_id = 'briefing-assets');
+
+drop policy if exists "briefing_assets_insert_own_folder" on storage.objects;
+create policy "briefing_assets_insert_own_folder"
+on storage.objects for insert
+with check (
+  bucket_id = 'briefing-assets'
+  and auth.uid() is not null
+  and (storage.foldername(name))[1] = auth.uid()::text
+);
+
+drop policy if exists "briefing_assets_update_own_or_admin" on storage.objects;
+create policy "briefing_assets_update_own_or_admin"
+on storage.objects for update
+using (
+  bucket_id = 'briefing-assets'
+  and (
+    (storage.foldername(name))[1] = auth.uid()::text
+    or public.is_admin()
+  )
+)
+with check (
+  bucket_id = 'briefing-assets'
+  and (
+    (storage.foldername(name))[1] = auth.uid()::text
+    or public.is_admin()
+  )
+);
+
+drop policy if exists "briefing_assets_delete_own_or_admin" on storage.objects;
+create policy "briefing_assets_delete_own_or_admin"
+on storage.objects for delete
+using (
+  bucket_id = 'briefing-assets'
+  and (
+    (storage.foldername(name))[1] = auth.uid()::text
+    or public.is_admin()
+  )
+);
 
 insert into public.portfolio_services
   (id, title, niche, price, status, featured, description, deliverables)

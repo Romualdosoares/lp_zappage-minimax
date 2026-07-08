@@ -4,6 +4,7 @@ const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllcWNvam53eHhwZmZ2ZnhvaXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MDQ2MzEsImV4cCI6MjA5OTA4MDYzMX0.m0u1v3TSRBpmxoJm5CJj71o6i7bW1_CVzvCDy4vZVmQ'
 
 const SESSION_KEY = 'zapPage.supabaseSession.v1'
+const BRIEFING_ASSETS_BUCKET = 'briefing-assets'
 
 export const portfolioSeed = [
   {
@@ -100,6 +101,16 @@ async function restRequest(path, { method = 'GET', body, token, prefer } = {}) {
   return parseResponse(response)
 }
 
+function sanitizeFileName(name) {
+  return String(name || 'arquivo')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9._-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase()
+}
+
 export async function signUpClient({ name, email, password, whatsapp }) {
   const data = await authRequest('/signup', {
     email,
@@ -120,6 +131,40 @@ export async function signIn(email, password) {
   })
   saveSession(data)
   return data
+}
+
+export async function uploadBriefingAsset(file, folder = 'imagens') {
+  const session = getSession()
+  if (!session?.access_token || !session?.user?.id) throw new Error('Sessão inválida.')
+  if (!file) throw new Error('Selecione uma imagem.')
+
+  const safeFolder = sanitizeFileName(folder)
+  const safeName = sanitizeFileName(file.name) || 'imagem'
+  const path = `${session.user.id}/${safeFolder}/${Date.now()}-${safeName}`
+  const response = await fetch(
+    `${SUPABASE_BASE_URL}/storage/v1/object/${BRIEFING_ASSETS_BUCKET}/${path}`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-upsert': 'true',
+      },
+      body: file,
+    },
+  )
+
+  await parseResponse(response)
+
+  return {
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    path,
+    url: `${SUPABASE_BASE_URL}/storage/v1/object/public/${BRIEFING_ASSETS_BUCKET}/${path}`,
+    uploaded_at: new Date().toISOString(),
+  }
 }
 
 export async function signOut() {
@@ -212,6 +257,11 @@ export async function saveMyBriefing(form, status) {
     email: session.user.email,
     status,
     updated_at: new Date().toISOString(),
+  }
+
+  if (!payload.logo_file) delete payload.logo_file
+  if (!Array.isArray(payload.page_images) || payload.page_images.length === 0) {
+    delete payload.page_images
   }
 
   if (id) {

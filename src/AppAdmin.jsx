@@ -15,6 +15,7 @@ import {
   signIn,
   signOut,
   signUpClient,
+  uploadBriefingAsset,
 } from './lib/supabaseClient'
 import {
   IconArrowRight,
@@ -57,6 +58,8 @@ const emptyBriefing = {
   brand_colors: '',
   logo_status: 'Tenho logo',
   photos_status: 'Tenho fotos',
+  logo_file: null,
+  page_images: [],
   required_sections: ['Serviços', 'Diferenciais', 'Contato WhatsApp'],
   reference_links: '',
   objections: '',
@@ -84,6 +87,20 @@ function asBriefingValue(value) {
   if (Array.isArray(value)) return value.length ? value.join(', ') : 'Nao informado'
   const text = String(value || '').trim()
   return text || 'Nao informado'
+}
+
+function asAssetUrls(value) {
+  if (Array.isArray(value)) {
+    const urls = value.map(item => item?.url).filter(Boolean)
+    return urls.length ? urls.join('\n') : 'Nao informado'
+  }
+  return value?.url || 'Nao informado'
+}
+
+function formatFileSize(bytes) {
+  if (!bytes) return ''
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 function generateBriefingPrompt(briefing) {
@@ -114,7 +131,9 @@ function generateBriefingPrompt(briefing) {
     `- Tom de comunicacao: ${asBriefingValue(briefing.tone)}`,
     `- Cores da marca: ${asBriefingValue(briefing.brand_colors)}`,
     `- Logo: ${asBriefingValue(briefing.logo_status)}`,
+    `- Arquivo da logo: ${asAssetUrls(briefing.logo_file)}`,
     `- Fotos: ${asBriefingValue(briefing.photos_status)}`,
+    `- Imagens enviadas: ${asAssetUrls(briefing.page_images)}`,
     `- Secoes desejadas: ${sections}`,
     `- Referencias: ${asBriefingValue(briefing.reference_links)}`,
     '',
@@ -580,6 +599,42 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
   )
 }
 
+function AssetLinks({ logo, images }) {
+  const imageList = Array.isArray(images) ? images : []
+  if (!logo?.url && imageList.length === 0) return null
+
+  return (
+    <section className="rounded-2xl border border-neon/15 bg-black p-4">
+      <p className="text-xs font-bold uppercase tracking-wider text-neon">
+        Arquivos enviados
+      </p>
+      <div className="mt-3 grid gap-2">
+        {logo?.url && (
+          <a
+            href={logo.url}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="rounded-xl border border-neon/15 bg-[#071007] px-3 py-2 text-sm font-bold text-white hover:border-neon"
+          >
+            Logo: {logo.name || 'abrir arquivo'}
+          </a>
+        )}
+        {imageList.map((image, index) => (
+          <a
+            key={`${image.url}-${index}`}
+            href={image.url}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="rounded-xl border border-neon/15 bg-[#071007] px-3 py-2 text-sm font-bold text-white hover:border-neon"
+          >
+            Imagem {index + 1}: {image.name || 'abrir arquivo'}
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function BriefingPromptPanel({ briefing }) {
   const [copyStatus, setCopyStatus] = useState('')
   const prompt = useMemo(() => generateBriefingPrompt(briefing), [briefing])
@@ -750,6 +805,10 @@ function BriefingsAdmin({ briefings }) {
                   </p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-5">
+              <AssetLinks logo={selected.logo_file} images={selected.page_images} />
             </div>
 
             <div className="mt-5">
@@ -1128,6 +1187,8 @@ function AdminBriefingRoute({ orderNumber }) {
               ))}
             </section>
 
+            <AssetLinks logo={briefing.logo_file} images={briefing.page_images} />
+
             <BriefingPromptPanel briefing={briefing} />
           </div>
         )}
@@ -1195,6 +1256,7 @@ function BriefingForm({ session, onLogout }) {
   })
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
+  const [uploading, setUploading] = useState('')
   const [submittedBriefing, setSubmittedBriefing] = useState(null)
 
   useEffect(() => {
@@ -1233,6 +1295,64 @@ function BriefingForm({ session, onLogout }) {
 
   function update(key, value) {
     setForm(current => ({ ...current, [key]: value }))
+  }
+
+  async function uploadLogo(event) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setMessage('')
+    setUploading('logo')
+    try {
+      const asset = await uploadBriefingAsset(file, 'logo')
+      setForm(current => ({
+        ...current,
+        logo_file: asset,
+        logo_status: 'Logo enviada',
+      }))
+      setMessage('Logo enviada com sucesso.')
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setUploading('')
+      event.target.value = ''
+    }
+  }
+
+  async function uploadPageImages(event) {
+    const files = Array.from(event.target.files || [])
+    if (!files.length) return
+
+    setMessage('')
+    setUploading('images')
+    try {
+      const uploaded = []
+      for (const file of files.slice(0, 8)) {
+        uploaded.push(await uploadBriefingAsset(file, 'imagens'))
+      }
+      setForm(current => ({
+        ...current,
+        page_images: [...(current.page_images || []), ...uploaded],
+        photos_status: 'Imagens enviadas',
+      }))
+      setMessage('Imagens enviadas com sucesso.')
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setUploading('')
+      event.target.value = ''
+    }
+  }
+
+  function removeLogoFile() {
+    setForm(current => ({ ...current, logo_file: null }))
+  }
+
+  function removePageImage(index) {
+    setForm(current => ({
+      ...current,
+      page_images: (current.page_images || []).filter((_, itemIndex) => itemIndex !== index),
+    }))
   }
 
   async function persist(status) {
@@ -1369,21 +1489,23 @@ function BriefingForm({ session, onLogout }) {
                 <button
                   type="button"
                   onClick={() => persist('Rascunho')}
-                  className="rounded-xl border border-neon/30 px-4 py-3 text-sm font-black text-neon"
+                  disabled={Boolean(uploading)}
+                  className="rounded-xl border border-neon/30 px-4 py-3 text-sm font-black text-neon disabled:cursor-wait disabled:opacity-60"
                 >
                   Salvar rascunho
                 </button>
                 <button
                   type="button"
                   onClick={() => persist('Enviado')}
-                  className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon"
+                  disabled={Boolean(uploading)}
+                  className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
                 >
                   Enviar briefing
                 </button>
               </div>
               {message && (
                 <div className="mt-4">
-                  <StatusMessage type={message.includes('salvo') || message.includes('enviado') ? 'info' : 'error'}>
+                  <StatusMessage type={message.toLowerCase().includes('sucesso') || message.toLowerCase().includes('salvo') ? 'info' : 'error'}>
                     {message}
                   </StatusMessage>
                 </div>
@@ -1481,6 +1603,98 @@ function BriefingForm({ session, onLogout }) {
                 <Field label="Site atual, se houver">
                   <TextInput value={form.current_website || ''} onChange={event => update('current_website', event.target.value)} />
                 </Field>
+              </div>
+
+              <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                <div className="rounded-2xl border border-neon/15 bg-black p-4">
+                  <p className={labelClass}>Enviar logo</p>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    onChange={uploadLogo}
+                    disabled={uploading === 'logo'}
+                    className="mt-3 block w-full text-sm font-bold text-ink-light file:mr-4 file:rounded-xl file:border-0 file:bg-neon file:px-4 file:py-2.5 file:text-sm file:font-black file:text-black"
+                  />
+                  <p className="mt-2 text-xs leading-relaxed text-ink-dark">
+                    PNG, JPG, WEBP ou GIF. Tamanho máximo: 10 MB.
+                  </p>
+                  {uploading === 'logo' && (
+                    <p className="mt-2 text-xs font-bold text-neon">Enviando logo...</p>
+                  )}
+                  {form.logo_file?.url && (
+                    <div className="mt-3 rounded-xl border border-neon/15 bg-[#071007] p-3">
+                      <a
+                        href={form.logo_file.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="break-all text-sm font-bold text-white hover:text-neon"
+                      >
+                        {form.logo_file.name || 'Logo enviada'}
+                      </a>
+                      <div className="mt-2 flex items-center justify-between gap-3">
+                        <span className="text-xs text-ink-dark">
+                          {formatFileSize(form.logo_file.size)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={removeLogoFile}
+                          className="text-xs font-black text-neon"
+                        >
+                          Remover
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="rounded-2xl border border-neon/15 bg-black p-4">
+                  <p className={labelClass}>Enviar imagens para a página</p>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/gif"
+                    multiple
+                    onChange={uploadPageImages}
+                    disabled={uploading === 'images'}
+                    className="mt-3 block w-full text-sm font-bold text-ink-light file:mr-4 file:rounded-xl file:border-0 file:bg-neon file:px-4 file:py-2.5 file:text-sm file:font-black file:text-black"
+                  />
+                  <p className="mt-2 text-xs leading-relaxed text-ink-dark">
+                    Envie fotos de serviços, ambiente, produtos, equipe ou materiais da marca.
+                  </p>
+                  {uploading === 'images' && (
+                    <p className="mt-2 text-xs font-bold text-neon">Enviando imagens...</p>
+                  )}
+                  {Boolean(form.page_images?.length) && (
+                    <div className="mt-3 grid gap-2">
+                      {form.page_images.map((image, index) => (
+                        <div
+                          key={`${image.url}-${index}`}
+                          className="rounded-xl border border-neon/15 bg-[#071007] p-3"
+                        >
+                          <a
+                            href={image.url}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            className="break-all text-sm font-bold text-white hover:text-neon"
+                          >
+                            {image.name || `Imagem ${index + 1}`}
+                          </a>
+                          <div className="mt-2 flex items-center justify-between gap-3">
+                            <span className="text-xs text-ink-dark">
+                              {formatFileSize(image.size)}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => removePageImage(index)}
+                              className="text-xs font-black text-neon"
+                            >
+                              Remover
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="mt-5">
