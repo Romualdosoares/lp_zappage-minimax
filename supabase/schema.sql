@@ -2,6 +2,7 @@
 -- Cole este arquivo no SQL Editor do Supabase e execute.
 
 create extension if not exists pgcrypto;
+create sequence if not exists public.briefing_order_number_seq start with 1001;
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -30,6 +31,7 @@ create table if not exists public.portfolio_services (
 
 create table if not exists public.briefings (
   id uuid primary key default gen_random_uuid(),
+  order_number bigint not null default nextval('public.briefing_order_number_seq'::regclass),
   user_id uuid not null references auth.users(id) on delete cascade,
   business_name text,
   owner_name text,
@@ -59,6 +61,19 @@ create table if not exists public.briefings (
   updated_at timestamptz not null default now(),
   unique (user_id)
 );
+
+alter table public.briefings
+  add column if not exists order_number bigint;
+alter table public.briefings
+  alter column order_number set default nextval('public.briefing_order_number_seq'::regclass);
+update public.briefings
+set order_number = nextval('public.briefing_order_number_seq'::regclass)
+where order_number is null;
+alter table public.briefings
+  alter column order_number set not null;
+alter sequence public.briefing_order_number_seq owned by public.briefings.order_number;
+create unique index if not exists briefings_order_number_key
+on public.briefings(order_number);
 
 create or replace function public.touch_updated_at()
 returns trigger

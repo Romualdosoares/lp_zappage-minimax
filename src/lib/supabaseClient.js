@@ -183,6 +183,14 @@ export async function getBriefingsForAdmin() {
   return restRequest('/briefings?select=*&order=updated_at.desc')
 }
 
+export async function getBriefingByOrder(orderNumber) {
+  const safeOrder = String(orderNumber || '').replace(/\D/g, '')
+  if (!safeOrder) throw new Error('Numero da ordem invalido.')
+
+  const rows = await restRequest(`/briefings?select=*&order_number=eq.${safeOrder}&limit=1`)
+  return rows?.[0] || null
+}
+
 export async function getMyBriefing() {
   const session = getSession()
   if (!session?.user?.id) return null
@@ -194,16 +202,17 @@ export async function saveMyBriefing(form, status) {
   const session = getSession()
   if (!session?.user?.id) throw new Error('Sessão inválida.')
 
+  const { id, created_at, order_number, ...clientFields } = form
   const payload = {
-    ...form,
+    ...clientFields,
     user_id: session.user.id,
     email: session.user.email,
     status,
     updated_at: new Date().toISOString(),
   }
 
-  if (form.id) {
-    const rows = await restRequest(`/briefings?id=eq.${form.id}&select=*`, {
+  if (id) {
+    const rows = await restRequest(`/briefings?id=eq.${id}&select=*`, {
       method: 'PATCH',
       body: payload,
       prefer: 'return=representation',

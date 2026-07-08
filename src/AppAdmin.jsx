@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { siteConfig } from './siteConfig'
 import {
-  clearSession,
   deletePortfolioService,
+  getBriefingByOrder,
   getBriefingsForAdmin,
   getMyBriefing,
   getMyProfile,
@@ -73,6 +73,73 @@ function formatDate(value) {
     dateStyle: 'short',
     timeStyle: 'short',
   }).format(new Date(value))
+}
+
+function getOrderLabel(briefing) {
+  if (!briefing?.order_number) return '#----'
+  return `#${String(briefing.order_number).padStart(4, '0')}`
+}
+
+function asBriefingValue(value) {
+  if (Array.isArray(value)) return value.length ? value.join(', ') : 'Nao informado'
+  const text = String(value || '').trim()
+  return text || 'Nao informado'
+}
+
+function generateBriefingPrompt(briefing) {
+  const sections = asBriefingValue(briefing.required_sections)
+  const lines = [
+    `Crie uma landing page profissional para o negocio "${asBriefingValue(briefing.business_name)}".`,
+    '',
+    'Contexto do cliente:',
+    `- Numero da ordem: ${getOrderLabel(briefing)}`,
+    `- Responsavel: ${asBriefingValue(briefing.owner_name)}`,
+    `- Email: ${asBriefingValue(briefing.email)}`,
+    `- WhatsApp: ${asBriefingValue(briefing.whatsapp)}`,
+    `- Cidade/regiao: ${asBriefingValue(briefing.city)}`,
+    `- Nicho/ramo: ${asBriefingValue(briefing.niche)}`,
+    `- Instagram: ${asBriefingValue(briefing.instagram)}`,
+    `- Site atual: ${asBriefingValue(briefing.current_website)}`,
+    '',
+    'Objetivo e oferta:',
+    `- Plano de interesse: ${asBriefingValue(briefing.plan_interest)}`,
+    `- Objetivo principal: ${asBriefingValue(briefing.main_goal)}`,
+    `- Publico atendido: ${asBriefingValue(briefing.audience)}`,
+    `- Servicos/produtos: ${asBriefingValue(briefing.services)}`,
+    `- Diferenciais: ${asBriefingValue(briefing.differentials)}`,
+    `- Precos/condicoes: ${asBriefingValue(briefing.prices)}`,
+    `- Area de atendimento: ${asBriefingValue(briefing.service_area)}`,
+    '',
+    'Direcao visual e estrutura:',
+    `- Tom de comunicacao: ${asBriefingValue(briefing.tone)}`,
+    `- Cores da marca: ${asBriefingValue(briefing.brand_colors)}`,
+    `- Logo: ${asBriefingValue(briefing.logo_status)}`,
+    `- Fotos: ${asBriefingValue(briefing.photos_status)}`,
+    `- Secoes desejadas: ${sections}`,
+    `- Referencias: ${asBriefingValue(briefing.reference_links)}`,
+    '',
+    'Conversao e confianca:',
+    `- Objecoes comuns: ${asBriefingValue(briefing.objections)}`,
+    `- Observacoes finais: ${asBriefingValue(briefing.notes)}`,
+    '',
+    'Instrucoes:',
+    '- Mantenha a copy simples, direta e focada em negocio local que atende pelo WhatsApp.',
+    '- Nao invente depoimentos, numeros de clientes, certificacoes ou promessas de resultado.',
+    '- Organize a pagina com hero forte, servicos, diferenciais, prova de confianca real, FAQ e CTA para WhatsApp.',
+    '- Crie uma primeira versao pronta para mobile, com visual premium e leitura rapida.',
+  ]
+
+  return lines.join('\n')
+}
+
+function getBriefingWhatsappUrl(briefing) {
+  const message = [
+    `Ola! Confirmo o envio do briefing da ${asBriefingValue(briefing.business_name)}.`,
+    `Pedido: ${getOrderLabel(briefing)}.`,
+    'As informacoes foram salvas na Zap Page.',
+  ].join(' ')
+
+  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message)}`
 }
 
 function Field({ label, children }) {
@@ -502,6 +569,48 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
   )
 }
 
+function BriefingPromptPanel({ briefing }) {
+  const [copyStatus, setCopyStatus] = useState('')
+  const prompt = useMemo(() => generateBriefingPrompt(briefing), [briefing])
+
+  async function copyPrompt() {
+    try {
+      await navigator.clipboard.writeText(prompt)
+      setCopyStatus('Prompt copiado.')
+    } catch {
+      setCopyStatus('Nao foi possivel copiar automaticamente.')
+    }
+  }
+
+  return (
+    <section className="rounded-2xl border border-neon/25 bg-black p-4 sm:p-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-black uppercase tracking-wider text-neon">
+            Uso interno
+          </p>
+          <h3 className="mt-1 text-xl font-black text-white">Prompt inicial da pagina</h3>
+          <p className="mt-2 text-sm leading-relaxed text-ink-light">
+            Gerado automaticamente com as respostas do briefing.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={copyPrompt}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon-sm"
+        >
+          Copiar prompt
+          <IconCopy className="h-5 w-5" />
+        </button>
+      </div>
+      {copyStatus && <p className="mt-3 text-xs font-bold text-neon">{copyStatus}</p>}
+      <pre className="mt-4 max-h-[520px] overflow-auto whitespace-pre-wrap rounded-xl border border-neon/15 bg-[#030803] p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
+        {prompt}
+      </pre>
+    </section>
+  )
+}
+
 function BriefingsAdmin({ briefings }) {
   const [selectedId, setSelectedId] = useState(briefings[0]?.id || '')
   const selected = briefings.find(item => item.id === selectedId) || briefings[0]
@@ -542,6 +651,7 @@ function BriefingsAdmin({ briefings }) {
               <p className="font-black text-white">
                 {item.business_name || 'Negócio sem nome'}
               </p>
+              <p className="mt-1 text-xs font-black text-neon">{getOrderLabel(item)}</p>
               <p className="mt-1 text-sm text-ink-light">{item.email}</p>
               <p className="mt-2 text-xs font-bold text-neon">
                 Atualizado em {formatDate(item.updated_at)}
@@ -571,9 +681,22 @@ function BriefingsAdmin({ briefings }) {
                 </h3>
                 <p className="mt-1 text-sm text-ink-light">{selected.owner_name}</p>
               </div>
-              <span className="w-fit rounded-full border border-neon/30 bg-neon/10 px-3 py-1 text-xs font-black text-neon">
-                {selected.status || 'Rascunho'}
-              </span>
+              <div className="flex flex-wrap gap-2">
+                <span className="w-fit rounded-full border border-neon/30 bg-neon/10 px-3 py-1 text-xs font-black text-neon">
+                  {getOrderLabel(selected)}
+                </span>
+                <span className="w-fit rounded-full border border-neon/30 bg-neon/10 px-3 py-1 text-xs font-black text-neon">
+                  {selected.status || 'Rascunho'}
+                </span>
+                {selected.order_number && (
+                  <a
+                    href={`/admin/briefing/${selected.order_number}`}
+                    className="w-fit rounded-full bg-neon px-3 py-1 text-xs font-black text-black"
+                  >
+                    Abrir rota interna
+                  </a>
+                )}
+              </div>
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -616,6 +739,10 @@ function BriefingsAdmin({ briefings }) {
                   </p>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-5">
+              <BriefingPromptPanel briefing={selected} />
             </div>
           </>
         )}
@@ -792,6 +919,216 @@ where email = 'romualdormd@hotmail.com';`}
   )
 }
 
+function AdminBriefingRoute({ orderNumber }) {
+  const [profile, setProfile] = useState(null)
+  const [briefing, setBriefing] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState('')
+
+  async function loadBriefingOrder() {
+    setLoading(true)
+    setMessage('')
+    try {
+      const currentProfile = await getMyProfile()
+      setProfile(currentProfile)
+
+      if (isAdminProfile(currentProfile)) {
+        const row = await getBriefingByOrder(orderNumber)
+        setBriefing(row)
+        if (!row) setMessage('Nenhum briefing encontrado para esta ordem.')
+      }
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    document.title = `Briefing ${orderNumber} | Zap Page`
+    loadBriefingOrder()
+  }, [orderNumber])
+
+  async function logout() {
+    await signOut()
+    setProfile(null)
+    setBriefing(null)
+  }
+
+  if (!getSession()) {
+    return (
+      <AuthBox
+        admin
+        title="Entre para abrir este briefing."
+        subtitle="Esta rota é interna e mostra dados do cliente, ordem e prompt de produção."
+        onReady={loadBriefingOrder}
+      />
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+        <p className="font-black text-neon">Carregando briefing interno...</p>
+      </div>
+    )
+  }
+
+  if (!isAdminProfile(profile)) {
+    return (
+      <div className="mx-auto flex min-h-screen max-w-3xl items-center px-5 text-white">
+        <div className={panelClass}>
+          <IconShield className="h-10 w-10 text-neon" />
+          <h1 className="mt-4 text-3xl font-black">Acesso interno bloqueado</h1>
+          <p className="mt-3 text-sm leading-relaxed text-ink-light">
+            Este briefing só pode ser aberto por um usuário administrador.
+          </p>
+          <div className="mt-5 flex gap-3">
+            <button
+              type="button"
+              onClick={loadBriefingOrder}
+              className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black"
+            >
+              Verificar novamente
+            </button>
+            <button
+              type="button"
+              onClick={logout}
+              className="rounded-xl border border-neon/30 px-4 py-3 text-sm font-black text-neon"
+            >
+              Sair
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(57,255,20,0.18),transparent_40%),linear-gradient(rgba(57,255,20,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.035)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]"
+      />
+      <header className="sticky top-0 z-40 border-b border-neon/15 bg-black/85 backdrop-blur-xl">
+        <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
+          <a href="/admin" className="flex items-center gap-3">
+            <img
+              src={siteConfig.logoSrc}
+              alt={`${siteConfig.brandName} logo`}
+              width={256}
+              height={256}
+              className="h-10 w-10 rounded-xl border border-neon/30 object-cover"
+            />
+            <div className="leading-tight">
+              <p className="font-black text-white">Briefing interno</p>
+              <p className="text-xs font-bold text-neon">Ordem #{orderNumber}</p>
+            </div>
+          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="/admin"
+              className="rounded-xl border border-neon/30 px-3 py-2 text-sm font-black text-neon"
+            >
+              Painel
+            </a>
+            <button
+              type="button"
+              onClick={logout}
+              className="inline-flex items-center gap-2 rounded-xl border border-neon/20 px-3 py-2 text-sm font-bold text-ink-light"
+            >
+              Sair
+              <IconClose className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="container-page py-6 sm:py-10">
+        {message && (
+          <div className="mb-5">
+            <StatusMessage type={briefing ? 'info' : 'error'}>{message}</StatusMessage>
+          </div>
+        )}
+
+        {!briefing ? (
+          <section className={`${panelClass} text-center`}>
+            <IconCopy className="mx-auto h-10 w-10 text-neon" />
+            <h1 className="mt-4 text-3xl font-black text-white">Briefing não encontrado</h1>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink-light">
+              Confira se o número da ordem está correto ou volte ao painel para selecionar outro
+              briefing.
+            </p>
+          </section>
+        ) : (
+          <div className="grid gap-5">
+            <section className={panelClass}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-wider text-neon">
+                    Pedido {getOrderLabel(briefing)}
+                  </p>
+                  <h1 className="mt-1 text-3xl font-black text-white">
+                    {briefing.business_name || 'Negócio sem nome'}
+                  </h1>
+                  <p className="mt-2 text-sm text-ink-light">
+                    Recebido de {briefing.owner_name || briefing.email || 'cliente'}
+                  </p>
+                </div>
+                <span className="w-fit rounded-full border border-neon/30 bg-neon/10 px-3 py-1 text-xs font-black text-neon">
+                  {briefing.status || 'Rascunho'}
+                </span>
+              </div>
+
+              <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {[
+                  ['Email', briefing.email],
+                  ['WhatsApp', briefing.whatsapp],
+                  ['Cidade', briefing.city],
+                  ['Plano', briefing.plan_interest],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-xl border border-neon/15 bg-black p-4">
+                    <p className="text-xs font-bold uppercase tracking-wider text-ink-dark">
+                      {label}
+                    </p>
+                    <p className="mt-1 break-words text-sm font-bold text-white">
+                      {value || '-'}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="grid gap-4 lg:grid-cols-2">
+              {[
+                ['Objetivo principal', briefing.main_goal],
+                ['Público', briefing.audience],
+                ['Serviços', briefing.services],
+                ['Diferenciais', briefing.differentials],
+                ['Preços', briefing.prices],
+                ['Objeções comuns', briefing.objections],
+                ['Referências', briefing.reference_links],
+                ['Observações', briefing.notes],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-2xl border border-neon/15 bg-[#071007] p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-neon">
+                    {label}
+                  </p>
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-ink-light">
+                    {value || '-'}
+                  </p>
+                </div>
+              ))}
+            </section>
+
+            <BriefingPromptPanel briefing={briefing} />
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
+
 function ProgressBar({ value }) {
   return (
     <div className="h-2 overflow-hidden rounded-full bg-white/10">
@@ -850,12 +1187,16 @@ function BriefingForm({ session, onLogout }) {
   })
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
+  const [submittedBriefing, setSubmittedBriefing] = useState(null)
 
   useEffect(() => {
     async function loadBriefing() {
       try {
         const saved = await getMyBriefing()
-        if (saved) setForm({ ...emptyBriefing, ...saved })
+        if (saved) {
+          setForm({ ...emptyBriefing, ...saved })
+          if (saved.status === 'Enviado') setSubmittedBriefing(saved)
+        }
       } catch (error) {
         setMessage(error.message)
       } finally {
@@ -891,7 +1232,13 @@ function BriefingForm({ session, onLogout }) {
     try {
       const saved = await saveMyBriefing(form, status)
       setForm({ ...emptyBriefing, ...saved })
-      setMessage(status === 'Enviado' ? 'Briefing enviado.' : 'Rascunho salvo.')
+      if (status === 'Enviado') {
+        setSubmittedBriefing(saved)
+        setMessage('')
+      } else {
+        setSubmittedBriefing(null)
+        setMessage('Rascunho salvo.')
+      }
     } catch (error) {
       setMessage(error.message)
     }
@@ -901,6 +1248,69 @@ function BriefingForm({ session, onLogout }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black text-white">
         <p className="font-black text-neon">Carregando briefing...</p>
+      </div>
+    )
+  }
+
+  if (submittedBriefing) {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(57,255,20,0.18),transparent_40%),linear-gradient(rgba(57,255,20,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.035)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]"
+        />
+        <header className="border-b border-neon/15 bg-black/85 backdrop-blur-xl">
+          <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
+            <a href="/" className="flex items-center gap-3">
+              <img
+                src={siteConfig.logoSrc}
+                alt={`${siteConfig.brandName} logo`}
+                width={256}
+                height={256}
+                className="h-10 w-10 rounded-xl border border-neon/30 object-cover"
+              />
+              <div className="leading-tight">
+                <p className="font-black text-white">Briefing Zap Page</p>
+                <p className="text-xs font-bold text-neon">{session.user.email}</p>
+              </div>
+            </a>
+            <button
+              type="button"
+              onClick={onLogout}
+              className="inline-flex items-center gap-2 rounded-xl border border-neon/20 px-3 py-2 text-sm font-bold text-ink-light"
+            >
+              Sair
+              <IconClose className="h-4 w-4" />
+            </button>
+          </div>
+        </header>
+
+        <main className="container-page flex min-h-[calc(100vh-5rem)] items-center py-10">
+          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#071007] p-6 text-center shadow-[0_0_32px_rgba(57,255,20,0.12)] sm:p-8">
+            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-neon-sm">
+              <IconCheckCircle className="h-7 w-7" />
+            </span>
+            <p className="mt-5 text-xs font-black uppercase tracking-wider text-neon">
+              Informações salvas
+            </p>
+            <h1 className="mt-3 text-3xl font-black leading-tight text-white sm:text-4xl">
+              Seu briefing foi enviado com sucesso.
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-ink-light">
+              Pedido {getOrderLabel(submittedBriefing)} confirmado. Em até 2 dias o seu site estará
+              pronto para revisão.
+            </p>
+            <a
+              href={getBriefingWhatsappUrl(submittedBriefing)}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-4 text-sm font-black uppercase tracking-wide text-black shadow-neon sm:w-auto"
+            >
+              Confirmar envio no WhatsApp
+              <IconWhatsapp className="h-5 w-5" />
+            </a>
+          </section>
+        </main>
       </div>
     )
   }
@@ -1249,7 +1659,8 @@ function PublicPortfolioApp() {
   )
 }
 
-export default function AppAdmin({ mode = 'admin' }) {
+export default function AppAdmin({ mode = 'admin', orderNumber }) {
+  if (mode === 'adminBriefing') return <AdminBriefingRoute orderNumber={orderNumber} />
   if (mode === 'briefing') return <BriefingApp />
   if (mode === 'portfolio') return <PublicPortfolioApp />
   return <AdminApp />

@@ -6,16 +6,19 @@ import './index.css'
 
 const path = window.location.pathname.replace(/\/$/, '') || '/'
 const isAdmin = path === '/admin'
+const adminBriefingMatch = path.match(/^\/admin\/briefing\/(\d+)$/)
 const isBriefing = path === '/briefing'
 const isPortfolio = path === '/portfolio'
 
 const AppRoot = isAdmin
   ? <AppAdmin mode="admin" />
-  : isBriefing
-    ? <AppAdmin mode="briefing" />
-    : isPortfolio
-      ? <AppAdmin mode="portfolio" />
-      : <App />
+  : adminBriefingMatch
+    ? <AppAdmin mode="adminBriefing" orderNumber={adminBriefingMatch[1]} />
+    : isBriefing
+      ? <AppAdmin mode="briefing" />
+      : isPortfolio
+        ? <AppAdmin mode="portfolio" />
+        : <App />
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>{AppRoot}</React.StrictMode>,
