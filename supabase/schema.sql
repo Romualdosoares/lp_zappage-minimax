@@ -256,6 +256,11 @@ on public.briefings for update
 using (user_id = auth.uid() or public.is_admin())
 with check (user_id = auth.uid() or public.is_admin());
 
+drop policy if exists "briefings_admin_delete" on public.briefings;
+create policy "briefings_admin_delete"
+on public.briefings for delete
+using (public.is_admin());
+
 drop policy if exists "briefing_assets_public_read" on storage.objects;
 create policy "briefing_assets_public_read"
 on storage.objects for select

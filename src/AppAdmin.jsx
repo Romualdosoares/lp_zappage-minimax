@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { siteConfig } from './siteConfig'
 import {
   createAdminBriefing,
+  deleteAdminBriefing,
   deletePortfolioService,
   getAnalyticsEventsForAdmin,
   getBriefingByOrder,
@@ -896,13 +897,24 @@ function BriefingPromptPanel({ briefing }) {
   )
 }
 
-function AdminBriefingCreator({ onCreated, onCancel, setMessage }) {
+function AdminBriefingCreator({ initialBriefing, onSaved, onCancel, setMessage }) {
+  const editing = Boolean(initialBriefing?.id)
   const [form, setForm] = useState({
     ...emptyBriefing,
     status: 'Manual',
     admin_prompt: '',
+    ...(initialBriefing || {}),
   })
   const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    setForm({
+      ...emptyBriefing,
+      status: 'Manual',
+      admin_prompt: '',
+      ...(initialBriefing || {}),
+    })
+  }, [initialBriefing])
 
   function update(key, value) {
     setForm(current => ({ ...current, [key]: value }))
@@ -917,13 +929,27 @@ function AdminBriefingCreator({ onCreated, onCancel, setMessage }) {
     setBusy(true)
     setMessage('')
     try {
+      if (editing) {
+        const finalPrompt = (form.admin_prompt?.trim() || generateBriefingPrompt(form)).replace(
+          /#----/g,
+          getOrderLabel(form),
+        )
+        const saved = await updateAdminBriefing(initialBriefing.id, {
+          ...form,
+          admin_prompt: finalPrompt,
+        })
+        onSaved(saved || { ...form, admin_prompt: finalPrompt })
+        setMessage(`Briefing ${getOrderLabel(saved || form)} atualizado.`)
+        return
+      }
+
       const created = await createAdminBriefing(form)
       const finalPrompt = (form.admin_prompt?.trim() || generateBriefingPrompt(created)).replace(
         /#----/g,
         getOrderLabel(created),
       )
       const updated = await updateAdminBriefing(created.id, { admin_prompt: finalPrompt })
-      onCreated(updated || { ...created, admin_prompt: finalPrompt })
+      onSaved(updated || { ...created, admin_prompt: finalPrompt })
       setMessage(`Novo briefing ${getOrderLabel(updated || created)} criado.`)
     } catch (error) {
       setMessage(error.message)
@@ -937,11 +963,15 @@ function AdminBriefingCreator({ onCreated, onCancel, setMessage }) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-wider text-neon">
-            Novo briefing
+            {editing ? `Editar ${getOrderLabel(form)}` : 'Novo briefing'}
           </p>
-          <h3 className="mt-1 text-2xl font-black text-white">Criar briefing manual</h3>
+          <h3 className="mt-1 text-2xl font-black text-white">
+            {editing ? 'Editar briefing do cliente' : 'Criar briefing manual'}
+          </h3>
           <p className="mt-2 text-sm leading-relaxed text-ink-light">
-            Preencha os dados do cliente, gere o prompt pronto e salve para criar a ordem.
+            {editing
+              ? 'Atualize os dados, ajuste o prompt e salve as alterações.'
+              : 'Preencha os dados do cliente, gere o prompt pronto e salve para criar a ordem.'}
           </p>
         </div>
         <button
@@ -997,6 +1027,16 @@ function AdminBriefingCreator({ onCreated, onCancel, setMessage }) {
             <option>Página Express</option>
             <option>Página Profissional</option>
             <option>Turbo Vendas</option>
+          </SelectInput>
+        </Field>
+        <Field label="Status">
+          <SelectInput value={form.status || 'Manual'} onChange={event => update('status', event.target.value)}>
+            <option>Manual</option>
+            <option>Rascunho</option>
+            <option>Enviado</option>
+            <option>Em produção</option>
+            <option>Pronto para revisão</option>
+            <option>Entregue</option>
           </SelectInput>
         </Field>
         <Field label="Tom">
@@ -1064,7 +1104,7 @@ function AdminBriefingCreator({ onCreated, onCancel, setMessage }) {
         disabled={busy}
         className="inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-4 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
       >
-        {busy ? 'Salvando...' : 'Salvar novo briefing'}
+        {busy ? 'Salvando...' : editing ? 'Salvar alterações' : 'Salvar novo briefing'}
         <IconCheckCircle className="h-5 w-5" />
       </button>
     </form>
@@ -1074,16 +1114,38 @@ function AdminBriefingCreator({ onCreated, onCancel, setMessage }) {
 function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
   const [selectedId, setSelectedId] = useState(briefings[0]?.id || '')
   const [creating, setCreating] = useState(false)
+  const [editingId, setEditingId] = useState('')
   const selected = briefings.find(item => item.id === selectedId) || briefings[0]
 
   useEffect(() => {
-    if (!creating && !selectedId && briefings[0]) setSelectedId(briefings[0].id)
-  }, [briefings, creating, selectedId])
+    if (!creating && !editingId && !selectedId && briefings[0]) setSelectedId(briefings[0].id)
+  }, [briefings, creating, editingId, selectedId])
 
-  function handleCreated(briefing) {
+  function handleSaved(briefing) {
     setBriefings(current => [briefing, ...current.filter(item => item.id !== briefing.id)])
     setSelectedId(briefing.id)
     setCreating(false)
+    setEditingId('')
+  }
+
+  async function removeBriefing(briefing) {
+    if (!briefing?.id) return
+    const label = `${getOrderLabel(briefing)} ${briefing.business_name || ''}`.trim()
+    const confirmed = window.confirm(`Excluir o briefing ${label}? Esta ação não pode ser desfeita.`)
+    if (!confirmed) return
+
+    setMessage('')
+    try {
+      await deleteAdminBriefing(briefing.id)
+      const remaining = briefings.filter(item => item.id !== briefing.id)
+      setBriefings(remaining)
+      setSelectedId(remaining[0]?.id || '')
+      setEditingId('')
+      setCreating(false)
+      setMessage(`Briefing ${getOrderLabel(briefing)} excluído.`)
+    } catch (error) {
+      setMessage(error.message)
+    }
   }
 
   return (
@@ -1100,6 +1162,7 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
             type="button"
             onClick={() => {
               setCreating(true)
+              setEditingId('')
               setSelectedId('')
             }}
             className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon-sm"
@@ -1124,10 +1187,11 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
               type="button"
               onClick={() => {
                 setCreating(false)
+                setEditingId('')
                 setSelectedId(item.id)
               }}
               className={`rounded-2xl border p-4 text-left transition ${
-                !creating && selected?.id === item.id
+                !creating && !editingId && selected?.id === item.id
                   ? 'border-neon bg-neon/10'
                   : 'border-neon/15 bg-black/50 hover:border-neon/45'
               }`}
@@ -1148,8 +1212,15 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
       <div className={panelClass}>
         {creating ? (
           <AdminBriefingCreator
-            onCreated={handleCreated}
+            onSaved={handleSaved}
             onCancel={() => setCreating(false)}
+            setMessage={setMessage}
+          />
+        ) : editingId && selected ? (
+          <AdminBriefingCreator
+            initialBriefing={selected}
+            onSaved={handleSaved}
+            onCancel={() => setEditingId('')}
             setMessage={setMessage}
           />
         ) : !selected ? (
@@ -1186,6 +1257,23 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
                     Abrir rota interna
                   </a>
                 )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCreating(false)
+                    setEditingId(selected.id)
+                  }}
+                  className="w-fit rounded-full border border-neon/30 px-3 py-1 text-xs font-black text-neon"
+                >
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeBriefing(selected)}
+                  className="w-fit rounded-full border border-red-400/40 px-3 py-1 text-xs font-black text-red-200"
+                >
+                  Excluir
+                </button>
               </div>
             </div>
 

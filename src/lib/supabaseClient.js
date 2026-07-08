@@ -393,15 +393,34 @@ export async function createAdminBriefing(form) {
 }
 
 export async function updateAdminBriefing(id, fields) {
+  const {
+    id: ignoredId,
+    created_at,
+    updated_at,
+    order_number,
+    user_id,
+    ...payloadFields
+  } = fields
+  const payload = {
+    ...payloadFields,
+    updated_at: new Date().toISOString(),
+  }
+
+  if (!payload.logo_file) delete payload.logo_file
+  if (!Array.isArray(payload.page_images) || payload.page_images.length === 0) {
+    delete payload.page_images
+  }
+
   const rows = await restRequest(`/briefings?id=eq.${id}&select=*`, {
     method: 'PATCH',
-    body: {
-      ...fields,
-      updated_at: new Date().toISOString(),
-    },
+    body: payload,
     prefer: 'return=representation',
   })
   return rows?.[0]
+}
+
+export async function deleteAdminBriefing(id) {
+  await restRequest(`/briefings?id=eq.${id}`, { method: 'DELETE' })
 }
 
 export function getSupabaseProjectInfo() {
