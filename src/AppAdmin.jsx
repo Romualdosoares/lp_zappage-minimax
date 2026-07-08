@@ -3,6 +3,7 @@ import { siteConfig } from './siteConfig'
 import {
   createAdminBriefing,
   deletePortfolioService,
+  getAnalyticsEventsForAdmin,
   getBriefingByOrder,
   getBriefingsForAdmin,
   getMyBriefing,
@@ -197,6 +198,51 @@ function StatusMessage({ type = 'info', children }) {
   return <p className={`rounded-xl border px-3 py-2 text-sm font-bold ${colors}`}>{children}</p>
 }
 
+function parseMoney(value) {
+  const numeric = String(value || '').replace(/[^\d,]/g, '').replace(',', '.')
+  return Number(numeric) || 0
+}
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    maximumFractionDigits: 0,
+  }).format(value || 0)
+}
+
+function formatPercent(value) {
+  return `${Number(value || 0).toLocaleString('pt-BR', {
+    maximumFractionDigits: 1,
+  })}%`
+}
+
+function getPlanPrice(planName) {
+  const prices = {
+    [siteConfig.planExpress.name]: parseMoney(siteConfig.planExpress.price),
+    [siteConfig.planProfessional.name]: parseMoney(siteConfig.planProfessional.price),
+    [siteConfig.planTurbo.name]: parseMoney(siteConfig.planTurbo.price),
+  }
+  return prices[planName] || 0
+}
+
+function isRecent(value, days) {
+  if (!value) return false
+  return new Date(value).getTime() >= Date.now() - days * 24 * 60 * 60 * 1000
+}
+
+function isSoldBriefing(briefing) {
+  return briefing?.status && briefing.status !== 'Rascunho'
+}
+
+function countBy(items, getKey) {
+  return items.reduce((acc, item) => {
+    const key = getKey(item) || 'Não informado'
+    acc[key] = (acc[key] || 0) + 1
+    return acc
+  }, {})
+}
+
 function AuthBox({ title, subtitle, admin = false, onReady }) {
   const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ name: '', email: '', whatsapp: '', password: '' })
@@ -343,6 +389,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
 
 function AdminHeader({ active, setActive, onLogout }) {
   const tabs = [
+    ['dashboard', 'Dashboard'],
     ['portfolio', 'Portfólio'],
     ['briefings', 'Briefings'],
     ['links', 'Links'],
@@ -402,6 +449,173 @@ function StatCard({ icon: Icon, label, value }) {
       <p className="mt-4 text-2xl font-black text-white">{value}</p>
       <p className="mt-1 text-sm text-ink-light">{label}</p>
     </div>
+  )
+}
+
+function MetricCard({ label, value, detail }) {
+  return (
+    <article className="rounded-2xl border border-neon/20 bg-[#071007] p-5">
+      <p className="text-xs font-black uppercase tracking-wider text-ink-dark">{label}</p>
+      <p className="mt-3 text-3xl font-black text-white">{value}</p>
+      {detail && <p className="mt-2 text-sm leading-relaxed text-ink-light">{detail}</p>}
+    </article>
+  )
+}
+
+function DashboardBars({ title, items }) {
+  const total = items.reduce((sum, item) => sum + item.value, 0)
+
+  return (
+    <section className={panelClass}>
+      <p className="text-xs font-black uppercase tracking-wider text-neon">{title}</p>
+      <div className="mt-5 grid gap-4">
+        {items.length === 0 && <p className="text-sm text-ink-light">Sem dados ainda.</p>}
+        {items.map(item => (
+          <div key={item.label}>
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="font-bold text-white">{item.label}</span>
+              <span className="font-black text-neon">{item.value}</span>
+            </div>
+            <div className="mt-2">
+              <ProgressBar value={total ? Math.max(4, (item.value / total) * 100) : 0} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ActivityList({ title, items, empty }) {
+  return (
+    <section className={panelClass}>
+      <p className="text-xs font-black uppercase tracking-wider text-neon">{title}</p>
+      <div className="mt-5 grid gap-3">
+        {items.length === 0 && <p className="text-sm text-ink-light">{empty}</p>}
+        {items.map(item => (
+          <div key={item.id} className="rounded-xl border border-neon/15 bg-black p-4">
+            <p className="font-black text-white">{item.title}</p>
+            <p className="mt-1 text-sm text-ink-light">{item.detail}</p>
+            <p className="mt-2 text-xs font-bold text-neon">{item.meta}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function AdminDashboard({ briefings, analyticsEvents }) {
+  const soldBriefings = briefings.filter(isSoldBriefing)
+  const recentSoldBriefings = soldBriefings.filter(item => isRecent(item.created_at, 30))
+  const pageViews = analyticsEvents.filter(event => event.event_name === 'page_view')
+  const pageViews30 = pageViews.filter(event => isRecent(event.created_at, 30))
+  const visitors30 = new Set(pageViews30.map(event => event.session_id).filter(Boolean)).size
+  const ctaClicks30 = analyticsEvents.filter(
+    event => event.event_name !== 'page_view' && isRecent(event.created_at, 30),
+  )
+  const planClicks30 = analyticsEvents.filter(
+    event => event.event_name === 'plan_click' && isRecent(event.created_at, 30),
+  )
+  const clients = new Set(briefings.map(item => item.email).filter(Boolean)).size
+  const uploads = briefings.filter(
+    item => item.logo_file?.url || (Array.isArray(item.page_images) && item.page_images.length),
+  ).length
+  const estimatedRevenue = soldBriefings.reduce(
+    (sum, item) => sum + getPlanPrice(item.plan_interest),
+    0,
+  )
+  const conversion = pageViews30.length
+    ? (recentSoldBriefings.length / pageViews30.length) * 100
+    : 0
+
+  const planItems = Object.entries(countBy(soldBriefings, item => item.plan_interest))
+    .map(([label, value]) => ({ label, value }))
+    .sort((a, b) => b.value - a.value)
+
+  const statusItems = Object.entries(countBy(briefings, item => item.status || 'Rascunho'))
+    .map(([label, value]) => ({ label, value }))
+    .sort((a, b) => b.value - a.value)
+
+  const eventItems = analyticsEvents.slice(0, 6).map(event => ({
+    id: event.id,
+    title:
+      event.event_name === 'page_view'
+        ? 'Visualização da página'
+        : event.plan_name || event.label || 'Clique registrado',
+    detail: event.label || event.path || '-',
+    meta: formatDate(event.created_at),
+  }))
+
+  const briefingItems = briefings.slice(0, 6).map(item => ({
+    id: item.id,
+    title: `${getOrderLabel(item)} ${item.business_name || 'Negócio sem nome'}`,
+    detail: item.plan_interest || item.email || '-',
+    meta: `${item.status || 'Rascunho'} • ${formatDate(item.updated_at)}`,
+  }))
+
+  return (
+    <section className="grid gap-5">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard
+          label="Visualizações"
+          value={pageViews30.length}
+          detail={`${pageViews.length} no total`}
+        />
+        <MetricCard
+          label="Visitantes"
+          value={visitors30}
+          detail="Sessões únicas nos últimos 30 dias"
+        />
+        <MetricCard
+          label="Clientes"
+          value={clients}
+          detail={`${briefings.length} briefings cadastrados`}
+        />
+        <MetricCard
+          label="Planos vendidos"
+          value={soldBriefings.length}
+          detail={`${recentSoldBriefings.length} nos últimos 30 dias`}
+        />
+        <MetricCard
+          label="Cliques em CTA"
+          value={ctaClicks30.length}
+          detail={`${planClicks30.length} cliques nos planos`}
+        />
+        <MetricCard
+          label="Conversão"
+          value={formatPercent(conversion)}
+          detail="Pedidos sobre visualizações em 30 dias"
+        />
+        <MetricCard
+          label="Receita estimada"
+          value={formatCurrency(estimatedRevenue)}
+          detail="Com base nos planos registrados"
+        />
+        <MetricCard
+          label="Arquivos enviados"
+          value={uploads}
+          detail="Briefings com logo ou imagens"
+        />
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <DashboardBars title="Planos vendidos" items={planItems} />
+        <DashboardBars title="Status dos pedidos" items={statusItems} />
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <ActivityList
+          title="Últimos briefings"
+          items={briefingItems}
+          empty="Nenhum briefing cadastrado ainda."
+        />
+        <ActivityList
+          title="Últimos eventos da página"
+          items={eventItems}
+          empty="Nenhum evento registrado ainda."
+        />
+      </div>
+    </section>
   )
 }
 
@@ -1064,12 +1278,13 @@ function LinksPanel() {
 }
 
 function AdminApp() {
-  const [active, setActive] = useState('portfolio')
+  const [active, setActive] = useState('dashboard')
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [portfolio, setPortfolio] = useState([])
   const [briefings, setBriefings] = useState([])
+  const [analyticsEvents, setAnalyticsEvents] = useState([])
 
   async function loadAdminData() {
     setLoading(true)
@@ -1079,12 +1294,14 @@ function AdminApp() {
       setProfile(currentProfile)
 
       if (isAdminProfile(currentProfile)) {
-        const [portfolioRows, briefingRows] = await Promise.all([
+        const [portfolioRows, briefingRows, analyticsRows] = await Promise.all([
           getPortfolioServices({ admin: true }),
           getBriefingsForAdmin(),
+          getAnalyticsEventsForAdmin(),
         ])
         setPortfolio(portfolioRows)
         setBriefings(briefingRows)
+        setAnalyticsEvents(analyticsRows)
       }
     } catch (error) {
       setMessage(error.message)
@@ -1103,6 +1320,7 @@ function AdminApp() {
     setProfile(null)
     setPortfolio([])
     setBriefings([])
+    setAnalyticsEvents([])
   }
 
   if (!getSession()) {
@@ -1168,7 +1386,7 @@ function AdminApp() {
         <div className="grid gap-4 sm:grid-cols-3">
           <StatCard icon={IconSparkles} label="Itens no portfólio" value={portfolio.length} />
           <StatCard icon={IconCopy} label="Briefings recebidos" value={briefings.length} />
-          <StatCard icon={IconShield} label="Banco" value="Supabase" />
+          <StatCard icon={IconShield} label="Eventos registrados" value={analyticsEvents.length} />
         </div>
 
         {message && (
@@ -1180,6 +1398,9 @@ function AdminApp() {
         )}
 
         <div className="mt-6">
+          {active === 'dashboard' && (
+            <AdminDashboard briefings={briefings} analyticsEvents={analyticsEvents} />
+          )}
           {active === 'portfolio' && (
             <PortfolioAdmin
               portfolio={portfolio}

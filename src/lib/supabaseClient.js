@@ -4,6 +4,7 @@ const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllcWNvam53eHhwZmZ2ZnhvaXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MDQ2MzEsImV4cCI6MjA5OTA4MDYzMX0.m0u1v3TSRBpmxoJm5CJj71o6i7bW1_CVzvCDy4vZVmQ'
 
 const SESSION_KEY = 'zapPage.supabaseSession.v1'
+const ANALYTICS_SESSION_KEY = 'zapPage.analyticsSession.v1'
 const BRIEFING_ASSETS_BUCKET = 'briefing-assets'
 const CLIENT_BRIEFING_COLUMNS = [
   'id',
@@ -91,6 +92,19 @@ export function getSession() {
 
 export function clearSession() {
   window.localStorage.removeItem(SESSION_KEY)
+}
+
+function getAnalyticsSessionId() {
+  try {
+    let sessionId = window.localStorage.getItem(ANALYTICS_SESSION_KEY)
+    if (!sessionId) {
+      sessionId = `${Date.now()}-${Math.random().toString(16).slice(2)}`
+      window.localStorage.setItem(ANALYTICS_SESSION_KEY, sessionId)
+    }
+    return sessionId
+  } catch {
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  }
 }
 
 async function parseResponse(response) {
@@ -262,6 +276,45 @@ export async function deletePortfolioService(id) {
 
 export async function getBriefingsForAdmin() {
   return restRequest('/briefings?select=*&order=updated_at.desc')
+}
+
+export async function getAnalyticsEventsForAdmin() {
+  try {
+    return await restRequest('/analytics_events?select=*&order=created_at.desc&limit=1000')
+  } catch {
+    return []
+  }
+}
+
+export async function trackAnalyticsEvent(eventName, payload = {}) {
+  try {
+    const metadata = {
+      ...(payload.metadata || {}),
+      referrer: document.referrer || '',
+      viewport:
+        window.innerWidth < 768
+          ? 'mobile'
+          : window.innerWidth < 1024
+            ? 'tablet'
+            : 'desktop',
+    }
+
+    await restRequest('/analytics_events', {
+      method: 'POST',
+      prefer: 'return=minimal',
+      body: {
+        event_name: eventName,
+        source: payload.source || 'landing',
+        path: payload.path || window.location.pathname,
+        label: payload.label || '',
+        plan_name: payload.plan_name || '',
+        session_id: getAnalyticsSessionId(),
+        metadata,
+      },
+    })
+  } catch {
+    // A página não deve falhar se o analytics ainda não estiver configurado no Supabase.
+  }
 }
 
 export async function getBriefingByOrder(orderNumber) {

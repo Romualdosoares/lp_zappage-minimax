@@ -151,6 +151,8 @@ function PlanCard({ plan, popular }) {
           href={buildWhatsappUrl(
             `Botão clicado: ${plan.cta}\nPlano escolhido: ${plan.name}\nValor exibido: ${plan.price}`,
           )}
+          data-analytics-event="plan_click"
+          data-plan-name={plan.name}
           target="_blank"
           rel="noreferrer noopener"
           className={popular ? 'btn-primary w-full animate-pulse-glow' : 'btn-secondary w-full'}

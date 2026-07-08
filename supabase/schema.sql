@@ -29,6 +29,25 @@ create table if not exists public.portfolio_services (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.analytics_events (
+  id uuid primary key default gen_random_uuid(),
+  event_name text not null,
+  source text not null default 'landing',
+  path text,
+  label text,
+  plan_name text,
+  metadata jsonb not null default '{}'::jsonb,
+  session_id text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists analytics_events_created_at_idx
+on public.analytics_events(created_at desc);
+create index if not exists analytics_events_event_name_idx
+on public.analytics_events(event_name);
+create index if not exists analytics_events_session_id_idx
+on public.analytics_events(session_id);
+
 create table if not exists public.briefings (
   id uuid primary key default gen_random_uuid(),
   order_number bigint not null default nextval('public.briefing_order_number_seq'::regclass),
@@ -172,6 +191,7 @@ $$;
 alter table public.profiles enable row level security;
 alter table public.portfolio_services enable row level security;
 alter table public.briefings enable row level security;
+alter table public.analytics_events enable row level security;
 
 drop policy if exists "profiles_select_own_or_admin" on public.profiles;
 create policy "profiles_select_own_or_admin"
@@ -203,6 +223,16 @@ with check (public.is_admin());
 drop policy if exists "portfolio_admin_delete" on public.portfolio_services;
 create policy "portfolio_admin_delete"
 on public.portfolio_services for delete
+using (public.is_admin());
+
+drop policy if exists "analytics_public_insert" on public.analytics_events;
+create policy "analytics_public_insert"
+on public.analytics_events for insert
+with check (event_name in ('page_view', 'cta_click', 'plan_click', 'whatsapp_click', 'outbound_click'));
+
+drop policy if exists "analytics_admin_select" on public.analytics_events;
+create policy "analytics_admin_select"
+on public.analytics_events for select
 using (public.is_admin());
 
 drop policy if exists "briefings_select_own_or_admin" on public.briefings;
