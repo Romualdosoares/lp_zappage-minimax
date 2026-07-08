@@ -58,7 +58,7 @@ const emptyBriefing = {
   logo_status: 'Tenho logo',
   photos_status: 'Tenho fotos',
   required_sections: ['Serviços', 'Diferenciais', 'Contato WhatsApp'],
-  references: '',
+  reference_links: '',
   objections: '',
   notes: '',
 }
@@ -604,7 +604,7 @@ function BriefingsAdmin({ briefings }) {
                 ['Diferenciais', selected.differentials],
                 ['Preços', selected.prices],
                 ['Objeções comuns', selected.objections],
-                ['Referências', selected.references],
+                ['Referências', selected.reference_links],
                 ['Observações', selected.notes],
               ].map(([label, value]) => (
                 <div key={label} className="rounded-xl border border-neon/15 bg-black p-4">
@@ -1082,7 +1082,7 @@ function BriefingForm({ session, onLogout }) {
               </p>
               <div className="mt-5 grid gap-4">
                 <Field label="Links de referência">
-                  <TextArea value={form.references || ''} onChange={event => update('references', event.target.value)} />
+                  <TextArea value={form.reference_links || ''} onChange={event => update('reference_links', event.target.value)} />
                 </Field>
                 <Field label="Dúvidas ou objeções comuns dos clientes">
                   <TextArea value={form.objections || ''} onChange={event => update('objections', event.target.value)} />

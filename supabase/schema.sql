@@ -51,7 +51,7 @@ create table if not exists public.briefings (
   logo_status text default 'Tenho logo',
   photos_status text default 'Tenho fotos',
   required_sections text[] default array['Serviços', 'Diferenciais', 'Contato WhatsApp'],
-  references text,
+  reference_links text,
   objections text,
   notes text,
   status text not null default 'Rascunho',
