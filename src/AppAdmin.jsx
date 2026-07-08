@@ -22,6 +22,7 @@ import {
   uploadBriefingAsset,
 } from './lib/supabaseClient'
 import {
+  IconArrowLeft,
   IconArrowRight,
   IconCheckCircle,
   IconClose,
@@ -37,6 +38,18 @@ const inputClass =
 const labelClass = 'text-xs font-bold uppercase tracking-wider text-ink-light'
 const panelClass =
   'rounded-2xl border border-neon/20 bg-[#071007] p-4 shadow-[0_0_24px_rgba(57,255,20,0.07)] sm:p-5'
+
+function BackButton({ href = '/', label = 'Voltar' }) {
+  return (
+    <a
+      href={href}
+      className="inline-flex items-center gap-2 rounded-xl border border-neon/30 px-3 py-2 text-sm font-black text-neon transition hover:bg-neon/10"
+    >
+      <IconArrowLeft className="h-4 w-4" />
+      {label}
+    </a>
+  )
+}
 
 function isAdminProfile(profile) {
   return profile?.role === 'admin' || profile?.role === 'master_admin'
@@ -1706,7 +1719,7 @@ function AdminBriefingRoute({ orderNumber }) {
       />
       <header className="sticky top-0 z-40 border-b border-neon/15 bg-black/85 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
-          <a href="/admin" className="flex items-center gap-3">
+          <a href="/admin" className="flex min-w-0 items-center gap-3">
             <img
               src={siteConfig.logoSrc}
               alt={`${siteConfig.brandName} logo`}
@@ -1714,18 +1727,13 @@ function AdminBriefingRoute({ orderNumber }) {
               height={256}
               className="h-10 w-10 rounded-xl border border-neon/30 object-cover"
             />
-            <div className="leading-tight">
+            <div className="min-w-0 leading-tight">
               <p className="font-black text-white">Briefing interno</p>
-              <p className="text-xs font-bold text-neon">Ordem #{orderNumber}</p>
+              <p className="truncate text-xs font-bold text-neon">Ordem #{orderNumber}</p>
             </div>
           </a>
           <div className="flex items-center gap-2">
-            <a
-              href="/admin"
-              className="rounded-xl border border-neon/30 px-3 py-2 text-sm font-black text-neon"
-            >
-              Painel
-            </a>
+            <BackButton href="/admin" />
             <button
               type="button"
               onClick={logout}
@@ -2017,7 +2025,7 @@ function BriefingForm({ session, onLogout }) {
         />
         <header className="border-b border-neon/15 bg-black/85 backdrop-blur-xl">
           <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
-            <a href="/" className="flex items-center gap-3">
+            <a href="/" className="flex min-w-0 items-center gap-3">
               <img
                 src={siteConfig.logoSrc}
                 alt={`${siteConfig.brandName} logo`}
@@ -2025,19 +2033,22 @@ function BriefingForm({ session, onLogout }) {
                 height={256}
                 className="h-10 w-10 rounded-xl border border-neon/30 object-cover"
               />
-              <div className="leading-tight">
+              <div className="min-w-0 leading-tight">
                 <p className="font-black text-white">Briefing Zap Page</p>
-                <p className="text-xs font-bold text-neon">{session.user.email}</p>
+                <p className="truncate text-xs font-bold text-neon">{session.user.email}</p>
               </div>
             </a>
-            <button
-              type="button"
-              onClick={onLogout}
-              className="inline-flex items-center gap-2 rounded-xl border border-neon/20 px-3 py-2 text-sm font-bold text-ink-light"
-            >
-              Sair
-              <IconClose className="h-4 w-4" />
-            </button>
+            <div className="flex shrink-0 items-center gap-2">
+              <BackButton href="/" />
+              <button
+                type="button"
+                onClick={onLogout}
+                className="inline-flex items-center gap-2 rounded-xl border border-neon/20 px-3 py-2 text-sm font-bold text-ink-light"
+              >
+                Sair
+                <IconClose className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </header>
 
@@ -2075,7 +2086,7 @@ function BriefingForm({ session, onLogout }) {
     <div className="min-h-screen bg-black text-white">
       <header className="sticky top-0 z-40 border-b border-neon/15 bg-black/85 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
-          <a href="/" className="flex items-center gap-3">
+          <a href="/" className="flex min-w-0 items-center gap-3">
             <img
               src={siteConfig.logoSrc}
               alt={`${siteConfig.brandName} logo`}
@@ -2083,19 +2094,22 @@ function BriefingForm({ session, onLogout }) {
               height={256}
               className="h-10 w-10 rounded-xl border border-neon/30 object-cover"
             />
-            <div className="leading-tight">
+            <div className="min-w-0 leading-tight">
               <p className="font-black text-white">Briefing Zap Page</p>
-              <p className="text-xs font-bold text-neon">{session.user.email}</p>
+              <p className="truncate text-xs font-bold text-neon">{session.user.email}</p>
             </div>
           </a>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="inline-flex items-center gap-2 rounded-xl border border-neon/20 px-3 py-2 text-sm font-bold text-ink-light"
-          >
-            Sair
-            <IconClose className="h-4 w-4" />
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            <BackButton href="/" />
+            <button
+              type="button"
+              onClick={onLogout}
+              className="inline-flex items-center gap-2 rounded-xl border border-neon/20 px-3 py-2 text-sm font-bold text-ink-light"
+            >
+              Sair
+              <IconClose className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </header>
 

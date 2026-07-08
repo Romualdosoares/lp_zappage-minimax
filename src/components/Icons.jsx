@@ -20,6 +20,14 @@ export function IconArrowRight({ className = 'h-4 w-4' }) {
   )
 }
 
+export function IconArrowLeft({ className = 'h-4 w-4' }) {
+  return (
+    <svg {...baseProps} className={className}>
+      <path d="M19 12H5M11 5l-7 7 7 7" />
+    </svg>
+  )
+}
+
 export function IconCheck({ className = 'h-5 w-5' }) {
   return (
     <svg {...baseProps} className={className}>
