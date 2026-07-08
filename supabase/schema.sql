@@ -32,7 +32,7 @@ create table if not exists public.portfolio_services (
 create table if not exists public.briefings (
   id uuid primary key default gen_random_uuid(),
   order_number bigint not null default nextval('public.briefing_order_number_seq'::regclass),
-  user_id uuid not null references auth.users(id) on delete cascade,
+  user_id uuid references auth.users(id) on delete cascade,
   business_name text,
   owner_name text,
   email text not null,
@@ -58,6 +58,7 @@ create table if not exists public.briefings (
   reference_links text,
   objections text,
   notes text,
+  admin_prompt text,
   status text not null default 'Rascunho',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -70,6 +71,10 @@ alter table public.briefings
   add column if not exists logo_file jsonb;
 alter table public.briefings
   add column if not exists page_images jsonb not null default '[]'::jsonb;
+alter table public.briefings
+  add column if not exists admin_prompt text;
+alter table public.briefings
+  alter column user_id drop not null;
 alter table public.briefings
   alter column order_number set default nextval('public.briefing_order_number_seq'::regclass);
 update public.briefings
@@ -209,6 +214,11 @@ drop policy if exists "briefings_insert_own" on public.briefings;
 create policy "briefings_insert_own"
 on public.briefings for insert
 with check (user_id = auth.uid());
+
+drop policy if exists "briefings_admin_insert" on public.briefings;
+create policy "briefings_admin_insert"
+on public.briefings for insert
+with check (public.is_admin());
 
 drop policy if exists "briefings_update_own_or_admin" on public.briefings;
 create policy "briefings_update_own_or_admin"

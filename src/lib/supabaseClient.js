@@ -5,6 +5,39 @@ const SUPABASE_ANON_KEY =
 
 const SESSION_KEY = 'zapPage.supabaseSession.v1'
 const BRIEFING_ASSETS_BUCKET = 'briefing-assets'
+const CLIENT_BRIEFING_COLUMNS = [
+  'id',
+  'order_number',
+  'user_id',
+  'business_name',
+  'owner_name',
+  'email',
+  'whatsapp',
+  'city',
+  'niche',
+  'instagram',
+  'current_website',
+  'plan_interest',
+  'main_goal',
+  'audience',
+  'services',
+  'differentials',
+  'prices',
+  'service_area',
+  'tone',
+  'brand_colors',
+  'logo_status',
+  'photos_status',
+  'logo_file',
+  'page_images',
+  'required_sections',
+  'reference_links',
+  'objections',
+  'notes',
+  'status',
+  'created_at',
+  'updated_at',
+].join(',')
 
 export const portfolioSeed = [
   {
@@ -242,7 +275,9 @@ export async function getBriefingByOrder(orderNumber) {
 export async function getMyBriefing() {
   const session = getSession()
   if (!session?.user?.id) return null
-  const rows = await restRequest(`/briefings?select=*&user_id=eq.${session.user.id}&limit=1`)
+  const rows = await restRequest(
+    `/briefings?select=${CLIENT_BRIEFING_COLUMNS}&user_id=eq.${session.user.id}&limit=1`,
+  )
   return rows?.[0] || null
 }
 
@@ -250,7 +285,7 @@ export async function saveMyBriefing(form, status) {
   const session = getSession()
   if (!session?.user?.id) throw new Error('Sessão inválida.')
 
-  const { id, created_at, order_number, ...clientFields } = form
+  const { id, created_at, order_number, admin_prompt, ...clientFields } = form
   const payload = {
     ...clientFields,
     user_id: session.user.id,
@@ -276,6 +311,41 @@ export async function saveMyBriefing(form, status) {
   const rows = await restRequest('/briefings?select=*', {
     method: 'POST',
     body: payload,
+    prefer: 'return=representation',
+  })
+  return rows?.[0]
+}
+
+export async function createAdminBriefing(form) {
+  const { id, created_at, updated_at, order_number, user_id, ...fields } = form
+  const payload = {
+    ...fields,
+    user_id: null,
+    status: form.status || 'Manual',
+    updated_at: new Date().toISOString(),
+  }
+
+  if (!payload.email) throw new Error('Informe o email do cliente.')
+  if (!payload.logo_file) delete payload.logo_file
+  if (!Array.isArray(payload.page_images) || payload.page_images.length === 0) {
+    delete payload.page_images
+  }
+
+  const rows = await restRequest('/briefings?select=*', {
+    method: 'POST',
+    body: payload,
+    prefer: 'return=representation',
+  })
+  return rows?.[0]
+}
+
+export async function updateAdminBriefing(id, fields) {
+  const rows = await restRequest(`/briefings?id=eq.${id}&select=*`, {
+    method: 'PATCH',
+    body: {
+      ...fields,
+      updated_at: new Date().toISOString(),
+    },
     prefer: 'return=representation',
   })
   return rows?.[0]

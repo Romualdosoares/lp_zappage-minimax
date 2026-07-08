@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { siteConfig } from './siteConfig'
 import {
+  createAdminBriefing,
   deletePortfolioService,
   getBriefingByOrder,
   getBriefingsForAdmin,
@@ -15,6 +16,7 @@ import {
   signIn,
   signOut,
   signUpClient,
+  updateAdminBriefing,
   uploadBriefingAsset,
 } from './lib/supabaseClient'
 import {
@@ -637,7 +639,10 @@ function AssetLinks({ logo, images }) {
 
 function BriefingPromptPanel({ briefing }) {
   const [copyStatus, setCopyStatus] = useState('')
-  const prompt = useMemo(() => generateBriefingPrompt(briefing), [briefing])
+  const prompt = useMemo(
+    () => briefing?.admin_prompt || generateBriefingPrompt(briefing),
+    [briefing],
+  )
 
   async function copyPrompt() {
     try {
@@ -677,21 +682,217 @@ function BriefingPromptPanel({ briefing }) {
   )
 }
 
-function BriefingsAdmin({ briefings }) {
+function AdminBriefingCreator({ onCreated, onCancel, setMessage }) {
+  const [form, setForm] = useState({
+    ...emptyBriefing,
+    status: 'Manual',
+    admin_prompt: '',
+  })
+  const [busy, setBusy] = useState(false)
+
+  function update(key, value) {
+    setForm(current => ({ ...current, [key]: value }))
+  }
+
+  function fillPrompt() {
+    setForm(current => ({ ...current, admin_prompt: generateBriefingPrompt(current) }))
+  }
+
+  async function submit(event) {
+    event.preventDefault()
+    setBusy(true)
+    setMessage('')
+    try {
+      const created = await createAdminBriefing(form)
+      const finalPrompt = (form.admin_prompt?.trim() || generateBriefingPrompt(created)).replace(
+        /#----/g,
+        getOrderLabel(created),
+      )
+      const updated = await updateAdminBriefing(created.id, { admin_prompt: finalPrompt })
+      onCreated(updated || { ...created, admin_prompt: finalPrompt })
+      setMessage(`Novo briefing ${getOrderLabel(updated || created)} criado.`)
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="grid gap-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-black uppercase tracking-wider text-neon">
+            Novo briefing
+          </p>
+          <h3 className="mt-1 text-2xl font-black text-white">Criar briefing manual</h3>
+          <p className="mt-2 text-sm leading-relaxed text-ink-light">
+            Preencha os dados do cliente, gere o prompt pronto e salve para criar a ordem.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="w-fit rounded-xl border border-neon/30 px-4 py-3 text-sm font-black text-neon"
+        >
+          Cancelar
+        </button>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Nome do negócio">
+          <TextInput
+            value={form.business_name}
+            onChange={event => update('business_name', event.target.value)}
+            required
+          />
+        </Field>
+        <Field label="Responsável">
+          <TextInput
+            value={form.owner_name}
+            onChange={event => update('owner_name', event.target.value)}
+            required
+          />
+        </Field>
+        <Field label="Email do cliente">
+          <TextInput
+            type="email"
+            value={form.email}
+            onChange={event => update('email', event.target.value)}
+            required
+          />
+        </Field>
+        <Field label="WhatsApp">
+          <TextInput
+            value={form.whatsapp}
+            onChange={event => update('whatsapp', event.target.value)}
+            required
+          />
+        </Field>
+        <Field label="Cidade / região">
+          <TextInput value={form.city} onChange={event => update('city', event.target.value)} />
+        </Field>
+        <Field label="Ramo / nicho">
+          <TextInput value={form.niche} onChange={event => update('niche', event.target.value)} />
+        </Field>
+        <Field label="Plano">
+          <SelectInput
+            value={form.plan_interest}
+            onChange={event => update('plan_interest', event.target.value)}
+          >
+            <option>Página Express</option>
+            <option>Página Profissional</option>
+            <option>Turbo Vendas</option>
+          </SelectInput>
+        </Field>
+        <Field label="Tom">
+          <SelectInput value={form.tone} onChange={event => update('tone', event.target.value)}>
+            <option>Profissional e direto</option>
+            <option>Premium e elegante</option>
+            <option>Popular e próximo</option>
+            <option>Técnico e objetivo</option>
+          </SelectInput>
+        </Field>
+      </div>
+
+      <div className="grid gap-4">
+        <Field label="Objetivo principal">
+          <TextArea value={form.main_goal} onChange={event => update('main_goal', event.target.value)} />
+        </Field>
+        <Field label="Público atendido">
+          <TextArea value={form.audience} onChange={event => update('audience', event.target.value)} />
+        </Field>
+        <Field label="Serviços ou produtos">
+          <TextArea value={form.services} onChange={event => update('services', event.target.value)} />
+        </Field>
+        <Field label="Diferenciais">
+          <TextArea value={form.differentials} onChange={event => update('differentials', event.target.value)} />
+        </Field>
+        <Field label="Preços, pacotes ou condições">
+          <TextArea value={form.prices} onChange={event => update('prices', event.target.value)} />
+        </Field>
+        <Field label="Objeções comuns">
+          <TextArea value={form.objections} onChange={event => update('objections', event.target.value)} />
+        </Field>
+        <Field label="Observações internas">
+          <TextArea value={form.notes} onChange={event => update('notes', event.target.value)} />
+        </Field>
+      </div>
+
+      <section className="rounded-2xl border border-neon/20 bg-black p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-neon">
+              Prompt pronto
+            </p>
+            <p className="mt-1 text-sm text-ink-light">
+              Gere automaticamente e ajuste antes de salvar, se precisar.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={fillPrompt}
+            className="rounded-xl border border-neon/30 px-4 py-3 text-sm font-black text-neon"
+          >
+            Gerar prompt
+          </button>
+        </div>
+        <textarea
+          value={form.admin_prompt}
+          onChange={event => update('admin_prompt', event.target.value)}
+          className={`${inputClass} mt-4 min-h-72 resize-y whitespace-pre-wrap leading-relaxed`}
+          placeholder="Clique em Gerar prompt ou cole aqui um prompt pronto."
+        />
+      </section>
+
+      <button
+        type="submit"
+        disabled={busy}
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-4 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
+      >
+        {busy ? 'Salvando...' : 'Salvar novo briefing'}
+        <IconCheckCircle className="h-5 w-5" />
+      </button>
+    </form>
+  )
+}
+
+function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
   const [selectedId, setSelectedId] = useState(briefings[0]?.id || '')
+  const [creating, setCreating] = useState(false)
   const selected = briefings.find(item => item.id === selectedId) || briefings[0]
 
   useEffect(() => {
-    if (!selectedId && briefings[0]) setSelectedId(briefings[0].id)
-  }, [briefings, selectedId])
+    if (!creating && !selectedId && briefings[0]) setSelectedId(briefings[0].id)
+  }, [briefings, creating, selectedId])
+
+  function handleCreated(briefing) {
+    setBriefings(current => [briefing, ...current.filter(item => item.id !== briefing.id)])
+    setSelectedId(briefing.id)
+    setCreating(false)
+  }
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
       <div className={panelClass}>
-        <p className="text-xs font-black uppercase tracking-wider text-neon">
-          Respostas recebidas
-        </p>
-        <h2 className="mt-1 text-2xl font-black text-white">Briefings de clientes</h2>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-neon">
+              Respostas recebidas
+            </p>
+            <h2 className="mt-1 text-2xl font-black text-white">Briefings de clientes</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setCreating(true)
+              setSelectedId('')
+            }}
+            className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon-sm"
+          >
+            Novo briefing
+          </button>
+        </div>
 
         <div className="mt-5 grid gap-3">
           {briefings.length === 0 && (
@@ -707,9 +908,12 @@ function BriefingsAdmin({ briefings }) {
             <button
               key={item.id}
               type="button"
-              onClick={() => setSelectedId(item.id)}
+              onClick={() => {
+                setCreating(false)
+                setSelectedId(item.id)
+              }}
               className={`rounded-2xl border p-4 text-left transition ${
-                selected?.id === item.id
+                !creating && selected?.id === item.id
                   ? 'border-neon bg-neon/10'
                   : 'border-neon/15 bg-black/50 hover:border-neon/45'
               }`}
@@ -728,7 +932,13 @@ function BriefingsAdmin({ briefings }) {
       </div>
 
       <div className={panelClass}>
-        {!selected ? (
+        {creating ? (
+          <AdminBriefingCreator
+            onCreated={handleCreated}
+            onCancel={() => setCreating(false)}
+            setMessage={setMessage}
+          />
+        ) : !selected ? (
           <div className="flex min-h-72 items-center justify-center text-center">
             <div>
               <IconCopy className="mx-auto h-10 w-10 text-neon" />
@@ -977,7 +1187,13 @@ function AdminApp() {
               setMessage={setMessage}
             />
           )}
-          {active === 'briefings' && <BriefingsAdmin briefings={briefings} />}
+          {active === 'briefings' && (
+            <BriefingsAdmin
+              briefings={briefings}
+              setBriefings={setBriefings}
+              setMessage={setMessage}
+            />
+          )}
           {active === 'links' && <LinksPanel />}
         </div>
       </main>
