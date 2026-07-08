@@ -227,9 +227,30 @@ function getPlanPrice(planName) {
   return prices[planName] || 0
 }
 
-function isRecent(value, days) {
+function formatDateInputValue(value) {
+  const date = value ? new Date(value) : new Date()
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function startOfInputDate(value) {
+  if (!value) return null
+  const [year, month, day] = value.split('-').map(Number)
+  return new Date(year, month - 1, day, 0, 0, 0, 0)
+}
+
+function endOfInputDate(value) {
+  if (!value) return null
+  const [year, month, day] = value.split('-').map(Number)
+  return new Date(year, month - 1, day, 23, 59, 59, 999)
+}
+
+function isWithinDateRange(value, range) {
   if (!value) return false
-  return new Date(value).getTime() >= Date.now() - days * 24 * 60 * 60 * 1000
+  const time = new Date(value).getTime()
+  return time >= range.start.getTime() && time <= range.end.getTime()
 }
 
 function isSoldBriefing(briefing) {
@@ -506,38 +527,67 @@ function ActivityList({ title, items, empty }) {
 }
 
 function AdminDashboard({ briefings, analyticsEvents }) {
-  const soldBriefings = briefings.filter(isSoldBriefing)
-  const recentSoldBriefings = soldBriefings.filter(item => isRecent(item.created_at, 30))
+  const todayInput = useMemo(() => formatDateInputValue(new Date()), [])
+  const sevenDaysAgoInput = useMemo(
+    () => formatDateInputValue(Date.now() - 6 * 24 * 60 * 60 * 1000),
+    [],
+  )
+  const [rangeMode, setRangeMode] = useState('30')
+  const [customStart, setCustomStart] = useState(sevenDaysAgoInput)
+  const [customEnd, setCustomEnd] = useState(todayInput)
+
+  const range = useMemo(() => {
+    if (rangeMode === 'custom') {
+      const start = startOfInputDate(customStart) || startOfInputDate(todayInput)
+      const end = endOfInputDate(customEnd) || endOfInputDate(todayInput)
+      const normalizedStart = start <= end ? start : end
+      const normalizedEnd = start <= end ? end : start
+
+      return {
+        start: normalizedStart,
+        end: normalizedEnd,
+        label: `${formatDate(normalizedStart)} até ${formatDate(normalizedEnd)}`,
+      }
+    }
+
+    const days = Number(rangeMode)
+    return {
+      start: new Date(Date.now() - days * 24 * 60 * 60 * 1000),
+      end: new Date(),
+      label: days === 1 ? 'Último dia' : `Últimos ${days} dias`,
+    }
+  }, [customEnd, customStart, rangeMode, todayInput])
+
+  const filteredBriefings = briefings.filter(item => isWithinDateRange(item.created_at, range))
+  const filteredEvents = analyticsEvents.filter(event => isWithinDateRange(event.created_at, range))
+  const soldBriefings = filteredBriefings.filter(isSoldBriefing)
+  const allSoldBriefings = briefings.filter(isSoldBriefing)
   const pageViews = analyticsEvents.filter(event => event.event_name === 'page_view')
-  const pageViews30 = pageViews.filter(event => isRecent(event.created_at, 30))
-  const visitors30 = new Set(pageViews30.map(event => event.session_id).filter(Boolean)).size
-  const ctaClicks30 = analyticsEvents.filter(
-    event => event.event_name !== 'page_view' && isRecent(event.created_at, 30),
-  )
-  const planClicks30 = analyticsEvents.filter(
-    event => event.event_name === 'plan_click' && isRecent(event.created_at, 30),
-  )
-  const clients = new Set(briefings.map(item => item.email).filter(Boolean)).size
-  const uploads = briefings.filter(
+  const pageViewsInRange = filteredEvents.filter(event => event.event_name === 'page_view')
+  const visitors = new Set(pageViewsInRange.map(event => event.session_id).filter(Boolean)).size
+  const ctaClicks = filteredEvents.filter(event => event.event_name !== 'page_view')
+  const planClicks = filteredEvents.filter(event => event.event_name === 'plan_click')
+  const clients = new Set(filteredBriefings.map(item => item.email).filter(Boolean)).size
+  const uploads = filteredBriefings.filter(
     item => item.logo_file?.url || (Array.isArray(item.page_images) && item.page_images.length),
   ).length
   const estimatedRevenue = soldBriefings.reduce(
     (sum, item) => sum + getPlanPrice(item.plan_interest),
     0,
   )
-  const conversion = pageViews30.length
-    ? (recentSoldBriefings.length / pageViews30.length) * 100
+  const conversion = pageViewsInRange.length
+    ? (soldBriefings.length / pageViewsInRange.length) * 100
     : 0
 
   const planItems = Object.entries(countBy(soldBriefings, item => item.plan_interest))
     .map(([label, value]) => ({ label, value }))
     .sort((a, b) => b.value - a.value)
 
-  const statusItems = Object.entries(countBy(briefings, item => item.status || 'Rascunho'))
+  const statusItems = Object.entries(countBy(filteredBriefings, item => item.status || 'Rascunho'))
     .map(([label, value]) => ({ label, value }))
     .sort((a, b) => b.value - a.value)
 
-  const eventItems = analyticsEvents.slice(0, 6).map(event => ({
+  const eventItems = filteredEvents.slice(0, 6).map(event => ({
     id: event.id,
     title:
       event.event_name === 'page_view'
@@ -547,7 +597,7 @@ function AdminDashboard({ briefings, analyticsEvents }) {
     meta: formatDate(event.created_at),
   }))
 
-  const briefingItems = briefings.slice(0, 6).map(item => ({
+  const briefingItems = filteredBriefings.slice(0, 6).map(item => ({
     id: item.id,
     title: `${getOrderLabel(item)} ${item.business_name || 'Negócio sem nome'}`,
     detail: item.plan_interest || item.email || '-',
@@ -556,36 +606,89 @@ function AdminDashboard({ briefings, analyticsEvents }) {
 
   return (
     <section className="grid gap-5">
+      <section className={panelClass}>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-neon">
+              Filtro por data
+            </p>
+            <h2 className="mt-1 text-2xl font-black text-white">Métricas do período</h2>
+            <p className="mt-2 text-sm text-ink-light">{range.label}</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              ['1', '1 Dia'],
+              ['7', '7 Dias'],
+              ['15', '15 Dias'],
+              ['30', '30 Dias'],
+              ['custom', 'Personalizado'],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setRangeMode(key)}
+                className={`rounded-xl px-4 py-2.5 text-sm font-black transition ${
+                  rangeMode === key
+                    ? 'bg-neon text-black shadow-neon-sm'
+                    : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {rangeMode === 'custom' && (
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <Field label="Data inicial">
+              <TextInput
+                type="date"
+                value={customStart}
+                onChange={event => setCustomStart(event.target.value)}
+              />
+            </Field>
+            <Field label="Data final">
+              <TextInput
+                type="date"
+                value={customEnd}
+                onChange={event => setCustomEnd(event.target.value)}
+              />
+            </Field>
+          </div>
+        )}
+      </section>
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           label="Visualizações"
-          value={pageViews30.length}
+          value={pageViewsInRange.length}
           detail={`${pageViews.length} no total`}
         />
         <MetricCard
           label="Visitantes"
-          value={visitors30}
-          detail="Sessões únicas nos últimos 30 dias"
+          value={visitors}
+          detail="Sessões únicas no período"
         />
         <MetricCard
           label="Clientes"
           value={clients}
-          detail={`${briefings.length} briefings cadastrados`}
+          detail={`${filteredBriefings.length} briefings no período`}
         />
         <MetricCard
           label="Planos vendidos"
           value={soldBriefings.length}
-          detail={`${recentSoldBriefings.length} nos últimos 30 dias`}
+          detail={`${allSoldBriefings.length} no total`}
         />
         <MetricCard
           label="Cliques em CTA"
-          value={ctaClicks30.length}
-          detail={`${planClicks30.length} cliques nos planos`}
+          value={ctaClicks.length}
+          detail={`${planClicks.length} cliques nos planos`}
         />
         <MetricCard
           label="Conversão"
           value={formatPercent(conversion)}
-          detail="Pedidos sobre visualizações em 30 dias"
+          detail="Pedidos sobre visualizações no período"
         />
         <MetricCard
           label="Receita estimada"
