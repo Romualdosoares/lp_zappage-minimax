@@ -33,10 +33,10 @@ import {
 } from './components/Icons'
 
 const inputClass =
-  'w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-sm text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25'
+  'w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
 const labelClass = 'text-xs font-bold uppercase tracking-wider text-ink-light'
 const panelClass =
-  'rounded-2xl border border-neon/20 bg-[#071007] p-5 shadow-[0_0_24px_rgba(57,255,20,0.07)]'
+  'rounded-2xl border border-neon/20 bg-[#071007] p-4 shadow-[0_0_24px_rgba(57,255,20,0.07)] sm:p-5'
 
 function isAdminProfile(profile) {
   return profile?.role === 'admin' || profile?.role === 'master_admin'
@@ -312,7 +312,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
             <p className="text-sm font-bold text-neon">{admin ? 'Painel' : 'Briefing'}</p>
           </div>
         </a>
-        <h1 className="mt-8 text-4xl font-black leading-tight text-white sm:text-5xl">
+        <h1 className="mt-8 text-3xl font-black leading-tight text-white sm:text-5xl">
           {title}
         </h1>
         <p className="mt-4 text-base leading-relaxed text-ink-light">{subtitle}</p>
@@ -434,13 +434,13 @@ function AdminHeader({ active, setActive, onLogout }) {
           </div>
         </a>
 
-        <nav className="flex gap-2 overflow-x-auto">
+        <nav className="flex w-full gap-2 overflow-x-auto pb-1 sm:w-auto sm:pb-0">
           {tabs.map(([key, label]) => (
             <button
               key={key}
               type="button"
               onClick={() => setActive(key)}
-              className={`shrink-0 rounded-xl px-4 py-2 text-sm font-bold transition ${
+              className={`shrink-0 rounded-xl px-3 py-2 text-sm font-bold transition sm:px-4 ${
                 active === key
                   ? 'bg-neon text-black shadow-neon-sm'
                   : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
@@ -452,7 +452,7 @@ function AdminHeader({ active, setActive, onLogout }) {
           <button
             type="button"
             onClick={onLogout}
-            className="shrink-0 rounded-xl border border-neon/20 px-4 py-2 text-sm font-bold text-ink-light"
+            className="shrink-0 rounded-xl border border-neon/20 px-3 py-2 text-sm font-bold text-ink-light sm:px-4"
           >
             Sair
           </button>
@@ -478,7 +478,7 @@ function MetricCard({ label, value, detail }) {
   return (
     <article className="rounded-2xl border border-neon/20 bg-[#071007] p-5">
       <p className="text-xs font-black uppercase tracking-wider text-ink-dark">{label}</p>
-      <p className="mt-3 text-3xl font-black text-white">{value}</p>
+      <p className="mt-3 break-words text-2xl font-black text-white sm:text-3xl">{value}</p>
       {detail && <p className="mt-2 text-sm leading-relaxed text-ink-light">{detail}</p>}
     </article>
   )
@@ -615,7 +615,7 @@ function AdminDashboard({ briefings, analyticsEvents }) {
             <h2 className="mt-1 text-2xl font-black text-white">Métricas do período</h2>
             <p className="mt-2 text-sm text-ink-light">{range.label}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {[
               ['1', '1 Dia'],
               ['7', '7 Dias'],
@@ -627,7 +627,7 @@ function AdminDashboard({ briefings, analyticsEvents }) {
                 key={key}
                 type="button"
                 onClick={() => setRangeMode(key)}
-                className={`rounded-xl px-4 py-2.5 text-sm font-black transition ${
+                className={`rounded-xl px-3 py-2.5 text-sm font-black transition sm:px-4 ${
                   rangeMode === key
                     ? 'bg-neon text-black shadow-neon-sm'
                     : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
