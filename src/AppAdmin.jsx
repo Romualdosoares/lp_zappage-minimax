@@ -178,7 +178,7 @@ function StatusMessage({ type = 'info', children }) {
 
 function AuthBox({ title, subtitle, admin = false, onReady }) {
   const [mode, setMode] = useState('login')
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
+  const [form, setForm] = useState({ name: '', email: '', whatsapp: '', password: '' })
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -229,8 +229,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
         <p className="mt-4 text-base leading-relaxed text-ink-light">{subtitle}</p>
         {admin && (
           <div className="mt-5 rounded-2xl border border-neon/20 bg-black p-4 text-sm leading-relaxed text-ink-light">
-            Para entrar como administrador, crie/entre com um usuário autorizado.
-            O email mestre configurado é <strong className="text-white">romualdormd@hotmail.com</strong>.
+            Entre com um usuário autorizado para gerenciar serviços e acompanhar os briefings.
           </div>
         )}
       </div>
@@ -277,6 +276,18 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
               required
             />
           </Field>
+          {mode === 'register' && !admin && (
+            <Field label="WhatsApp">
+              <TextInput
+                type="tel"
+                value={form.whatsapp}
+                onChange={event => setForm({ ...form, whatsapp: event.target.value })}
+                autoComplete="tel"
+                placeholder="DDD + número"
+                required
+              />
+            </Field>
+          )}
           <Field label="Senha">
             <TextInput
               type="password"
@@ -309,7 +320,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
   )
 }
 
-function AdminHeader({ active, setActive, profile, onLogout }) {
+function AdminHeader({ active, setActive, onLogout }) {
   const tabs = [
     ['portfolio', 'Portfólio'],
     ['briefings', 'Briefings'],
@@ -329,7 +340,7 @@ function AdminHeader({ active, setActive, profile, onLogout }) {
           />
           <div className="leading-tight">
             <p className="text-lg font-black text-white">Painel Zap Page</p>
-            <p className="text-xs font-bold text-neon">{profile?.email}</p>
+            <p className="text-xs font-bold text-neon">Admin conectado</p>
           </div>
         </a>
 
@@ -852,13 +863,9 @@ function AdminApp() {
           <h1 className="mt-4 text-3xl font-black">Usuário sem acesso administrativo</h1>
           <p className="mt-3 text-sm leading-relaxed text-ink-light">
             O login funcionou, mas este usuário ainda não está marcado como administrador no
-            Supabase. Para promover o email mestre, rode no SQL Editor:
+            Supabase. Marque este usuário como administrador no painel do Supabase e verifique
+            novamente.
           </p>
-          <pre className="mt-4 overflow-auto rounded-xl border border-neon/20 bg-black p-4 text-xs text-neon">
-{`update public.profiles
-set role = 'master_admin'
-where email = 'romualdormd@hotmail.com';`}
-          </pre>
           <div className="mt-5 flex gap-3">
             <button
               type="button"
@@ -886,7 +893,7 @@ where email = 'romualdormd@hotmail.com';`}
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(57,255,20,0.18),transparent_40%),linear-gradient(rgba(57,255,20,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.035)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]"
       />
-      <AdminHeader active={active} setActive={setActive} profile={profile} onLogout={logout} />
+      <AdminHeader active={active} setActive={setActive} onLogout={logout} />
 
       <main className="container-page py-6 sm:py-10">
         <div className="grid gap-4 sm:grid-cols-3">
@@ -1184,6 +1191,7 @@ function BriefingForm({ session, onLogout }) {
     ...emptyBriefing,
     email: session.user.email,
     owner_name: session.user.user_metadata?.full_name || '',
+    whatsapp: session.user.user_metadata?.whatsapp || '',
   })
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')

@@ -100,11 +100,14 @@ async function restRequest(path, { method = 'GET', body, token, prefer } = {}) {
   return parseResponse(response)
 }
 
-export async function signUpClient({ name, email, password }) {
+export async function signUpClient({ name, email, password, whatsapp }) {
   const data = await authRequest('/signup', {
     email,
     password,
-    data: { full_name: name },
+    data: {
+      full_name: name,
+      ...(whatsapp ? { whatsapp } : {}),
+    },
   })
   if (data.access_token) saveSession(data)
   return data
