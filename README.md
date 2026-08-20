@@ -155,7 +155,6 @@ Cole isto no seu README público se quiser:
 │       ├── SpecialOfferSection.jsx
 │       ├── PricingSection.jsx
 │       ├── PlanComparisonSection.jsx
-│       ├── BonusSection.jsx
 │       ├── ObjectionsSection.jsx
 │       ├── FAQSection.jsx
 │       ├── FinalCTASection.jsx
@@ -240,7 +239,6 @@ https://wa.me/5543999999999?text=Ol%C3%A1%21%20Quero%20criar%20minha%20p%C3%A1gi
 - **`SpecialOfferSection`** — bloco destacado com glow forte e CTA.
 - **`PricingSection`** — 3 planos (Profissional em destaque).
 - **`PlanComparisonSection`** — tabela comparativa responsiva.
-- **`BonusSection`** — 5 bônus de lançamento + CTA.
 - **`ObjectionsSection`** — 5 objeções comuns com resposta.
 - **`FAQSection`** — 10 perguntas, accordion animado.
 - **`FinalCTASection`** — CTA forte final.

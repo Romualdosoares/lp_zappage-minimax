@@ -12,7 +12,6 @@ import HowItWorksSection from './components/HowItWorksSection.jsx'
 import SpecialOfferSection from './components/SpecialOfferSection.jsx'
 import PricingSection from './components/PricingSection.jsx'
 import PlanComparisonSection from './components/PlanComparisonSection.jsx'
-import BonusSection from './components/BonusSection.jsx'
 import ObjectionsSection from './components/ObjectionsSection.jsx'
 import FAQSection from './components/FAQSection.jsx'
 import FinalCTASection from './components/FinalCTASection.jsx'
@@ -89,7 +88,6 @@ export default function App() {
         <SpecialOfferSection />
         <PricingSection />
         <PlanComparisonSection />
-        <BonusSection />
         <ObjectionsSection />
         <FAQSection />
         <FinalCTASection />
