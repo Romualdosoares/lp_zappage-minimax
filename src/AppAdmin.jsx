@@ -1,15 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { siteConfig } from './siteConfig'
 import {
   createAdminBriefing,
   deleteAdminBriefing,
   deletePortfolioService,
   getAnalyticsEventsForAdmin,
+  getCrmTasksForAdmin,
   getBriefingByOrder,
+  getBriefingAssetUrl,
   getBriefingsForAdmin,
   getMyBriefing,
   getMyProfile,
   getPortfolioServices,
+  getOrdersForAdmin,
   getSession,
   getSupabaseProjectInfo,
   portfolioSeed,
@@ -32,6 +35,8 @@ import {
   IconSparkles,
   IconWhatsapp,
 } from './components/Icons'
+
+const AdminOperationsPanels = lazy(() => import('./admin/AdminOperationsPanels.jsx'))
 
 const inputClass =
   'w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
@@ -425,6 +430,9 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
 function AdminHeader({ active, setActive, onLogout }) {
   const tabs = [
     ['dashboard', 'Dashboard'],
+    ['analytics', 'Métricas'],
+    ['crm', 'CRM'],
+    ['finance', 'Financeiro'],
     ['portfolio', 'Portfólio'],
     ['briefings', 'Briefings'],
     ['links', 'Links'],
@@ -934,7 +942,16 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
 
 function AssetLinks({ logo, images }) {
   const imageList = Array.isArray(images) ? images : []
-  if (!logo?.url && imageList.length === 0) return null
+  if (!logo?.url && !logo?.path && imageList.length === 0) return null
+
+  async function openAsset(asset) {
+    try {
+      const url = await getBriefingAssetUrl(asset)
+      if (url) window.open(url, '_blank', 'noopener,noreferrer')
+    } catch {
+      window.alert('Não foi possível abrir este arquivo. Entre novamente e tente outra vez.')
+    }
+  }
 
   return (
     <section className="rounded-2xl border border-neon/15 bg-black p-4">
@@ -942,26 +959,24 @@ function AssetLinks({ logo, images }) {
         Arquivos enviados
       </p>
       <div className="mt-3 grid gap-2">
-        {logo?.url && (
-          <a
-            href={logo.url}
-            target="_blank"
-            rel="noreferrer noopener"
+        {(logo?.url || logo?.path) && (
+          <button
+            type="button"
+            onClick={() => openAsset(logo)}
             className="rounded-xl border border-neon/15 bg-[#071007] px-3 py-2 text-sm font-bold text-white hover:border-neon"
           >
             Logo: {logo.name || 'abrir arquivo'}
-          </a>
+          </button>
         )}
         {imageList.map((image, index) => (
-          <a
-            key={`${image.url}-${index}`}
-            href={image.url}
-            target="_blank"
-            rel="noreferrer noopener"
+          <button
+            key={`${image.path || image.url}-${index}`}
+            type="button"
+            onClick={() => openAsset(image)}
             className="rounded-xl border border-neon/15 bg-[#071007] px-3 py-2 text-sm font-bold text-white hover:border-neon"
           >
             Imagem {index + 1}: {image.name || 'abrir arquivo'}
-          </a>
+          </button>
         ))}
       </div>
     </section>
@@ -1231,11 +1246,19 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
   const [selectedId, setSelectedId] = useState(briefings[0]?.id || '')
   const [creating, setCreating] = useState(false)
   const [editingId, setEditingId] = useState('')
+  const [page, setPage] = useState(0)
+  const pageSize = 20
+  const pageCount = Math.max(1, Math.ceil(briefings.length / pageSize))
+  const visibleBriefings = briefings.slice(page * pageSize, (page + 1) * pageSize)
   const selected = briefings.find(item => item.id === selectedId) || briefings[0]
 
   useEffect(() => {
     if (!creating && !editingId && !selectedId && briefings[0]) setSelectedId(briefings[0].id)
   }, [briefings, creating, editingId, selectedId])
+
+  useEffect(() => {
+    if (page >= pageCount) setPage(pageCount - 1)
+  }, [page, pageCount])
 
   function handleSaved(briefing) {
     setBriefings(current => [briefing, ...current.filter(item => item.id !== briefing.id)])
@@ -1297,7 +1320,7 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
             </div>
           )}
 
-          {briefings.map(item => (
+          {visibleBriefings.map(item => (
             <button
               key={item.id}
               type="button"
@@ -1322,6 +1345,13 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
               </p>
             </button>
           ))}
+          {briefings.length > pageSize && (
+            <div className="flex items-center justify-between gap-3 pt-2 text-sm">
+              <button type="button" disabled={page === 0} onClick={() => setPage(current => current - 1)} className="rounded-lg border border-neon/20 px-3 py-2 font-bold text-neon disabled:opacity-40">Anterior</button>
+              <span className="text-ink-light">Página {page + 1} de {pageCount}</span>
+              <button type="button" disabled={page + 1 >= pageCount} onClick={() => setPage(current => current + 1)} className="rounded-lg border border-neon/20 px-3 py-2 font-bold text-neon disabled:opacity-40">Próxima</button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1489,6 +1519,8 @@ function AdminApp() {
   const [portfolio, setPortfolio] = useState([])
   const [briefings, setBriefings] = useState([])
   const [analyticsEvents, setAnalyticsEvents] = useState([])
+  const [crmTasks, setCrmTasks] = useState([])
+  const [orders, setOrders] = useState([])
 
   async function loadAdminData() {
     setLoading(true)
@@ -1498,14 +1530,18 @@ function AdminApp() {
       setProfile(currentProfile)
 
       if (isAdminProfile(currentProfile)) {
-        const [portfolioRows, briefingRows, analyticsRows] = await Promise.all([
+        const [portfolioRows, briefingRows, analyticsRows, crmTaskRows, orderRows] = await Promise.all([
           getPortfolioServices({ admin: true }),
           getBriefingsForAdmin(),
           getAnalyticsEventsForAdmin(),
+          getCrmTasksForAdmin(),
+          getOrdersForAdmin(),
         ])
         setPortfolio(portfolioRows)
         setBriefings(briefingRows)
         setAnalyticsEvents(analyticsRows)
+        setCrmTasks(crmTaskRows)
+        setOrders(orderRows)
       }
     } catch (error) {
       setMessage(error.message)
@@ -1525,6 +1561,8 @@ function AdminApp() {
     setPortfolio([])
     setBriefings([])
     setAnalyticsEvents([])
+    setCrmTasks([])
+    setOrders([])
   }
 
   if (!getSession()) {
@@ -1602,8 +1640,20 @@ function AdminApp() {
         )}
 
         <div className="mt-6">
-          {active === 'dashboard' && (
-            <AdminDashboard briefings={briefings} analyticsEvents={analyticsEvents} />
+          {(active === 'dashboard' || active === 'analytics' || active === 'crm' || active === 'finance') && (
+            <Suspense fallback={<p className="py-10 text-center font-black text-neon">Carregando módulo...</p>}>
+              <AdminOperationsPanels
+                section={active}
+                briefings={briefings}
+                setBriefings={setBriefings}
+                analyticsEvents={analyticsEvents}
+                crmTasks={crmTasks}
+                setCrmTasks={setCrmTasks}
+                orders={orders}
+                setOrders={setOrders}
+                setMessage={setMessage}
+              />
+            </Suspense>
           )}
           {active === 'portfolio' && (
             <PortfolioAdmin
