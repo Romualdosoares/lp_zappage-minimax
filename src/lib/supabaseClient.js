@@ -1,6 +1,8 @@
-const SUPABASE_REST_URL = 'https://yeqcojnwxxpffvfxoiwc.supabase.co/rest/v1'
-const SUPABASE_BASE_URL = 'https://yeqcojnwxxpffvfxoiwc.supabase.co'
+const SUPABASE_BASE_URL =
+  import.meta.env.VITE_SUPABASE_URL || 'https://yeqcojnwxxpffvfxoiwc.supabase.co'
+const SUPABASE_REST_URL = `${SUPABASE_BASE_URL}/rest/v1`
 const SUPABASE_ANON_KEY =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InllcWNvam53eHhwZmZ2ZnhvaXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MDQ2MzEsImV4cCI6MjA5OTA4MDYzMX0.m0u1v3TSRBpmxoJm5CJj71o6i7bW1_CVzvCDy4vZVmQ'
 
 const SESSION_KEY = 'zapPage.supabaseSession.v1'
@@ -204,14 +206,36 @@ export async function uploadBriefingAsset(file, folder = 'imagens') {
 
   await parseResponse(response)
 
-  return {
+  const asset = {
     name: file.name,
     size: file.size,
     type: file.type,
     path,
-    url: `${SUPABASE_BASE_URL}/storage/v1/object/public/${BRIEFING_ASSETS_BUCKET}/${path}`,
     uploaded_at: new Date().toISOString(),
   }
+  // Conveniência para a sessão atual. O caminho é a referência permanente; a URL expira.
+  asset.url = await getBriefingAssetUrl(asset)
+  return asset
+}
+
+export async function getBriefingAssetUrl(asset, expiresIn = 3600) {
+  if (!asset?.path) return asset?.url || ''
+  const session = getSession()
+  if (!session?.access_token) throw new Error('Entre novamente para acessar este arquivo.')
+  const response = await fetch(
+    `${SUPABASE_BASE_URL}/storage/v1/object/sign/${BRIEFING_ASSETS_BUCKET}/${asset.path}`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ expiresIn }),
+    },
+  )
+  const data = await parseResponse(response)
+  return data?.signedURL ? `${SUPABASE_BASE_URL}/storage/v1${data.signedURL}` : ''
 }
 
 export async function signOut() {
@@ -286,11 +310,110 @@ export async function getAnalyticsEventsForAdmin() {
   }
 }
 
+export async function getAnalyticsSummaryForAdmin({ startAt, endAt } = {}) {
+  try {
+    return await restRequest('/rpc/admin_dashboard_metrics', {
+      method: 'POST',
+      body: {
+        p_start: startAt || null,
+        p_end: endAt || null,
+      },
+    })
+  } catch {
+    return null
+  }
+}
+
+export async function getCrmTasksForAdmin() {
+  try {
+    return await restRequest('/crm_tasks?select=*&order=due_at.asc.nullslast,created_at.desc&limit=200')
+  } catch {
+    return []
+  }
+}
+
+export async function saveCrmTask(task) {
+  const payload = {
+    id: task.id,
+    briefing_id: task.briefing_id || null,
+    title: String(task.title || '').trim(),
+    description: task.description || '',
+    status: task.status || 'todo',
+    priority: task.priority || 'normal',
+    assignee: task.assignee || '',
+    due_at: task.due_at || null,
+  }
+  if (!payload.title) throw new Error('Informe o título da tarefa.')
+
+  const rows = await restRequest('/crm_tasks?on_conflict=id&select=*', {
+    method: 'POST',
+    body: payload,
+    prefer: 'resolution=merge-duplicates,return=representation',
+  })
+  return rows?.[0]
+}
+
+export async function updateCrmTask(id, fields) {
+  const rows = await restRequest(`/crm_tasks?id=eq.${id}&select=*`, {
+    method: 'PATCH',
+    body: fields,
+    prefer: 'return=representation',
+  })
+  return rows?.[0]
+}
+
+export async function getOrdersForAdmin() {
+  try {
+    return await restRequest('/orders?select=*&order=created_at.desc&limit=200')
+  } catch {
+    return []
+  }
+}
+
+export async function saveOrder(order) {
+  const amountCents = Number(order.amount_cents)
+  if (!Number.isInteger(amountCents) || amountCents < 0) {
+    throw new Error('Informe um valor válido em centavos.')
+  }
+
+  const payload = {
+    id: order.id,
+    briefing_id: order.briefing_id || null,
+    customer_name: String(order.customer_name || '').trim(),
+    customer_email: String(order.customer_email || '').trim().toLowerCase(),
+    plan_name: order.plan_name || '',
+    amount_cents: amountCents,
+    currency: order.currency || 'BRL',
+    status: order.status || 'pending',
+    provider: order.provider || 'manual',
+    external_id: order.external_id || null,
+    due_at: order.due_at || null,
+    paid_at: order.paid_at || null,
+    notes: order.notes || '',
+  }
+  if (!payload.customer_name || !payload.customer_email) {
+    throw new Error('Informe nome e email do cliente.')
+  }
+
+  const rows = await restRequest('/orders?on_conflict=id&select=*', {
+    method: 'POST',
+    body: payload,
+    prefer: 'resolution=merge-duplicates,return=representation',
+  })
+  return rows?.[0]
+}
+
 export async function trackAnalyticsEvent(eventName, payload = {}) {
   try {
+    const search = new URLSearchParams(window.location.search)
     const metadata = {
       ...(payload.metadata || {}),
       referrer: document.referrer || '',
+      utm_source: search.get('utm_source') || '',
+      utm_medium: search.get('utm_medium') || '',
+      utm_campaign: search.get('utm_campaign') || '',
+      utm_content: search.get('utm_content') || '',
+      utm_term: search.get('utm_term') || '',
       viewport:
         window.innerWidth < 768
           ? 'mobile'
@@ -299,10 +422,11 @@ export async function trackAnalyticsEvent(eventName, payload = {}) {
             : 'desktop',
     }
 
-    await restRequest('/analytics_events', {
+    await fetch('/api/analytics', {
       method: 'POST',
-      prefer: 'return=minimal',
-      body: {
+      headers: { 'Content-Type': 'application/json' },
+      keepalive: true,
+      body: JSON.stringify({
         event_name: eventName,
         source: payload.source || 'landing',
         path: payload.path || window.location.pathname,
@@ -310,7 +434,7 @@ export async function trackAnalyticsEvent(eventName, payload = {}) {
         plan_name: payload.plan_name || '',
         session_id: getAnalyticsSessionId(),
         metadata,
-      },
+      }),
     })
   } catch {
     // A página não deve falhar se o analytics ainda não estiver configurado no Supabase.

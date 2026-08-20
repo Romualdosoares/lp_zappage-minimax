@@ -12,6 +12,18 @@
   ],
   "headers": [
     {
+      "source": "/admin/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+      ]
+    },
+    {
+      "source": "/briefing",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+      ]
+    },
+    {
       "source": "/(.*)\\.(js|css|woff2?|ttf|otf|eot|svg|png|jpg|jpeg|gif|webp|avif)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }

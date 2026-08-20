@@ -11,7 +11,8 @@ export const siteConfig = {
   logoSrc: '/assets/zap-page-logo-256.png',
   shareImageSrc: '/assets/zap-page-logo-512.png',
   tagline: 'Páginas profissionais com WhatsApp para negócios locais',
-  domain: 'https://zappage.com.br',
+  // VITE_SITE_URL permite sobrescrever o domínio em ambientes de preview.
+  domain: import.meta.env.VITE_SITE_URL || 'https://www.zappagepro.com.br',
 
   // --------- Contato / WhatsApp ---------
   whatsappNumber: '5543991229181', // DDI + DDD + número

@@ -202,4 +202,17 @@ body {
   .backdrop-blur-xl {
     --tw-backdrop-blur: blur(8px);
   }
+
+  .blur-3xl,
+  .blur-2xl {
+    filter: blur(24px);
+  }
+}
+
+/* Evita renderizar seções muito abaixo da dobra até elas se aproximarem da viewport. */
+@supports (content-visibility: auto) {
+  #top > section:not(:first-child) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 760px;
+  }
 }
