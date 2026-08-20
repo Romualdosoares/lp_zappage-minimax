@@ -10,26 +10,26 @@ const STEPS = [
   {
     num: '01',
     icon: IconCheckCircle,
-    title: 'Escolha seu plano',
-    text: 'Você escolhe entre Express, Profissional ou Turbo Vendas.',
+    title: 'Chame no WhatsApp',
+    text: 'Conte seu segmento e como pretende divulgar. Assim indicamos o plano mais adequado.',
   },
   {
     num: '02',
     icon: IconDevice,
-    title: 'Envie suas informações',
-    text: 'Nome do negócio, WhatsApp, cidade, serviços, fotos, logo e principais diferenciais.',
+    title: 'Confirme o plano',
+    text: 'Você confere o que está incluído e confirma os próximos passos antes de iniciar.',
   },
   {
     num: '03',
     icon: IconRocket,
-    title: 'Nós criamos sua página',
-    text: 'Organizamos as informações em uma página bonita, clara e otimizada para celular.',
+    title: 'Confirme o pagamento e o briefing',
+    text: 'Com o pagamento confirmado, você recebe o briefing para enviar nome, serviços, fotos, logo e diferenciais.',
   },
   {
     num: '04',
     icon: IconCheckCircle,
-    title: 'Você revisa e aprova',
-    text: 'Ajustamos os detalhes necessários para deixar a página alinhada ao seu negócio.',
+    title: 'Nós criamos e você revisa',
+    text: 'Entregamos sua página de 3 a 5 dias após a confirmação do pagamento. Você tem até 3 revisões incluídas.',
   },
   {
     num: '05',
@@ -61,8 +61,8 @@ export default function HowItWorksSection() {
             <span className="text-gradient-neon">na prática</span>
           </h2>
           <p className="mt-5 text-base text-ink-light sm:text-lg">
-            Um processo simples para você sair do improviso e começar a
-            divulgar um link profissional.
+            Do primeiro contato à publicação, você sabe qual é o próximo passo
+            e quando enviar cada informação.
           </p>
         </div>
 
@@ -102,7 +102,7 @@ export default function HowItWorksSection() {
         {/* Selo final */}
         <div className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3 rounded-full border border-neon/30 bg-bg-primary px-5 py-3 text-sm font-medium text-ink-light">
           <IconWhatsapp className="h-5 w-5 text-neon" />
-          Pronto. No fim, você tem um link profissional para divulgar.
+          No fim, você recebe um link profissional pronto para divulgar.
         </div>
       </div>
     </section>

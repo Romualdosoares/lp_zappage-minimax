@@ -70,11 +70,11 @@ export default function DeliverablesSection() {
             className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
           >
             O que sua página{' '}
-            <span className="text-gradient-neon">pode ter</span>
+            <span className="text-gradient-neon">pode incluir</span>
           </h2>
           <p className="mt-5 text-base text-ink-light sm:text-lg">
-            Montamos uma estrutura simples, estratégica e pronta para
-            transformar visitantes em conversas no WhatsApp.
+            Cada plano reúne os elementos certos para explicar sua oferta,
+            transmitir confiança e direcionar visitantes ao WhatsApp.
           </p>
         </div>
 
@@ -104,8 +104,8 @@ export default function DeliverablesSection() {
         {/* Subtítulo extra com confiança */}
         <div className="mt-14 flex items-center justify-center gap-2 text-sm text-ink-light">
           <IconChart className="h-5 w-5 text-neon" />
-          Tudo organizado para você divulgar um link e começar a receber
-          clientes.
+          Os itens incluídos variam conforme o plano escolhido. Confira os
+          detalhes antes de contratar.
         </div>
       </div>
     </section>

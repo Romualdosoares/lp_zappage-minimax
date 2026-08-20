@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { siteConfig, buildWhatsappUrl } from '../siteConfig'
+import { siteConfig, buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import { IconMenu, IconClose, IconBolt } from './Icons'
 
 const NAV = [
@@ -14,11 +14,23 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16)
+    const onScroll = () => {
+      const next = window.scrollY > 16
+      setScrolled(current => (current === next ? current : next))
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    if (!open) return undefined
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [open])
 
   return (
     <header
@@ -70,12 +82,13 @@ export default function Header() {
         {/* CTA desktop */}
         <div className="hidden items-center gap-3 lg:flex">
           <a
-            href={buildWhatsappUrl('Quero começar agora')}
+            href={buildWhatsappUrl(whatsappMessages.recommendation)}
             target="_blank"
             rel="noreferrer noopener"
+            data-cta-location="header"
             className="btn-primary px-5 py-2.5 text-sm"
           >
-            Começar agora
+            Receber recomendação
             <IconBolt className="h-4 w-4" />
           </a>
         </div>
@@ -86,7 +99,7 @@ export default function Header() {
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Fechar menu' : 'Abrir menu'}
           aria-expanded={open}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-neon/30 text-neon lg:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-neon/30 text-neon lg:hidden"
         >
           {open ? <IconClose /> : <IconMenu />}
         </button>
@@ -108,13 +121,14 @@ export default function Header() {
             </a>
           ))}
           <a
-            href={buildWhatsappUrl('Quero começar agora')}
+            href={buildWhatsappUrl(whatsappMessages.recommendation)}
             target="_blank"
             rel="noreferrer noopener"
             onClick={() => setOpen(false)}
+            data-cta-location="mobile-menu"
             className="btn-primary mt-3 justify-center"
           >
-            Começar agora
+            Receber recomendação
             <IconBolt className="h-4 w-4" />
           </a>
         </nav>

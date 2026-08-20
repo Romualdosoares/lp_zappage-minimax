@@ -195,17 +195,35 @@ body {
 /* =============== MOBILE PERFORMANCE =============== */
 @media (max-width: 640px) {
   .animate-float,
-  .animate-pulse-glow {
+  .animate-pulse-glow,
+  .animate-ping {
     animation: none !important;
   }
 
   .backdrop-blur-xl {
-    --tw-backdrop-blur: blur(8px);
+    --tw-backdrop-blur: blur(0px);
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   .blur-3xl,
   .blur-2xl {
-    filter: blur(24px);
+    filter: none;
+    opacity: 0.35;
+  }
+
+  .shadow-neon,
+  .shadow-neon-sm,
+  .shadow-neon-strong {
+    box-shadow: 0 0 12px rgba(57, 255, 20, 0.2);
+  }
+
+  .bg-futuristic-dense {
+    background-image: radial-gradient(
+      ellipse 90% 45% at 50% 0%,
+      rgba(57, 255, 20, 0.08),
+      transparent 70%
+    );
   }
 }
 

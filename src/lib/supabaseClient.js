@@ -8,6 +8,7 @@ const SUPABASE_ANON_KEY =
 const SESSION_KEY = 'zapPage.supabaseSession.v1'
 const ANALYTICS_SESSION_KEY = 'zapPage.analyticsSession.v1'
 const BRIEFING_ASSETS_BUCKET = 'briefing-assets'
+const TESTIMONIAL_ASSETS_BUCKET = 'testimonial-assets'
 const CLIENT_BRIEFING_COLUMNS = [
   'id',
   'order_number',
@@ -238,6 +239,36 @@ export async function getBriefingAssetUrl(asset, expiresIn = 3600) {
   return data?.signedURL ? `${SUPABASE_BASE_URL}/storage/v1${data.signedURL}` : ''
 }
 
+export async function uploadTestimonialPhoto(file) {
+  const session = getSession()
+  if (!session?.access_token || !session?.user?.id) throw new Error('Sessão inválida.')
+  if (!file?.type?.startsWith('image/')) throw new Error('Selecione uma imagem válida.')
+  if (file.size > 5 * 1024 * 1024) throw new Error('A foto deve ter no máximo 5 MB.')
+
+  const safeName = sanitizeFileName(file.name) || 'depoimento.jpg'
+  const path = `autorizados/${session.user.id}/${Date.now()}-${safeName}`
+  const response = await fetch(
+    `${SUPABASE_BASE_URL}/storage/v1/object/${TESTIMONIAL_ASSETS_BUCKET}/${path}`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': file.type,
+        'x-upsert': 'true',
+      },
+      body: file,
+    },
+  )
+
+  await parseResponse(response)
+  return {
+    name: file.name,
+    path,
+    url: `${SUPABASE_BASE_URL}/storage/v1/object/public/${TESTIMONIAL_ASSETS_BUCKET}/${path}`,
+  }
+}
+
 export async function signOut() {
   const session = getSession()
   if (session?.access_token) {
@@ -296,6 +327,51 @@ export async function savePortfolioService(item) {
 
 export async function deletePortfolioService(id) {
   await restRequest(`/portfolio_services?id=eq.${id}`, { method: 'DELETE' })
+}
+
+export async function getTestimonials({ admin = false } = {}) {
+  try {
+    const filter = admin ? '' : '&is_published=eq.true'
+    return await restRequest(
+      `/testimonials?select=*&order=featured.desc,created_at.desc${filter}`,
+    )
+  } catch {
+    return []
+  }
+}
+
+export async function saveTestimonial(item) {
+  const payload = {
+    id: item.id,
+    client_name: String(item.client_name || '').trim(),
+    business_type: String(item.business_type || '').trim(),
+    location: String(item.location || '').trim(),
+    quote: String(item.quote || '').trim(),
+    rating: Number(item.rating || 5),
+    photo_url: String(item.photo_url || '').trim(),
+    photo_path: String(item.photo_path || '').trim(),
+    is_published: Boolean(item.is_published),
+    featured: Boolean(item.featured),
+    consented_at: item.consented_at || new Date().toISOString(),
+  }
+
+  if (!payload.client_name || !payload.business_type || !payload.quote || !payload.photo_url) {
+    throw new Error('Preencha nome, segmento, depoimento e foto autorizada.')
+  }
+  if (!Number.isInteger(payload.rating) || payload.rating < 1 || payload.rating > 5) {
+    throw new Error('A nota deve estar entre 1 e 5.')
+  }
+
+  const rows = await restRequest('/testimonials?on_conflict=id&select=*', {
+    method: 'POST',
+    body: payload,
+    prefer: 'resolution=merge-duplicates,return=representation',
+  })
+  return rows?.[0]
+}
+
+export async function deleteTestimonial(id) {
+  await restRequest(`/testimonials?id=eq.${id}`, { method: 'DELETE' })
 }
 
 export async function getBriefingsForAdmin() {

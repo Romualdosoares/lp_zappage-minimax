@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { buildWhatsappUrl } from '../siteConfig'
+import { buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import { IconWhatsapp, IconClose } from './Icons'
 
 export default function StickyWhatsAppButton() {
@@ -25,7 +25,7 @@ export default function StickyWhatsAppButton() {
           aria-label="Fechar lembrete de WhatsApp"
         >
           <span className="h-2 w-2 animate-pulse rounded-full bg-neon" />
-          Fale com a gente
+          Receba uma recomendação
           <span className="text-ink-light hover:text-white">
             <IconClose className="h-4 w-4" />
           </span>
@@ -34,9 +34,10 @@ export default function StickyWhatsAppButton() {
 
       {/* Botão flutuante */}
       <a
-        href={buildWhatsappUrl()}
+        href={buildWhatsappUrl(whatsappMessages.general)}
         target="_blank"
         rel="noreferrer noopener"
+        data-cta-location="desktop-sticky"
         aria-label="Abrir conversa no WhatsApp"
         className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-neon px-4 py-3 text-bg-primary shadow-neon-strong transition-all duration-300 hover:-translate-y-0.5 hover:shadow-neon sm:px-5 sm:py-3.5"
       >
@@ -47,7 +48,7 @@ export default function StickyWhatsAppButton() {
         />
         <IconWhatsapp className="h-5 w-5 sm:h-6 sm:w-6" />
         <span className="hidden text-sm font-extrabold sm:inline">
-          Falar no WhatsApp
+          Receber orientação
         </span>
         {/* Mobile: ícone + wordmark */}
         <span className="text-[11px] font-extrabold uppercase tracking-wide sm:hidden">

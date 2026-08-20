@@ -1,4 +1,4 @@
-import { siteConfig, buildWhatsappUrl } from '../siteConfig'
+import { siteConfig, buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import {
   IconArrowRight,
   IconCheckCircle,
@@ -16,7 +16,7 @@ const PLANS = [
     price: siteConfig.planExpress.price,
     description: siteConfig.planExpress.description,
     highlight: false,
-    microcopy: 'Melhor para começar rápido.',
+    microcopy: 'Para validar sua presença digital com uma estrutura essencial.',
     items: [
       'Página profissional simples',
       'Botão direto para WhatsApp',
@@ -26,8 +26,9 @@ const PLANS = [
       'Otimizada para celular',
       'Link pronto para divulgar',
       'Suporte técnico inicial',
+      '3 revisões incluídas',
     ],
-    cta: 'Começar com Express',
+    cta: 'Confirmar o Express',
   },
   {
     key: 'professional',
@@ -36,7 +37,7 @@ const PLANS = [
     price: siteConfig.planProfessional.price,
     description: siteConfig.planProfessional.description,
     highlight: true,
-    microcopy: 'Recomendado para a maioria dos negócios locais.',
+    microcopy: 'A escolha mais completa para a maioria dos negócios locais.',
     items: [
       'Página profissional completa',
       'Apresentação do negócio',
@@ -48,10 +49,11 @@ const PLANS = [
       'Otimizada para celular',
       'Link pronto para Instagram e anúncios',
       'Suporte técnico',
+      '3 revisões incluídas',
       'Suporte comercial guiado por 30 dias',
       'Orientação passo a passo para divulgação',
     ],
-    cta: 'Quero o plano mais vendido',
+    cta: 'Confirmar o Profissional',
   },
   {
     key: 'turbo',
@@ -60,7 +62,7 @@ const PLANS = [
     price: siteConfig.planTurbo.price,
     description: siteConfig.planTurbo.description,
     highlight: false,
-    microcopy: 'Mais completo para quem quer anunciar.',
+    microcopy: 'Para quem quer uma página preparada para divulgar em campanhas.',
     items: [
       'Tudo do plano Profissional',
       'Página com estrutura mais persuasiva',
@@ -71,10 +73,11 @@ const PLANS = [
       'Direcionamento inicial para campanha',
       'Estrutura premium para tráfego pago',
       'Suporte técnico',
+      '3 revisões incluídas',
       'Suporte comercial guiado por 30 dias',
       'Acompanhamento passo a passo',
     ],
-    cta: 'Quero o Turbo Vendas',
+    cta: 'Confirmar o Turbo',
   },
 ]
 
@@ -148,11 +151,10 @@ function PlanCard({ plan, popular }) {
       {/* CTA */}
       <div className="mt-7 pt-2">
         <a
-          href={buildWhatsappUrl(
-            `Botão clicado: ${plan.cta}\nPlano escolhido: ${plan.name}\nValor exibido: ${plan.price}`,
-          )}
+          href={buildWhatsappUrl(whatsappMessages.plan(plan.name, plan.price))}
           data-analytics-event="plan_click"
           data-plan-name={plan.name}
+          data-cta-location="pricing"
           target="_blank"
           rel="noreferrer noopener"
           className={popular ? 'btn-primary w-full animate-pulse-glow' : 'btn-secondary w-full'}
@@ -205,12 +207,13 @@ export default function PricingSection() {
             id="pricing-title"
             className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
           >
-            Escolha o plano{' '}
-            <span className="text-gradient-neon">ideal</span> para seu momento
+            Escolha a estrutura certa para{' '}
+            <span className="text-gradient-neon">vender com mais clareza</span>
           </h2>
           <p className="mt-5 text-base text-ink-light sm:text-lg">
-            Comece com uma página simples ou escolha uma estrutura mais
-            completa para divulgar com mais força.
+            Veja o que cada plano entrega, escolha o que faz sentido para seu
+            negócio e confirme tudo pelo WhatsApp antes de iniciar. A entrega
+            acontece de 3 a 5 dias após a confirmação do pagamento.
           </p>
         </div>
 
@@ -225,8 +228,9 @@ export default function PricingSection() {
         </div>
 
         <p className="mt-10 text-center text-xs text-ink-light">
-          * Valores e prazos podem ser ajustados na conversa de atendimento
-          conforme o escopo do projeto.
+          * Os valores acima valem para os itens descritos em cada plano. Se
+          você precisar de algo fora desse escopo, a opção é apresentada e
+          aprovada antes de qualquer alteração.
         </p>
       </div>
     </section>

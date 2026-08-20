@@ -3,6 +3,7 @@ import { IconCheckCircle, IconClose } from './Icons'
 const FEATURES = [
   { name: 'Página profissional', express: true, professional: true, turbo: true },
   { name: 'Botão de WhatsApp', express: true, professional: true, turbo: true },
+  { name: 'Revisões incluídas', express: '3 revisões', professional: '3 revisões', turbo: '3 revisões' },
   { name: 'Seção de serviços', express: 'Básico', professional: true, turbo: true },
   { name: 'Copy persuasiva', express: false, professional: true, turbo: 'Aprimorada' },
   { name: 'Suporte técnico', express: true, professional: true, turbo: true },
@@ -32,6 +33,22 @@ function Value({ v }) {
   )
 }
 
+const MOBILE_GUIDE = [
+  {
+    name: 'Express',
+    text: 'Para começar com uma presença digital essencial.',
+  },
+  {
+    name: 'Profissional',
+    text: 'Para apresentar serviços, diferenciais e direcionar mais conversas.',
+    featured: true,
+  },
+  {
+    name: 'Turbo Vendas',
+    text: 'Para quem também pretende divulgar a página em campanhas.',
+  },
+]
+
 export default function PlanComparisonSection() {
   return (
     <section
@@ -52,10 +69,39 @@ export default function PlanComparisonSection() {
             Qual plano{' '}
             <span className="text-gradient-neon">escolher?</span>
           </h2>
+          <p className="mt-4 text-base text-ink-light sm:text-lg">
+            Encontre a opção pelo seu objetivo. Os detalhes e o escopo ficam
+            visíveis antes de você confirmar pelo WhatsApp.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-10 grid max-w-xl gap-3 md:hidden">
+          {MOBILE_GUIDE.map(plan => (
+            <a
+              key={plan.name}
+              href="#planos"
+              data-cta-location="mobile-plan-guide"
+              className={`rounded-2xl border p-5 text-left transition-colors ${
+                plan.featured
+                  ? 'border-neon/60 bg-neon/10 shadow-neon-sm'
+                  : 'border-neon/20 bg-bg-card'
+              }`}
+            >
+              <p className={plan.featured ? 'font-extrabold text-neon' : 'font-bold text-white'}>
+                {plan.name}{plan.featured ? ' — recomendado' : ''}
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-ink-light">
+                {plan.text}
+              </p>
+              <span className="mt-3 inline-block text-xs font-bold text-neon">
+                Ver este plano
+              </span>
+            </a>
+          ))}
         </div>
 
         {/* Tabela */}
-        <div className="mx-auto mt-12 max-w-5xl overflow-x-auto">
+        <div className="mx-auto mt-12 hidden max-w-5xl overflow-x-auto md:block">
           <table className="w-full min-w-[640px] border-separate border-spacing-0 overflow-hidden rounded-2xl border border-neon/20">
             <thead className="bg-bg-card">
               <tr>
@@ -100,7 +146,7 @@ export default function PlanComparisonSection() {
         </div>
 
         {/* Recomendação */}
-        <div className="mx-auto mt-12 max-w-3xl space-y-4 rounded-2xl border border-neon/30 bg-bg-card p-6">
+        <div className="mx-auto mt-12 hidden max-w-3xl space-y-4 rounded-2xl border border-neon/30 bg-bg-card p-6 md:block">
           <h3 className="text-base font-bold text-white">Recomendação rápida:</h3>
           <p className="text-sm leading-relaxed text-ink-light">
             Se você quer <strong className="text-white">apenas começar</strong>,

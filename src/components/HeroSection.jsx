@@ -1,10 +1,9 @@
-import { siteConfig, buildWhatsappUrl } from '../siteConfig'
+import { siteConfig, buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import {
   IconArrowRight,
   IconBolt,
   IconCheckCircle,
   IconWhatsapp,
-  IconStar,
   IconDevice,
 } from './Icons'
 
@@ -49,12 +48,9 @@ function MockupPhone() {
                 <p className="text-[9px] text-ink-light">
                   Cortes modernos · Atendimento agora
                 </p>
-                <div className="mt-2 flex items-center gap-1 text-[9px] text-neon">
-                  {[...Array(5)].map((_, i) => (
-                    <IconStar key={i} className="h-2.5 w-2.5" />
-                  ))}
-                  <span className="ml-1 text-ink-light">4.9 · 280+</span>
-                </div>
+                <p className="mt-2 text-[9px] font-semibold text-neon">
+                  Informações claras em um só link
+                </p>
               </div>
             </div>
 
@@ -91,24 +87,20 @@ function MockupPhone() {
               ))}
             </div>
 
-            {/* Avaliação */}
+            {/* Informação de contato */}
             <div className="flex items-center gap-2 rounded-lg border border-neon/20 bg-bg-card px-3 py-2">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <IconStar key={i} className="h-2.5 w-2.5 text-neon" />
-                ))}
-              </div>
               <p className="text-[9px] text-ink-light">
-                <span className="font-bold text-white">+280 clientes</span>{' '}
-                avaliaram
+                <span className="font-bold text-white">Botão de WhatsApp</span>{' '}
+                pronto para conversar
               </p>
             </div>
 
             {/* CTA WhatsApp */}
             <a
-              href={buildWhatsappUrl('Quero agendar')}
+              href={buildWhatsappUrl(whatsappMessages.general)}
               target="_blank"
               rel="noreferrer noopener"
+              data-cta-location="hero-preview"
               className="flex items-center justify-center gap-1.5 rounded-lg bg-neon py-3 text-[11px] font-extrabold text-bg-primary shadow-neon-sm animate-pulse-glow"
             >
               <IconWhatsapp className="h-4 w-4" />
@@ -182,7 +174,6 @@ function MockupLaptop() {
 export default function HeroSection() {
   return (
     <section
-      id="top"
       className="relative overflow-hidden bg-futuristic-dense pt-10 sm:pt-16 lg:pt-24"
     >
       {/* Radial glow superior */}
@@ -221,35 +212,35 @@ export default function HeroSection() {
             </span>
 
             <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.6rem]">
-              Pare de perder clientes por{' '}
+              Transforme seu WhatsApp em uma{' '}
               <span className="text-gradient-neon text-glow">
-                não ter uma página profissional.
+                vitrine profissional que gera pedidos.
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-light">
-              Criamos uma página bonita, rápida e otimizada para celular para
-              apresentar seu negócio, mostrar seus serviços e levar o cliente{' '}
+              Criamos uma página rápida e feita para celular que apresenta seu
+              negócio, explica seus serviços e leva o cliente{' '}
               <strong className="font-semibold text-white">
-                direto para uma conversa no WhatsApp
+                para uma conversa de compra no WhatsApp
               </strong>
               .
             </p>
 
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-light/90">
-              Você divulga um único link. O cliente acessa, entende o que você
-              oferece e chama você com um clique.
+              Você divulga um único link. O cliente entende sua oferta, ganha
+              confiança e chama você com um clique.
             </p>
 
             {/* Bullets */}
             <ul className="mt-7 grid gap-2 sm:grid-cols-2">
               {[
-                'Página profissional pronta para divulgar',
-                'Botão direto para o WhatsApp do seu negócio',
-                'Visual moderno para passar mais confiança',
-                'Ideal para Instagram, anúncios e cartão digital',
+                'Estrutura profissional pronta para divulgar',
+                'Botões diretos para o WhatsApp do seu negócio',
+                'Oferta e diferenciais explicados com clareza',
+                'Ideal para Instagram, anúncios e link da bio',
                 'Planos a partir de R$197',
-                'Suporte guiado nos planos principais',
+                'Você confirma o plano antes de iniciar',
               ].map(b => (
                 <li
                   key={b}
@@ -264,15 +255,16 @@ export default function HeroSection() {
             {/* CTAs */}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                href={buildWhatsappUrl('Quero minha página profissional')}
+                href={buildWhatsappUrl(whatsappMessages.recommendation)}
                 target="_blank"
                 rel="noreferrer noopener"
+                data-cta-location="hero"
                 className="btn-primary animate-pulse-glow"
               >
-                Quero minha página profissional
+                Quero meu plano recomendado
                 <IconWhatsapp className="h-5 w-5" />
               </a>
-              <a href="#planos" className="btn-secondary">
+              <a href="#planos" data-cta-location="hero-plans" className="btn-secondary">
                 Ver planos e preços
                 <IconArrowRight className="h-4 w-4" />
               </a>
@@ -280,8 +272,8 @@ export default function HeroSection() {
 
             <p className="mt-4 text-xs text-ink-dark">
               <IconBolt className="mb-0.5 mr-1 inline h-3.5 w-3.5 text-neon" />
-              Sem complicação. Você envia as informações e nós montamos a
-              estrutura.
+              No WhatsApp, você confirma o plano ideal e os próximos passos
+              antes de iniciar.
             </p>
           </div>
 
@@ -297,20 +289,14 @@ export default function HeroSection() {
               <MockupPhone />
             </div>
 
-            {/* Card flutuante de avaliação */}
+            {/* Card flutuante de benefício */}
             <div className="absolute left-2 top-2 hidden rounded-xl border border-neon/30 bg-bg-card/90 p-3 shadow-neon-sm backdrop-blur-xl sm:block lg:left-4 lg:top-4">
-              <div className="flex items-center gap-2">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <IconStar key={i} className="h-3 w-3 text-neon" />
-                  ))}
-                </div>
-                <span className="text-[10px] font-bold text-white">4.9</span>
-              </div>
-              <p className="mt-1 text-[10px] font-semibold text-white">
-                +280 avaliações
+              <p className="text-[10px] font-semibold text-white">
+                Oferta mais clara
               </p>
-              <p className="text-[9px] text-ink-light">Clientes satisfeitos</p>
+              <p className="mt-1 text-[9px] text-ink-light">
+                Menos dúvidas no atendimento
+              </p>
             </div>
 
             {/* Card flutuante WhatsApp */}

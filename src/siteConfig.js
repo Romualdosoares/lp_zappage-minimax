@@ -17,7 +17,7 @@ export const siteConfig = {
   // --------- Contato / WhatsApp ---------
   whatsappNumber: '5543991229181', // DDI + DDD + número
   whatsappMessage:
-    'Olá! Quero criar minha página profissional com WhatsApp.',
+    'Olá! Vim pela Zap Page e quero uma página profissional para o meu negócio.',
 
   // --------- Planos ---------
   planExpress: {
@@ -48,10 +48,21 @@ export const siteConfig = {
   // --------- FAQ – respostas dinâmicas (se preferir customizar) ---------
   faqCustomAnswers: {
     mensalidade:
-      'Não há mensalidade no valor da criação. Caso exista custo de domínio, hospedagem ou manutenção futura, isso será combinado separadamente.',
+      'A publicação pode ser feita gratuitamente pela Vercel, em um endereço padrão. Se você quiser um domínio próprio e hospedagem personalizada, essa contratação pode ser feita à parte.',
     prazo:
-      'O prazo depende do plano e da fila de produção. Após recebermos todas as informações, informamos o prazo exato de entrega.',
+      'A entrega acontece de 3 a 5 dias após a confirmação do pagamento.',
   },
+}
+
+// Mensagens curtas que dão contexto ao atendimento sem fingir que o lead já
+// informou dados que ainda precisa preencher.
+export const whatsappMessages = {
+  recommendation:
+    'Meu negócio é: [segmento]\nQuero usar a página para: [Instagram, anúncios, link da bio ou outro]\nPode me recomendar o plano ideal e confirmar os próximos passos?',
+  general:
+    'Meu negócio é: [segmento]\nQuero entender qual plano é mais indicado para mim.',
+  plan: (planName, price) =>
+    `Quero confirmar o ${planName} (${price}).\nMeu negócio é: [segmento]\nVou usar a página em: [canal]\nPode me confirmar os próximos passos?`,
 }
 
 // ----------------------------

@@ -4,6 +4,7 @@ import {
   createAdminBriefing,
   deleteAdminBriefing,
   deletePortfolioService,
+  deleteTestimonial,
   getAnalyticsEventsForAdmin,
   getCrmTasksForAdmin,
   getBriefingByOrder,
@@ -15,14 +16,17 @@ import {
   getOrdersForAdmin,
   getSession,
   getSupabaseProjectInfo,
+  getTestimonials,
   portfolioSeed,
   saveMyBriefing,
   savePortfolioService,
+  saveTestimonial,
   signIn,
   signOut,
   signUpClient,
   updateAdminBriefing,
   uploadBriefingAsset,
+  uploadTestimonialPhoto,
 } from './lib/supabaseClient'
 import {
   IconArrowLeft,
@@ -33,6 +37,7 @@ import {
   IconLink,
   IconShield,
   IconSparkles,
+  IconStar,
   IconWhatsapp,
 } from './components/Icons'
 
@@ -433,6 +438,7 @@ function AdminHeader({ active, setActive, onLogout }) {
     ['analytics', 'Métricas'],
     ['crm', 'CRM'],
     ['finance', 'Financeiro'],
+    ['testimonials', 'Avaliações'],
     ['portfolio', 'Portfólio'],
     ['briefings', 'Briefings'],
     ['links', 'Links'],
@@ -740,6 +746,285 @@ function AdminDashboard({ briefings, analyticsEvents }) {
           empty="Nenhum evento registrado ainda."
         />
       </div>
+    </section>
+  )
+}
+
+function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
+  const emptyForm = () => ({
+    id: uid('testimonial'),
+    client_name: '',
+    business_type: '',
+    location: '',
+    quote: '',
+    rating: 5,
+    photo_url: '',
+    photo_path: '',
+    is_published: false,
+    featured: false,
+    consented_at: '',
+    consentConfirmed: false,
+  })
+  const [editingId, setEditingId] = useState(null)
+  const [form, setForm] = useState(emptyForm)
+  const [uploading, setUploading] = useState(false)
+
+  function resetForm() {
+    setEditingId(null)
+    setForm(emptyForm())
+  }
+
+  function editItem(item) {
+    setEditingId(item.id)
+    setForm({ ...item, consentConfirmed: Boolean(item.consented_at) })
+  }
+
+  async function uploadPhoto(event) {
+    const file = event.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    setMessage('')
+    try {
+      const asset = await uploadTestimonialPhoto(file)
+      setForm(current => ({ ...current, photo_url: asset.url, photo_path: asset.path }))
+      setMessage('Foto autorizada enviada.')
+    } catch (error) {
+      setMessage(error.message)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  async function saveItem(event) {
+    event.preventDefault()
+    if (!form.consentConfirmed) {
+      setMessage('Confirme a autorização do cliente antes de salvar.')
+      return
+    }
+
+    try {
+      const saved = await saveTestimonial({
+        ...form,
+        consented_at: form.consented_at || new Date().toISOString(),
+      })
+      const next = testimonials.some(item => item.id === saved.id)
+        ? testimonials.map(item => (item.id === saved.id ? saved : item))
+        : [saved, ...testimonials]
+      setTestimonials(next)
+      setEditingId(saved.id)
+      setForm({ ...saved, consentConfirmed: true })
+      setMessage('Avaliação salva no Supabase.')
+    } catch (error) {
+      setMessage(error.message)
+    }
+  }
+
+  async function removeItem(item) {
+    if (!window.confirm(`Remover a avaliação de ${item.client_name}?`)) return
+    try {
+      await deleteTestimonial(item.id)
+      setTestimonials(testimonials.filter(current => current.id !== item.id))
+      if (editingId === item.id) resetForm()
+      setMessage('Avaliação removida.')
+    } catch (error) {
+      setMessage(error.message)
+    }
+  }
+
+  return (
+    <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+      <div className={panelClass}>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-neon">
+              Prova social autorizada
+            </p>
+            <h2 className="mt-1 text-2xl font-black text-white">Avaliações de clientes</h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-light">
+              Publique somente avaliações e fotos autorizadas pelo cliente.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={resetForm}
+            className="shrink-0 rounded-xl bg-neon px-4 py-2 text-sm font-black text-black"
+          >
+            Nova
+          </button>
+        </div>
+
+        <div className="mt-5 grid gap-3">
+          {testimonials.length === 0 && (
+            <p className="rounded-xl border border-neon/15 bg-black/50 p-4 text-sm text-ink-light">
+              Nenhuma avaliação cadastrada ainda.
+            </p>
+          )}
+          {testimonials.map(item => (
+            <article
+              key={item.id}
+              className={`rounded-2xl border p-4 transition ${
+                editingId === item.id
+                  ? 'border-neon bg-neon/10'
+                  : 'border-neon/15 bg-black/50 hover:border-neon/45'
+              }`}
+            >
+              <div className="flex gap-3">
+                <img
+                  src={item.photo_url}
+                  alt={`Foto de ${item.client_name}`}
+                  className="h-14 w-14 shrink-0 rounded-full border border-neon/30 object-cover"
+                />
+                <div className="min-w-0">
+                  <p className="font-black text-white">{item.client_name}</p>
+                  <p className="mt-1 text-sm text-ink-light">
+                    {item.business_type}{item.location ? ` · ${item.location}` : ''}
+                  </p>
+                  <div className="mt-2 flex gap-0.5 text-neon" aria-label={`${item.rating} de 5 estrelas`}>
+                    {Array.from({ length: item.rating || 0 }, (_, index) => (
+                      <IconStar key={index} className="h-3.5 w-3.5" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-ink-light">“{item.quote}”</p>
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${item.is_published ? 'bg-neon/15 text-neon' : 'bg-white/5 text-ink-light'}`}>
+                  {item.is_published ? 'Publicado' : 'Rascunho'}
+                </span>
+                {item.featured && <span className="rounded-full bg-neon px-2.5 py-1 text-[10px] font-black uppercase text-black">Destaque</span>}
+                <button
+                  type="button"
+                  onClick={() => editItem(item)}
+                  className="ml-auto rounded-lg border border-neon/30 px-3 py-2 text-xs font-bold text-neon"
+                >
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeItem(item)}
+                  className="rounded-lg border border-red-400/30 px-3 py-2 text-xs font-bold text-red-200"
+                >
+                  Remover
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <form onSubmit={saveItem} className={panelClass}>
+        <p className="text-xs font-black uppercase tracking-wider text-neon">
+          {editingId ? 'Editar avaliação' : 'Nova avaliação autorizada'}
+        </p>
+        <h3 className="mt-1 text-2xl font-black text-white">Dados do depoimento</h3>
+        <p className="mt-2 text-sm leading-relaxed text-ink-light">
+          A foto será usada publicamente somente se esta avaliação for marcada como publicada.
+        </p>
+
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <Field label="Nome do cliente">
+            <TextInput
+              value={form.client_name}
+              onChange={event => setForm({ ...form, client_name: event.target.value })}
+              required
+            />
+          </Field>
+          <Field label="Segmento / negócio">
+            <TextInput
+              value={form.business_type}
+              onChange={event => setForm({ ...form, business_type: event.target.value })}
+              placeholder="Ex.: Clínica de estética"
+              required
+            />
+          </Field>
+          <Field label="Cidade (opcional)">
+            <TextInput
+              value={form.location || ''}
+              onChange={event => setForm({ ...form, location: event.target.value })}
+            />
+          </Field>
+          <Field label="Nota">
+            <SelectInput
+              value={form.rating}
+              onChange={event => setForm({ ...form, rating: Number(event.target.value) })}
+            >
+              {[5, 4, 3, 2, 1].map(value => <option key={value} value={value}>{value} estrelas</option>)}
+            </SelectInput>
+          </Field>
+        </div>
+
+        <div className="mt-4">
+          <Field label="Foto autorizada do cliente">
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={uploadPhoto}
+              disabled={uploading}
+              className="block w-full rounded-xl border border-dashed border-neon/30 bg-black px-3 py-3 text-sm text-ink-light file:mr-3 file:rounded-lg file:border-0 file:bg-neon file:px-3 file:py-2 file:text-xs file:font-black file:text-black"
+              required={!form.photo_url}
+            />
+          </Field>
+          {uploading && <p className="mt-2 text-xs font-bold text-neon">Enviando foto...</p>}
+          {form.photo_url && (
+            <div className="mt-3 flex items-center gap-3 rounded-xl border border-neon/20 bg-black p-3">
+              <img src={form.photo_url} alt="Prévia da foto do cliente" className="h-14 w-14 rounded-full object-cover" />
+              <p className="text-sm font-bold text-white">Foto pronta para o depoimento.</p>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-4">
+          <Field label="Depoimento autorizado">
+            <TextArea
+              value={form.quote}
+              onChange={event => setForm({ ...form, quote: event.target.value })}
+              placeholder="Registre as palavras do cliente sem alterar o sentido."
+              maxLength={600}
+              required
+            />
+          </Field>
+        </div>
+
+        <div className="mt-5 grid gap-3 rounded-xl border border-neon/20 bg-black p-4 text-sm">
+          <label className="flex items-start gap-3 text-ink-light">
+            <input
+              type="checkbox"
+              checked={form.consentConfirmed}
+              onChange={event => setForm({ ...form, consentConfirmed: event.target.checked })}
+              className="mt-1 h-4 w-4 accent-[#39ff14]"
+              required
+            />
+            <span>Confirmo que o cliente autorizou o uso público do texto, nome, segmento e foto.</span>
+          </label>
+          <label className="flex items-center gap-3 text-ink-light">
+            <input
+              type="checkbox"
+              checked={Boolean(form.is_published)}
+              onChange={event => setForm({ ...form, is_published: event.target.checked })}
+              className="h-4 w-4 accent-[#39ff14]"
+            />
+            Publicar esta avaliação na landing page
+          </label>
+          <label className="flex items-center gap-3 text-ink-light">
+            <input
+              type="checkbox"
+              checked={Boolean(form.featured)}
+              onChange={event => setForm({ ...form, featured: event.target.checked })}
+              className="h-4 w-4 accent-[#39ff14]"
+            />
+            Destacar no topo da lista
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          disabled={uploading}
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-4 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
+        >
+          {editingId ? 'Salvar alterações' : 'Salvar avaliação'}
+          <IconCheckCircle className="h-5 w-5" />
+        </button>
+      </form>
     </section>
   )
 }
@@ -1517,6 +1802,7 @@ function AdminApp() {
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [portfolio, setPortfolio] = useState([])
+  const [testimonials, setTestimonials] = useState([])
   const [briefings, setBriefings] = useState([])
   const [analyticsEvents, setAnalyticsEvents] = useState([])
   const [crmTasks, setCrmTasks] = useState([])
@@ -1530,14 +1816,16 @@ function AdminApp() {
       setProfile(currentProfile)
 
       if (isAdminProfile(currentProfile)) {
-        const [portfolioRows, briefingRows, analyticsRows, crmTaskRows, orderRows] = await Promise.all([
+        const [portfolioRows, testimonialRows, briefingRows, analyticsRows, crmTaskRows, orderRows] = await Promise.all([
           getPortfolioServices({ admin: true }),
+          getTestimonials({ admin: true }),
           getBriefingsForAdmin(),
           getAnalyticsEventsForAdmin(),
           getCrmTasksForAdmin(),
           getOrdersForAdmin(),
         ])
         setPortfolio(portfolioRows)
+        setTestimonials(testimonialRows)
         setBriefings(briefingRows)
         setAnalyticsEvents(analyticsRows)
         setCrmTasks(crmTaskRows)
@@ -1559,6 +1847,7 @@ function AdminApp() {
     await signOut()
     setProfile(null)
     setPortfolio([])
+    setTestimonials([])
     setBriefings([])
     setAnalyticsEvents([])
     setCrmTasks([])
@@ -1625,15 +1914,16 @@ function AdminApp() {
       <AdminHeader active={active} setActive={setActive} onLogout={logout} />
 
       <main className="container-page py-6 sm:py-10">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard icon={IconSparkles} label="Itens no portfólio" value={portfolio.length} />
+          <StatCard icon={IconStar} label="Avaliações autorizadas" value={testimonials.length} />
           <StatCard icon={IconCopy} label="Briefings recebidos" value={briefings.length} />
           <StatCard icon={IconShield} label="Eventos registrados" value={analyticsEvents.length} />
         </div>
 
         {message && (
           <div className="mt-5">
-            <StatusMessage type={message.includes('salvo') || message.includes('removido') ? 'info' : 'error'}>
+            <StatusMessage type={message.includes('salv') || message.includes('removid') || message.includes('enviada') ? 'info' : 'error'}>
               {message}
             </StatusMessage>
           </div>
@@ -1659,6 +1949,13 @@ function AdminApp() {
             <PortfolioAdmin
               portfolio={portfolio}
               setPortfolio={setPortfolio}
+              setMessage={setMessage}
+            />
+          )}
+          {active === 'testimonials' && (
+            <TestimonialAdmin
+              testimonials={testimonials}
+              setTestimonials={setTestimonials}
               setMessage={setMessage}
             />
           )}

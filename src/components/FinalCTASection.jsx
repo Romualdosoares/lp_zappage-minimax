@@ -1,4 +1,4 @@
-import { buildWhatsappUrl } from '../siteConfig'
+import { buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import {
   IconArrowRight,
   IconCheckCircle,
@@ -7,11 +7,11 @@ import {
 } from './Icons'
 
 const BULLETS = [
-  'Página pronta para divulgar',
-  'Visual profissional',
-  'Botão direto para WhatsApp',
+  'Um link para concentrar sua oferta',
+  'Mais clareza para o cliente decidir',
+  'Botões diretos para o seu WhatsApp',
   'Planos a partir de R$197',
-  'Suporte guiado nos planos principais',
+  'Entrega de 3 a 5 dias e 3 revisões incluídas',
 ]
 
 export default function FinalCTASection() {
@@ -44,15 +44,15 @@ export default function FinalCTASection() {
                 id="final-cta-title"
                 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.7rem]"
               >
-                Seu negócio merece uma apresentação{' '}
+                Pare de explicar tudo em mensagens{' '}
                 <span className="text-gradient-neon text-glow">
-                  mais profissional.
+                  soltas no WhatsApp.
                 </span>
               </h2>
               <p className="mt-5 text-base text-ink-light sm:text-lg">
-                Pare de depender de mensagens soltas e links improvisados.
-                Tenha uma página clara, bonita e pronta para levar clientes
-                direto ao seu WhatsApp.
+                Dê ao cliente uma página clara para entender sua oferta,
+                ganhar confiança e chegar ao seu WhatsApp mais preparado para
+                contratar.
               </p>
 
               <ul className="mt-6 grid gap-2 sm:grid-cols-2">
@@ -71,15 +71,16 @@ export default function FinalCTASection() {
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
-                  href={buildWhatsappUrl('Quero minha página agora')}
+                  href={buildWhatsappUrl(whatsappMessages.recommendation)}
                   target="_blank"
                   rel="noreferrer noopener"
+                  data-cta-location="final-cta"
                   className="btn-primary animate-pulse-glow"
                 >
                   <IconWhatsapp className="h-5 w-5" />
-                  Quero minha página agora
+                  Quero confirmar meu plano
                 </a>
-                <a href="#planos" className="btn-secondary">
+                <a href="#planos" data-cta-location="final-plans" className="btn-secondary">
                   Comparar planos
                   <IconArrowRight className="h-4 w-4" />
                 </a>
@@ -87,8 +88,8 @@ export default function FinalCTASection() {
 
               <p className="mt-4 inline-flex items-center gap-1.5 text-xs text-ink-light">
                 <IconRocket className="h-4 w-4 text-neon" />
-                Escolha o plano, envie suas informações e comece a divulgar com
-                mais profissionalismo.
+                Você confirma o plano no WhatsApp. Após o pagamento, recebe o
+                briefing e sua página é entregue em 3 a 5 dias.
               </p>
             </div>
 
@@ -102,15 +103,17 @@ export default function FinalCTASection() {
                   Atendimento pelo WhatsApp
                 </h3>
                 <p className="mt-2 text-sm text-ink-light">
-                  Toque no botão, converse com a gente e comece hoje.
+                  Conte seu segmento, confirme o plano e receba a orientação
+                  para iniciar seu projeto.
                 </p>
                 <a
-                  href={buildWhatsappUrl()}
+                  href={buildWhatsappUrl(whatsappMessages.general)}
                   target="_blank"
                   rel="noreferrer noopener"
+                  data-cta-location="final-whatsapp-card"
                   className="btn-primary mt-5 w-full"
                 >
-                  Falar no WhatsApp agora
+                  Receber orientação no WhatsApp
                   <IconWhatsapp className="h-5 w-5" />
                 </a>
               </div>

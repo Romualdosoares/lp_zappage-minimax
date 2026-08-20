@@ -32,16 +32,28 @@ const FAQS = [
     a: siteConfig.faqCustomAnswers.mensalidade,
   },
   {
+    q: 'O domínio próprio está incluso?',
+    a: 'A página pode ser publicada gratuitamente pela Vercel em um endereço padrão. Caso você queira domínio próprio e hospedagem personalizada, essa opção pode ser contratada à parte.',
+  },
+  {
     q: 'Quanto tempo demora para ficar pronta?',
     a: siteConfig.faqCustomAnswers.prazo,
+  },
+  {
+    q: 'Quantas revisões estão incluídas?',
+    a: 'Todos os planos incluem até 3 revisões para ajustar os detalhes da página ao seu negócio.',
+  },
+  {
+    q: 'O que acontece quando eu chamo no WhatsApp?',
+    a: 'Você informa seu segmento e objetivo. Confirmamos o plano, o escopo e os próximos passos. Depois da confirmação do pagamento, enviamos o acesso ao briefing.',
   },
   {
     q: 'Tem garantia de vendas?',
     a: 'Não prometemos vendas garantidas. Os resultados dependem do seu mercado, oferta, atendimento, divulgação e tráfego. A página ajuda a melhorar sua apresentação e facilitar o contato.',
   },
   {
-    q: 'Como funciona depois da compra?',
-    a: 'Depois da compra, você envia as informações do negócio, como nome, WhatsApp, cidade, serviços, fotos, logo e diferenciais. Depois criamos a página conforme o plano escolhido.',
+    q: 'O que preciso enviar no briefing?',
+    a: 'Você envia as informações do negócio, como nome, WhatsApp, cidade, serviços, fotos, logo e diferenciais. Depois criamos a página conforme o plano escolhido.',
   },
 ]
 

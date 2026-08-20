@@ -22,8 +22,8 @@ const ITEMS = [
     a: 'Você não precisa mexer com nada técnico. Você envia as informações e nós criamos a página.',
   },
   {
-    q: '“Isso garante vendas?”',
-    a: 'Não. Nenhuma página garante vendas sozinha. O objetivo é melhorar sua apresentação, facilitar o contato e apoiar sua divulgação.',
+    q: '“Não sei qual plano escolher.”',
+    a: 'Conte seu segmento e objetivo no WhatsApp. Indicamos a estrutura mais adequada e você confere o escopo antes de contratar.',
   },
 ]
 

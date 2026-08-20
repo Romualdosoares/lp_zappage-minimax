@@ -5,6 +5,7 @@ import HeroSection from './components/HeroSection.jsx'
 import TrustStrip from './components/TrustStrip.jsx'
 import ProblemSection from './components/ProblemSection.jsx'
 import TransformationSection from './components/TransformationSection.jsx'
+import TestimonialsSection from './components/TestimonialsSection.jsx'
 import DeliverablesSection from './components/DeliverablesSection.jsx'
 import SupportSection from './components/SupportSection.jsx'
 import NichesSection from './components/NichesSection.jsx'
@@ -31,13 +32,14 @@ export default function App() {
       const href = link.getAttribute('href') || ''
       const label = link.textContent?.replace(/\s+/g, ' ').trim().slice(0, 90) || 'CTA'
       const planName = link.dataset.planName || ''
+      const ctaLocation = link.dataset.ctaLocation || ''
       const explicitEvent = link.dataset.analyticsEvent
 
       if (explicitEvent) {
         trackAnalyticsEvent(explicitEvent, {
           label,
           plan_name: planName,
-          metadata: { href },
+          metadata: { href, cta_location: ctaLocation },
         })
         return
       }
@@ -46,17 +48,17 @@ export default function App() {
         trackAnalyticsEvent('whatsapp_click', {
           label,
           plan_name: planName,
-          metadata: { href },
+          metadata: { href, cta_location: ctaLocation },
         })
       } else if (href === '#planos') {
         trackAnalyticsEvent('cta_click', {
           label,
-          metadata: { href, target: 'planos' },
+          metadata: { href, target: 'planos', cta_location: ctaLocation },
         })
       } else if (href && href !== '#' && !href.startsWith('#')) {
         trackAnalyticsEvent('outbound_click', {
           label,
-          metadata: { href },
+          metadata: { href, cta_location: ctaLocation },
         })
       }
     }
@@ -81,13 +83,14 @@ export default function App() {
         <TrustStrip />
         <ProblemSection />
         <TransformationSection />
+        <TestimonialsSection />
         <DeliverablesSection />
-        <SupportSection />
-        <NichesSection />
-        <HowItWorksSection />
-        <SpecialOfferSection />
         <PricingSection />
         <PlanComparisonSection />
+        <SpecialOfferSection />
+        <HowItWorksSection />
+        <SupportSection />
+        <NichesSection />
         <ObjectionsSection />
         <FAQSection />
         <FinalCTASection />

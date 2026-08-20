@@ -1,4 +1,4 @@
-import { buildWhatsappUrl } from '../siteConfig'
+import { buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import {
   IconArrowRight,
   IconBolt,
@@ -8,9 +8,9 @@ import {
 } from './Icons'
 
 const BULLETS = [
-  'Vagas limitadas por capacidade de produção',
-  'Preço especial de lançamento',
-  'Atendimento guiado nos planos principais',
+  'Planos objetivos, com entregáveis descritos antes da contratação',
+  'Atendimento pelo WhatsApp para indicar a melhor estrutura',
+  'Entrega de 3 a 5 dias e 3 revisões incluídas',
 ]
 
 export default function SpecialOfferSection() {
@@ -35,24 +35,24 @@ export default function SpecialOfferSection() {
           <div className="relative grid items-center gap-8 lg:grid-cols-5">
             <div className="lg:col-span-3">
               <span className="badge-neon mb-4 border-neon/70 bg-neon/15 text-neon text-glow-sm">
-                <IconSparkles className="h-3.5 w-3.5" /> Oferta de lançamento
+                <IconSparkles className="h-3.5 w-3.5" /> Escolha com segurança
               </span>
               <h2
                 id="offer-title"
                 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
               >
-                Condição especial{' '}
+                Decida seu plano com{' '}
                 <span className="text-gradient-neon text-glow">
-                  de lançamento.
+                  clareza antes de iniciar.
                 </span>
               </h2>
               <p className="mt-5 max-w-2xl text-base text-ink-light sm:text-lg">
-                Estamos liberando páginas profissionais com WhatsApp{' '}
+                Você não precisa adivinhar qual opção faz sentido. Conte sobre
+                seu negócio no WhatsApp e confirme a estrutura mais adequada{' '}
                 <strong className="font-bold text-white">
-                  a partir de R$197
+                  antes de seguir para o briefing e produção
                 </strong>{' '}
-                para negócios locais que querem melhorar sua presença digital
-                sem complicação.
+                e produção da página.
               </p>
 
               <ul className="mt-6 space-y-3">
@@ -74,7 +74,7 @@ export default function SpecialOfferSection() {
             <div className="lg:col-span-2">
               <div className="rounded-2xl border border-neon/40 bg-bg-primary/70 p-6 backdrop-blur-xl">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-neon">
-                  <IconBolt className="h-4 w-4" /> Vagas abertas
+                  <IconBolt className="h-4 w-4" /> Planos a partir de
                 </div>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="text-4xl font-extrabold text-white">
@@ -83,20 +83,22 @@ export default function SpecialOfferSection() {
                   <span className="text-sm text-ink-light">/a partir de</span>
                 </div>
                 <p className="mt-3 text-sm text-ink-light">
-                  Comece hoje e receba a página pronta para divulgar.
+                  Informe seu segmento e objetivo. Após a confirmação do
+                  pagamento, sua página é entregue de 3 a 5 dias.
                 </p>
                 <a
-                  href={buildWhatsappUrl('Quero garantir minha página')}
+                  href={buildWhatsappUrl(whatsappMessages.recommendation)}
                   target="_blank"
                   rel="noreferrer noopener"
+                  data-cta-location="decision-guide"
                   className="btn-primary mt-5 w-full animate-pulse-glow"
                 >
-                  Garantir minha página agora
+                  Receber recomendação
                   <IconArrowRight className="h-5 w-5" />
                 </a>
                 <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-light">
                   <IconShield className="h-3.5 w-3.5 text-neon" />
-                  Sem fidelidade. Suporte humano e direto.
+                  A conversa não inicia a contratação automaticamente.
                 </p>
               </div>
             </div>
