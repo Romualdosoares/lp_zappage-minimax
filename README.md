@@ -6,13 +6,13 @@ Landing page premium, mobile-first e otimizada para conversão, feita em **React
 
 Após publicar este código, execute a migração `supabase/migrations/20260819_operational_dashboard.sql` uma única vez no SQL Editor do Supabase. Ela cria o pipeline de CRM, tarefas, pedidos, eventos de pagamento, métricas agregadas e torna privado o bucket de arquivos dos briefings.
 
-Na Vercel, cadastre as variáveis mostradas em `.env.example` para Production e Preview. `SUPABASE_SERVICE_ROLE_KEY` e `PAYMENT_WEBHOOK_SECRET` devem existir somente no servidor, sem o prefixo `VITE_`.
+Na Vercel, cadastre as variáveis mostradas em `.env.example` para Production e Preview. `SUPABASE_SERVICE_ROLE_KEY` deve existir somente no servidor, sem o prefixo `VITE_`.
 
 - Configure `VITE_SITE_URL` e `SITE_URL` como `https://www.zappagepro.com.br`.
-- Configure no provedor de pagamento o webhook `https://www.zappagepro.com.br/api/payment-webhook` e envie `x-zappage-signature` como HMAC SHA-256 do corpo bruto, usando `PAYMENT_WEBHOOK_SECRET`.
-- Crie pedidos com o mesmo `provider` e `external_id` enviados pelo gateway. O webhook atualiza o status sem expor chave administrativa no navegador.
+- O painel Financeiro é interno: registre pedidos, pagamentos, pendências e reembolsos manualmente.
+- Clientes têm acesso somente ao briefing; CRM, métricas e financeiro exigem perfil administrativo.
 
-Até configurar essas variáveis, o site permanece funcional, mas a coleta protegida de analytics e os webhooks responderão sem gravar dados.
+Até configurar as variáveis, o site permanece funcional, mas a coleta protegida de analytics não gravará dados.
 
 ---
 
@@ -177,9 +177,9 @@ Abra **`src/siteConfig.js`**. **Tudo que muda com frequência está lá:**
 | `tagline` | Subtítulo da marca |
 | `whatsappNumber` | Número para gerar `wa.me/...` (formato: DDI + DDD + número, tudo junto) |
 | `whatsappMessage` | Mensagem padrão pré-preenchida no WhatsApp |
-| `planExpress.price` / `.checkoutUrl` | Preço e link de checkout do Express |
-| `planProfessional.price` / `.checkoutUrl` | Preço e link de checkout do Profissional |
-| `planTurbo.price` / `.checkoutUrl` | Preço e link de checkout do Turbo |
+| `planExpress.price` | Preço do plano Express |
+| `planProfessional.price` | Preço do plano Profissional |
+| `planTurbo.price` | Preço do plano Turbo |
 | `faqCustomAnswers.mensalidade` | Resposta da FAQ "Tem mensalidade?" |
 | `faqCustomAnswers.prazo` | Resposta da FAQ "Quanto tempo demora?" |
 | `copyright` | Texto do rodapé |
@@ -255,7 +255,7 @@ https://wa.me/5543999999999?text=Ol%C3%A1%21%20Quero%20criar%20minha%20p%C3%A1gi
 | Quero… | Onde mexer |
 |--------|------------|
 | Trocar preços | `siteConfig.js` → `plan*.price` |
-| Trocar checkout | `siteConfig.js` → `plan*.checkoutUrl` |
+| Alterar preço dos planos | `siteConfig.js` → `plan*.price` |
 | Trocar número do WhatsApp | `siteConfig.js` → `whatsappNumber` |
 | Trocar a marca | `siteConfig.js` → `brandName` + `<title>` no `index.html` |
 | Trocar FAQ | `siteConfig.js` → `faqCustomAnswers` |

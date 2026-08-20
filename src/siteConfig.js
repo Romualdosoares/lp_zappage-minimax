@@ -1,7 +1,7 @@
 // =============================================================
 //  Zap Page - Configuração global editável
 //  Centralize aqui TODAS as informações que mudam com frequência:
-//  preços, links de checkout, número do WhatsApp, mensagens,
+//  preços, número do WhatsApp, mensagens,
 //  marca, contatos e copy principal.
 // =============================================================
 
@@ -26,7 +26,6 @@ export const siteConfig = {
     price: 'R$197',
     description:
       'Para quem precisa de uma página simples, bonita e direta para começar a divulgar.',
-    checkoutUrl: '#',
   },
   planProfessional: {
     name: 'Página Profissional',
@@ -34,7 +33,6 @@ export const siteConfig = {
     price: 'R$297',
     description:
       'Para quem quer uma página mais completa, com textos persuasivos e orientação para usar a estrutura da forma correta.',
-    checkoutUrl: '#',
   },
   planTurbo: {
     name: 'Turbo Vendas',
@@ -42,7 +40,6 @@ export const siteConfig = {
     price: 'R$497',
     description:
       'Para quem quer página, copy, criativos e orientação inicial para divulgar com mais força.',
-    checkoutUrl: '#',
   },
 
   // --------- Rodapé / institucional ---------
@@ -68,10 +65,4 @@ export function buildWhatsappUrl(extraMessage = '') {
       : siteConfig.whatsappMessage,
   )
   return `${base}?text=${message}`
-}
-
-export const checkoutLinks = {
-  express: siteConfig.planExpress.checkoutUrl,
-  professional: siteConfig.planProfessional.checkoutUrl,
-  turbo: siteConfig.planTurbo.checkoutUrl,
 }
