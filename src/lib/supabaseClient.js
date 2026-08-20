@@ -385,8 +385,6 @@ export async function saveOrder(order) {
     amount_cents: amountCents,
     currency: order.currency || 'BRL',
     status: order.status || 'pending',
-    provider: order.provider || 'manual',
-    external_id: order.external_id || null,
     due_at: order.due_at || null,
     paid_at: order.paid_at || null,
     notes: order.notes || '',

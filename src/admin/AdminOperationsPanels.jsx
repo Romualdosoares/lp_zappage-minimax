@@ -91,7 +91,6 @@ function AnalyticsPanel({ dashboard, analyticsEvents, briefings, orders }) {
   const visitors = new Set(events.map(event => event.session_id).filter(Boolean)).size
   const planClicks = eventCount(events, 'plan_click')
   const whatsapp = eventCount(events, 'whatsapp_click')
-  const checkout = eventCount(events, 'checkout_started')
   const paid = orders.filter(order => order.status === 'paid' && new Date(order.paid_at || order.created_at) >= start).length
   const utms = events.reduce((all, event) => {
     const source = event.metadata?.utm_source || event.metadata?.referrer || 'Direto'
@@ -129,10 +128,10 @@ function AnalyticsPanel({ dashboard, analyticsEvents, briefings, orders }) {
       </div>
       <section className={panelClass}>
         <p className="text-xs font-black uppercase tracking-wider text-neon">Funil comercial</p>
-        <div className="mt-5 grid gap-3 sm:grid-cols-5">
-          {[['Visitas', views], ['Planos', planClicks], ['WhatsApp', whatsapp], ['Checkout', checkout], ['Pagos', paid]].map(([label, value], index) => <div key={label} className="rounded-xl border border-neon/15 bg-black p-4"><p className="text-xs font-bold text-ink-light">{index + 1}. {label}</p><p className="mt-2 text-2xl font-black text-white">{value}</p></div>)}
+        <div className="mt-5 grid gap-3 sm:grid-cols-4">
+          {[['Visitas', views], ['Planos', planClicks], ['WhatsApp', whatsapp], ['Pagos', paid]].map(([label, value], index) => <div key={label} className="rounded-xl border border-neon/15 bg-black p-4"><p className="text-xs font-bold text-ink-light">{index + 1}. {label}</p><p className="mt-2 text-2xl font-black text-white">{value}</p></div>)}
         </div>
-        <p className="mt-4 text-xs text-ink-dark">O checkout e os pagamentos passam a entrar no funil após configurar o webhook do provedor.</p>
+        <p className="mt-4 text-xs text-ink-dark">Os pagamentos são registrados manualmente pela equipe no painel Financeiro.</p>
       </section>
       {dashboard && <p className="text-xs text-ink-dark">Resumo agregado fornecido pelo Supabase quando a migração estiver aplicada.</p>}
     </section>
@@ -191,7 +190,7 @@ function CrmPanel({ briefings, setBriefings, crmTasks, setCrmTasks, setMessage }
 }
 
 function FinancePanel({ orders, setOrders, briefings, setMessage }) {
-  const [form, setForm] = useState({ customer_name: '', customer_email: '', plan_name: 'Página Express', amount: '197', status: 'pending', provider: 'manual', due_at: '' })
+  const [form, setForm] = useState({ customer_name: '', customer_email: '', plan_name: 'Página Express', amount: '197', status: 'pending', due_at: '' })
   const received = orders.filter(order => order.status === 'paid').reduce((sum, order) => sum + Number(order.amount_cents || 0), 0)
   const pending = orders.filter(order => ['pending', 'overdue'].includes(order.status)).reduce((sum, order) => sum + Number(order.amount_cents || 0), 0)
   const overdue = orders.filter(order => order.status === 'overdue' || (order.status === 'pending' && order.due_at && new Date(order.due_at) < new Date()))
@@ -202,7 +201,7 @@ function FinancePanel({ orders, setOrders, briefings, setMessage }) {
       const amount = Math.round(Number(String(form.amount).replace(',', '.')) * 100)
       const saved = await saveOrder({ ...form, amount_cents: amount, paid_at: form.status === 'paid' ? new Date().toISOString() : null })
       setOrders(current => [saved, ...current.filter(item => item.id !== saved.id)])
-      setForm({ customer_name: '', customer_email: '', plan_name: 'Página Express', amount: '197', status: 'pending', provider: 'manual', due_at: '' })
+      setForm({ customer_name: '', customer_email: '', plan_name: 'Página Express', amount: '197', status: 'pending', due_at: '' })
       setMessage('Pedido financeiro criado.')
     } catch (error) { setMessage(error.message) }
   }
@@ -213,7 +212,7 @@ function FinancePanel({ orders, setOrders, briefings, setMessage }) {
       <div className="grid gap-4 sm:grid-cols-3"><Card label="Recebido" value={currency(received)} detail="Pedidos pagos" /><Card label="A receber" value={currency(pending)} detail="Pendentes e vencidos" /><Card label="Inadimplência" value={currency(overdue.reduce((sum, order) => sum + Number(order.amount_cents || 0), 0))} detail={`${overdue.length} cobrança(s)`} /></div>
       <div className="grid gap-5 lg:grid-cols-2">
         <form onSubmit={submit} className={panelClass}><p className="text-xs font-black uppercase tracking-wider text-neon">Lançamento manual</p><div className="mt-4 grid gap-3"><input className={inputClass} required placeholder="Nome do cliente" value={form.customer_name} onChange={event => setForm({ ...form, customer_name: event.target.value })} /><input className={inputClass} required type="email" placeholder="Email" value={form.customer_email} onChange={event => setForm({ ...form, customer_email: event.target.value })} /><div className="grid grid-cols-2 gap-3"><select className={inputClass} value={form.plan_name} onChange={event => setForm({ ...form, plan_name: event.target.value })}>{['Página Express', 'Página Profissional', 'Turbo Vendas'].map(plan => <option key={plan}>{plan}</option>)}</select><input className={inputClass} inputMode="decimal" placeholder="Valor (R$)" value={form.amount} onChange={event => setForm({ ...form, amount: event.target.value })} /></div><div className="grid grid-cols-2 gap-3"><select className={inputClass} value={form.status} onChange={event => setForm({ ...form, status: event.target.value })}><option value="pending">Pendente</option><option value="paid">Pago</option><option value="overdue">Vencido</option><option value="refunded">Reembolsado</option></select><input className={inputClass} type="date" value={form.due_at} onChange={event => setForm({ ...form, due_at: event.target.value })} /></div><button className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black">Salvar pedido</button></div></form>
-        <section className={panelClass}><p className="text-xs font-black uppercase tracking-wider text-neon">Integração de pagamentos</p><p className="mt-3 text-sm leading-relaxed text-ink-light">O endpoint <code>/api/payment-webhook</code> recebe atualizações assinadas do gateway e atualiza o status com credenciais somente de servidor.</p><p className="mt-3 text-sm text-ink-light">Antes de ativar, configure <code>SUPABASE_SERVICE_ROLE_KEY</code>, <code>PAYMENT_WEBHOOK_SECRET</code> e os links reais de checkout na Vercel.</p><p className="mt-3 text-xs text-ink-dark">{briefings.length} briefing(s) podem ser associados aos pedidos pela API ou automação do checkout.</p></section>
+        <section className={panelClass}><p className="text-xs font-black uppercase tracking-wider text-neon">Controle interno</p><p className="mt-3 text-sm leading-relaxed text-ink-light">Registre manualmente os pedidos e altere seus status conforme o recebimento, cancelamento ou reembolso. Nenhum checkout, gateway ou webhook é exposto aos clientes.</p><p className="mt-3 text-xs text-ink-dark">{briefings.length} briefing(s) ficam disponíveis para acompanhamento interno pela equipe.</p></section>
       </div>
       <section className={panelClass}><div className="flex items-center justify-between"><p className="text-xs font-black uppercase tracking-wider text-neon">Pedidos recentes</p><button type="button" onClick={() => downloadCsv(orders, 'zap-page-financeiro.csv')} className="text-sm font-black text-neon">Exportar CSV</button></div><div className="mt-4 grid gap-3">{orders.slice(0, 12).map(order => <div key={order.id} className="flex flex-col gap-1 rounded-xl border border-neon/15 bg-black p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-bold text-white">{order.customer_name} · {order.plan_name}</p><p className="text-xs text-ink-light">{order.customer_email} · {dateLabel(order.created_at)}</p></div><div className="text-left sm:text-right"><p className="font-black text-neon">{currency(order.amount_cents)}</p><p className="text-xs text-ink-light">{order.status}</p></div></div>)}{!orders.length && <p className="text-sm text-ink-light">Nenhum lançamento financeiro ainda.</p>}</div></section>
     </section>

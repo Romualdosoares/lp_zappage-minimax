@@ -35,28 +35,14 @@ create table if not exists public.orders (
   amount_cents integer not null check (amount_cents >= 0),
   currency text not null default 'BRL' check (currency = 'BRL'),
   status text not null default 'pending' check (status in ('pending', 'paid', 'overdue', 'cancelled', 'refunded', 'failed')),
-  provider text not null default 'manual',
-  external_id text,
   due_at timestamptz,
   paid_at timestamptz,
   notes text not null default '',
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  unique(provider, external_id)
+  updated_at timestamptz not null default now()
 );
 create index if not exists orders_status_created_at_idx on public.orders(status, created_at desc);
 create index if not exists orders_customer_email_idx on public.orders(customer_email);
-
-create table if not exists public.payment_events (
-  id uuid primary key default gen_random_uuid(),
-  order_id uuid references public.orders(id) on delete cascade,
-  provider text not null,
-  external_event_id text,
-  event_type text not null,
-  payload jsonb not null default '{}'::jsonb,
-  received_at timestamptz not null default now(),
-  unique(provider, external_event_id)
-);
 
 drop trigger if exists crm_tasks_touch_updated_at on public.crm_tasks;
 create trigger crm_tasks_touch_updated_at before update on public.crm_tasks
@@ -67,7 +53,6 @@ for each row execute function public.touch_updated_at();
 
 alter table public.crm_tasks enable row level security;
 alter table public.orders enable row level security;
-alter table public.payment_events enable row level security;
 
 drop policy if exists "crm_tasks_admin_all" on public.crm_tasks;
 create policy "crm_tasks_admin_all" on public.crm_tasks for all
@@ -75,9 +60,6 @@ using (public.is_admin()) with check (public.is_admin());
 drop policy if exists "orders_admin_all" on public.orders;
 create policy "orders_admin_all" on public.orders for all
 using (public.is_admin()) with check (public.is_admin());
-drop policy if exists "payment_events_admin_select" on public.payment_events;
-create policy "payment_events_admin_select" on public.payment_events for select
-using (public.is_admin());
 
 -- Eventos públicos passam pelo endpoint /api/analytics, onde há validação e limitação.
 drop policy if exists "analytics_public_insert" on public.analytics_events;
