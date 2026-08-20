@@ -8,8 +8,8 @@ Após publicar este código, execute a migração `supabase/migrations/20260819_
 
 Na Vercel, cadastre as variáveis mostradas em `.env.example` para Production e Preview. `SUPABASE_SERVICE_ROLE_KEY` e `PAYMENT_WEBHOOK_SECRET` devem existir somente no servidor, sem o prefixo `VITE_`.
 
-- Configure `VITE_SITE_URL` e `SITE_URL` com o domínio público definitivo.
-- Configure no provedor de pagamento o webhook `https://seu-dominio.com.br/api/payment-webhook` e envie `x-zappage-signature` como HMAC SHA-256 do corpo bruto, usando `PAYMENT_WEBHOOK_SECRET`.
+- Configure `VITE_SITE_URL` e `SITE_URL` como `https://www.zappagepro.com.br`.
+- Configure no provedor de pagamento o webhook `https://www.zappagepro.com.br/api/payment-webhook` e envie `x-zappage-signature` como HMAC SHA-256 do corpo bruto, usando `PAYMENT_WEBHOOK_SECRET`.
 - Crie pedidos com o mesmo `provider` e `external_id` enviados pelo gateway. O webhook atualiza o status sem expor chave administrativa no navegador.
 
 Até configurar essas variáveis, o site permanece funcional, mas a coleta protegida de analytics e os webhooks responderão sem gravar dados.

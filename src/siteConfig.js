@@ -11,8 +11,8 @@ export const siteConfig = {
   logoSrc: '/assets/zap-page-logo-256.png',
   shareImageSrc: '/assets/zap-page-logo-512.png',
   tagline: 'Páginas profissionais com WhatsApp para negócios locais',
-  // Configure VITE_SITE_URL na Vercel com o domínio final antes de indexar o site.
-  domain: import.meta.env.VITE_SITE_URL || window.location.origin,
+  // VITE_SITE_URL permite sobrescrever o domínio em ambientes de preview.
+  domain: import.meta.env.VITE_SITE_URL || 'https://www.zappagepro.com.br',
 
   // --------- Contato / WhatsApp ---------
   whatsappNumber: '5543991229181', // DDI + DDD + número

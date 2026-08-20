@@ -7,7 +7,7 @@ import './index.css'
 // Mantê-los em um chunk separado reduz o JavaScript baixado por visitantes públicos.
 const AppAdmin = lazy(() => import('./AppAdmin.jsx'))
 
-const publicOrigin = (import.meta.env.VITE_SITE_URL || window.location.origin).replace(/\/$/, '')
+const publicOrigin = (import.meta.env.VITE_SITE_URL || 'https://www.zappagepro.com.br').replace(/\/$/, '')
 const canonicalUrl = `${publicOrigin}${window.location.pathname}`
 document.querySelector('[data-site-url="canonical"]')?.setAttribute('href', canonicalUrl)
 document.querySelector('[data-site-url="open-graph"]')?.setAttribute('content', canonicalUrl)
