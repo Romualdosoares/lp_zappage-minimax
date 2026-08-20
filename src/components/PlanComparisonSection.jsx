@@ -8,7 +8,7 @@ const FEATURES = [
   { name: 'Copy persuasiva', express: false, professional: true, turbo: 'Aprimorada' },
   { name: 'Suporte técnico', express: true, professional: true, turbo: true },
   { name: 'Suporte comercial 30 dias', express: false, professional: true, turbo: true },
-  { name: 'Criativos para anúncios', express: false, professional: false, turbo: '3 peças' },
+  { name: 'Criativos para anúncios', express: false, professional: false, turbo: '10 peças' },
   { name: 'Texto para anúncio', express: false, professional: false, turbo: true },
   { name: 'Orientação inicial para campanha', express: false, professional: false, turbo: true },
 ]

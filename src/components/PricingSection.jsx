@@ -67,7 +67,7 @@ const PLANS = [
       'Tudo do plano Profissional',
       'Página com estrutura mais persuasiva',
       'Copy de venda aprimorada',
-      '3 criativos para anúncio',
+      '10 criativos para anúncio',
       'Texto principal para Facebook/Instagram Ads',
       'Título e descrição para anúncio',
       'Direcionamento inicial para campanha',
