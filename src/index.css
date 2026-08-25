@@ -619,20 +619,12 @@ img {
   will-change: --card-border-angle;
 }
 
-/* Desabilita animação em mobile para performance */
-@media (max-width: 900px) {
+/* Preferência de redução de movimento (acessibilidade) */
+@media (prefers-reduced-motion: reduce) {
   .portfolio-card-animated::before,
   .card-animated-slow::before,
   .card-animated-subtle::before,
   .card-animated-strong::before {
-    animation: none;
-    background: conic-gradient(
-      from 45deg,
-      transparent 0%,
-      transparent 30%,
-      rgba(57, 255, 20, 0.3) 50%,
-      transparent 70%,
-      transparent 100%
-    );
+    animation: none !important;
   }
 }
