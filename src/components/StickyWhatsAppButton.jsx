@@ -21,7 +21,7 @@ export default function StickyWhatsAppButton() {
         <button
           type="button"
           onClick={() => setShowLabel(false)}
-          className="hidden animate-fade-up items-center gap-2 rounded-full border border-neon/40 bg-bg-primary/90 px-4 py-2 text-sm font-semibold text-white shadow-neon-sm backdrop-blur-xl transition-opacity hover:bg-bg-primary sm:flex"
+          className="hidden animate-fade-up items-center gap-2 rounded-full border border-white/15 bg-bg-primary/90 px-4 py-2 text-sm font-semibold text-white backdrop-blur-xl transition-opacity hover:bg-bg-primary sm:flex"
           aria-label="Fechar lembrete de WhatsApp"
         >
           <span className="h-2 w-2 rounded-full bg-neon" />
@@ -39,7 +39,7 @@ export default function StickyWhatsAppButton() {
         rel="noreferrer noopener"
         data-cta-location="desktop-sticky"
         aria-label="Abrir conversa no WhatsApp"
-        className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-neon px-4 py-3 text-bg-primary shadow-neon-strong transition-all duration-300 hover:-translate-y-0.5 hover:shadow-neon sm:px-5 sm:py-3.5"
+        className="btn-primary group relative inline-flex items-center justify-center gap-2 !rounded-full px-4 py-3 sm:px-5 sm:py-3.5"
       >
         <IconWhatsapp className="h-5 w-5 sm:h-6 sm:w-6" />
         <span className="hidden text-sm font-extrabold sm:inline">

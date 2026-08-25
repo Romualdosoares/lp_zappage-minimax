@@ -59,12 +59,10 @@ export default {
         },
         'pulse-glow': {
           '0%, 100%': {
-            boxShadow:
-              '0 0 8px rgba(57, 255, 20, 0.16), 0 0 16px rgba(57, 255, 20, 0.06)',
+            transform: 'scale(1)',
           },
           '50%': {
-            boxShadow:
-              '0 0 11px rgba(57, 255, 20, 0.22), 0 0 22px rgba(57, 255, 20, 0.08)',
+            transform: 'scale(1.02)',
           },
         },
         'fade-up': {

@@ -164,23 +164,69 @@ main#top {
 }
 
 /* =============== COMPONENTES (botões, cards) =============== */
+@keyframes button-line-slide {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl
       bg-neon px-6 py-3.5 text-base font-bold text-bg-primary
-      shadow-neon transition-[transform,box-shadow,background-color] duration-300
-      hover:-translate-y-0.5 hover:shadow-neon-strong
-      focus:outline-none focus:ring-4 focus:ring-neon/40
+      transition-[transform,background-color,filter] duration-300
+      hover:-translate-y-0.5 hover:brightness-105
+      focus:outline-none focus:ring-2 focus:ring-neon/60
       active:translate-y-0;
+    box-shadow: none !important;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0b3d18 0%, #00ff66 25%, #ffffff 50%, #00ff66 75%, #0b3d18 100%);
+    background-size: 200% 100%;
+    animation: button-line-slide 3s linear infinite;
+    pointer-events: none;
+    transition: height 0.2s ease;
+  }
+  .btn-primary:hover::after {
+    height: 4px;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl
       border border-white/15 bg-white/[0.02] px-6 py-3.5
       text-base font-semibold text-neon
       transition-[transform,border-color,background-color,color] duration-300
-      hover:-translate-y-0.5 hover:border-neon/50 hover:bg-neon/[0.06]
-      focus:outline-none focus:ring-4 focus:ring-neon/30;
+      hover:-translate-y-0.5 hover:border-neon/40 hover:bg-neon/[0.06] hover:text-white
+      focus:outline-none focus:ring-2 focus:ring-neon/30;
+    box-shadow: none !important;
+  }
+  .btn-secondary::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #39ff14 30%, #00ff66 50%, #39ff14 70%, transparent 100%);
+    background-size: 200% 100%;
+    animation: button-line-slide 3s linear infinite;
+    pointer-events: none;
+    transition: height 0.2s ease;
+  }
+  .btn-secondary:hover::after {
+    height: 3px;
   }
 
   .btn-ghost {
