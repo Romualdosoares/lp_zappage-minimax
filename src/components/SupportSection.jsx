@@ -63,7 +63,7 @@ export default function SupportSection() {
               className="card-base group"
             >
               <div className="flex items-start gap-4">
-                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20 group-hover:shadow-neon-sm">
+                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20">
                   <Icon className="h-6 w-6" />
                 </span>
                 <div>

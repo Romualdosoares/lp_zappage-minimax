@@ -83,8 +83,8 @@ export default function PlanComparisonSection() {
               data-cta-location="mobile-plan-guide"
               className={`rounded-2xl border p-5 text-left transition-colors ${
                 plan.featured
-                  ? 'border-neon/60 bg-neon/10 shadow-neon-sm'
-                  : 'border-neon/20 bg-bg-card'
+                  ? 'border-neon/60 bg-neon/10'
+                  : 'border-white/10 bg-bg-card'
               }`}
             >
               <p className={plan.featured ? 'font-extrabold text-neon' : 'font-bold text-white'}>
@@ -164,7 +164,7 @@ export default function PlanComparisonSection() {
                 criativos.
               </p>
             </div>
-            <div className="rounded-xl border border-neon/50 bg-bg-primary/60 p-4 text-sm shadow-neon-sm">
+            <div className="rounded-xl border border-neon/50 bg-bg-primary/60 p-4 text-sm">
               <p className="font-bold text-neon">Profissional</p>
               <p className="mt-1 text-xs text-ink-light">
                 Completo para página e suporte.

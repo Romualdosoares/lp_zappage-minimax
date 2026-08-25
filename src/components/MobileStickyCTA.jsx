@@ -4,7 +4,7 @@ import { IconWhatsapp } from './Icons'
 export default function MobileStickyCTA() {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-neon/30 bg-bg-primary/95 px-3 py-2 backdrop-blur-xl sm:hidden"
+      className="mobile-sticky-cta fixed inset-x-0 bottom-0 z-40 border-t border-neon/20 bg-bg-primary/95 px-3 py-2 backdrop-blur-xl transition-[transform,opacity] duration-300 sm:hidden"
       style={{ paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))' }}
     >
       <div className="flex items-center gap-3">
@@ -21,7 +21,7 @@ export default function MobileStickyCTA() {
           target="_blank"
           rel="noreferrer noopener"
           data-cta-location="mobile-sticky"
-          className="btn-primary ml-auto animate-pulse-glow px-4 py-2.5 text-sm"
+          className="btn-primary ml-auto px-4 py-2.5 text-sm"
         >
           <IconWhatsapp className="h-4 w-4" />
           Ver meu plano

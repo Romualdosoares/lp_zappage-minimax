@@ -19,7 +19,7 @@ export default {
         ink: {
           white: '#FFFFFF',
           light: '#B8C7B8',
-          dark: '#6F7F6F',
+          dark: '#879487',
         },
       },
       fontFamily: {
@@ -33,19 +33,19 @@ export default {
         ],
       },
       boxShadow: {
-        neon: '0 0 18px rgba(57, 255, 20, 0.32), 0 0 42px rgba(57, 255, 20, 0.16)',
-        'neon-sm': '0 0 9px rgba(57, 255, 20, 0.34)',
+        neon: '0 10px 28px rgba(0, 0, 0, 0.28), 0 0 8px rgba(57, 255, 20, 0.052)',
+        'neon-sm': '0 6px 18px rgba(0, 0, 0, 0.22), 0 0 5px rgba(57, 255, 20, 0.038)',
         'neon-strong':
-          '0 0 22px rgba(57, 255, 20, 0.42), 0 0 56px rgba(57, 255, 20, 0.2)',
+          '0 14px 36px rgba(0, 0, 0, 0.32), 0 0 12px rgba(57, 255, 20, 0.068)',
       },
       borderColor: {
         neon: 'rgba(57, 255, 20, 0.25)',
       },
       backgroundImage: {
         'radial-green':
-          'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(57, 255, 20, 0.18), transparent 60%)',
+          'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(57, 255, 20, 0.12), transparent 58%)',
         'radial-green-bottom':
-          'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0, 255, 102, 0.15), transparent 60%)',
+          'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0, 255, 102, 0.10), transparent 58%)',
         'grid-lines':
           "linear-gradient(rgba(57, 255, 20, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px)",
       },
@@ -55,16 +55,16 @@ export default {
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
+          '50%': { transform: 'translateY(-5px)' },
         },
         'pulse-glow': {
           '0%, 100%': {
             boxShadow:
-              '0 0 14px rgba(57, 255, 20, 0.32), 0 0 30px rgba(57, 255, 20, 0.12)',
+              '0 0 8px rgba(57, 255, 20, 0.16), 0 0 16px rgba(57, 255, 20, 0.06)',
           },
           '50%': {
             boxShadow:
-              '0 0 20px rgba(57, 255, 20, 0.48), 0 0 46px rgba(57, 255, 20, 0.2)',
+              '0 0 11px rgba(57, 255, 20, 0.22), 0 0 22px rgba(57, 255, 20, 0.08)',
           },
         },
         'fade-up': {
@@ -77,7 +77,7 @@ export default {
         },
       },
       animation: {
-        float: 'float 6s ease-in-out infinite',
+        float: 'float 7s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 2.4s ease-in-out infinite',
         'fade-up': 'fade-up 0.7s ease-out forwards',
         'fade-in': 'fade-in 0.6s ease-out forwards',

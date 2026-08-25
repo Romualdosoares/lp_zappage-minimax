@@ -61,7 +61,7 @@ export default function DeliverablesSection() {
       aria-labelledby="deliverables-title"
     >
       <div className="container-page">
-        <div className="mx-auto max-w-3xl text-center">
+        <div data-reveal className="max-w-4xl">
           <span className="badge-neon">
             <IconSparkles className="h-3.5 w-3.5" /> Entregáveis
           </span>
@@ -79,13 +79,14 @@ export default function DeliverablesSection() {
         </div>
 
         {/* Grid */}
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-5">
+        <div data-reveal-group className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-5">
           {ITEMS.map(({ icon: Icon, title, text }) => (
             <article
               key={title}
-              className="group relative overflow-hidden rounded-2xl border border-neon/20 bg-bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-neon/50 hover:shadow-neon"
+              data-reveal-item
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-bg-card p-5 transition-[border-color,background-color] duration-300 hover:border-neon/30 hover:bg-bg-cardPremium"
             >
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20 group-hover:shadow-neon-sm">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20">
                 <Icon className="h-6 w-6" />
               </span>
               <h3 className="mt-4 text-base font-bold text-white">{title}</h3>
@@ -102,7 +103,7 @@ export default function DeliverablesSection() {
         </div>
 
         {/* Subtítulo extra com confiança */}
-        <div className="mt-14 flex items-center justify-center gap-2 text-sm text-ink-light">
+        <div data-reveal className="mt-14 flex items-center justify-center gap-2 text-sm text-ink-light">
           <IconChart className="h-5 w-5 text-neon" />
           Os itens incluídos variam conforme o plano escolhido. Confira os
           detalhes antes de contratar.

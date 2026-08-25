@@ -52,7 +52,7 @@ export default function TransformationSection() {
           <div className="card-base relative overflow-hidden border-red-500/20">
             <div
               aria-hidden
-              className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-red-500/10 blur-3xl"
+              className="decorative-glow absolute -right-8 -top-8 hidden h-28 w-28 rounded-full bg-red-500/6 blur-2xl sm:block"
             />
             <div className="relative">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-red-400">
@@ -75,13 +75,9 @@ export default function TransformationSection() {
           </div>
 
           {/* DEPOIS */}
-          <div className="card-base relative overflow-hidden border-neon/50 shadow-neon-sm">
-            <div
-              aria-hidden
-              className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-neon/15 blur-3xl"
-            />
+          <div className="card-animated-subtle rounded-2xl bg-bg-card p-6">
             <div className="relative">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-neon/50 bg-neon/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-neon">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-neon/40 bg-neon/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-neon">
                 <IconCheckCircle className="h-3.5 w-3.5" /> Depois
               </span>
               <h3 className="mt-4 text-xl font-bold text-white">

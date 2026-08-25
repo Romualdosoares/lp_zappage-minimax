@@ -8,7 +8,7 @@
 export const siteConfig = {
   // --------- Identidade ---------
   brandName: 'Zap Page',
-  logoSrc: '/assets/zap-page-logo-256.png',
+  logoSrc: '/assets/zap-page-logo-128.webp',
   shareImageSrc: '/assets/zap-page-logo-512.png',
   tagline: 'Páginas profissionais com WhatsApp para negócios locais',
   // VITE_SITE_URL permite sobrescrever o domínio em ambientes de preview.

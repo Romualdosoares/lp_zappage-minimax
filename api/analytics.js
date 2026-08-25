@@ -1,5 +1,5 @@
 const buckets = new Map()
-const ALLOWED_EVENTS = new Set(['page_view', 'cta_click', 'plan_click', 'whatsapp_click', 'outbound_click'])
+const ALLOWED_EVENTS = new Set(['page_view', 'cta_click', 'plan_click', 'whatsapp_click', 'outbound_click', 'button_click', 'demo_click', 'portfolio_click'])
 
 function json(res, status, body) {
   res.status(status).setHeader('Content-Type', 'application/json').send(JSON.stringify(body))

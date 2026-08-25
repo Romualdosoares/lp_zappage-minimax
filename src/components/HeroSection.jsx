@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { siteConfig, buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import {
   IconArrowRight,
@@ -12,15 +13,9 @@ import {
 -----------------------------------*/
 function MockupPhone() {
   return (
-    <div className="relative mx-auto w-[260px] max-w-full sm:w-[290px]">
-      {/* Glow atrás */}
-      <div
-        aria-hidden
-        className="absolute -inset-6 -z-10 rounded-[3rem] bg-neon/25 blur-3xl"
-      />
-
+    <div aria-hidden="true" className="relative mx-auto w-[260px] max-w-full sm:w-[290px]">
       {/* Moldura do celular */}
-      <div className="relative rounded-[2.4rem] border-2 border-neon/40 bg-bg-primary p-2.5 shadow-neon">
+      <div className="relative rounded-[2.4rem] border-2 border-neon/30 bg-bg-primary p-2.5">
         <div className="rounded-[1.9rem] border border-white/10 bg-bg-secondary">
           {/* Status bar */}
           <div className="flex items-center justify-between px-5 pt-3 text-[10px] font-semibold text-ink-light">
@@ -96,16 +91,10 @@ function MockupPhone() {
             </div>
 
             {/* CTA WhatsApp */}
-            <a
-              href={buildWhatsappUrl(whatsappMessages.general)}
-              target="_blank"
-              rel="noreferrer noopener"
-              data-cta-location="hero-preview"
-              className="flex items-center justify-center gap-1.5 rounded-lg bg-neon py-3 text-[11px] font-extrabold text-bg-primary shadow-neon-sm animate-pulse-glow"
-            >
+            <div className="flex items-center justify-center gap-1.5 rounded-lg bg-neon py-3 text-[11px] font-extrabold text-bg-primary">
               <IconWhatsapp className="h-4 w-4" />
               Chamar no WhatsApp
-            </a>
+            </div>
 
             <p className="text-center text-[8px] text-ink-dark">
               Atend. imediato · Resposta rápida
@@ -125,8 +114,8 @@ function MockupPhone() {
 -----------------------------------*/
 function MockupLaptop() {
   return (
-    <div className="relative hidden md:block">
-      <div className="rounded-2xl border-2 border-neon/30 bg-bg-primary p-3 shadow-neon">
+    <div aria-hidden="true" className="relative hidden md:block">
+      <div className="rounded-2xl border-2 border-neon/30 bg-bg-primary p-3">
         <div className="overflow-hidden rounded-md border border-white/10 bg-bg-secondary">
           {/* Top bar navegador */}
           <div className="flex items-center gap-2 border-b border-white/10 bg-bg-card px-3 py-2">
@@ -168,24 +157,303 @@ function MockupLaptop() {
   )
 }
 
+function HeroMockupFallback() {
+  return (
+    <div aria-hidden="true" className="relative">
+      <div className="absolute left-0 top-12 w-[88%] -rotate-2 sm:left-4 sm:w-[80%] lg:left-0 lg:w-[82%]">
+        <MockupLaptop />
+      </div>
+
+      <div className="relative ml-auto w-[240px] animate-float sm:w-[280px] lg:w-[320px]">
+        <MockupPhone />
+      </div>
+
+      <div className="absolute left-2 top-2 hidden rounded-xl border border-white/15 bg-bg-card/90 p-3 backdrop-blur-xl sm:block lg:left-4 lg:top-4">
+        <p className="text-[10px] font-semibold text-white">Oferta mais clara</p>
+        <p className="mt-1 text-[9px] text-ink-light">Menos dúvidas no atendimento</p>
+      </div>
+
+      <div className="absolute -right-2 bottom-4 hidden rounded-xl border border-white/15 bg-bg-card/90 px-3 py-2 backdrop-blur-xl sm:block">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-neon text-bg-primary">
+            <IconWhatsapp className="h-4 w-4" />
+          </span>
+          <div>
+            <p className="text-[10px] font-bold text-white">WhatsApp</p>
+            <p className="text-[9px] text-ink-light">Resposta rápida</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PlaybackIcon({ playing }) {
+  if (playing) {
+    return (
+      <span aria-hidden="true" className="inline-flex gap-1">
+        <span className="h-3 w-0.5 rounded-full bg-current" />
+        <span className="h-3 w-0.5 rounded-full bg-current" />
+      </span>
+    )
+  }
+
+  return (
+    <span
+      aria-hidden="true"
+      className="ml-0.5 h-0 w-0 border-y-[6px] border-l-[9px] border-y-transparent border-l-current"
+    />
+  )
+}
+
+function HeroVideo() {
+  const videoRef = useRef(null)
+  const layerRef = useRef(null)
+  const [videoReady, setVideoReady] = useState(false)
+  const [videoFailed, setVideoFailed] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [videoSource, setVideoSource] = useState('')
+  const [motionAllowed, setMotionAllowed] = useState(() =>
+    typeof window === 'undefined'
+      ? true
+      : !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const syncPlaybackPreference = () => {
+      const allowed = !preference.matches
+      const video = videoRef.current
+      setMotionAllowed(allowed)
+
+      if (!video) return
+      if (!allowed) {
+        video.pause()
+      } else if (video.readyState >= 2) {
+        video.play().catch(() => setIsPlaying(false))
+      }
+    }
+
+    syncPlaybackPreference()
+    if (preference.addEventListener) {
+      preference.addEventListener('change', syncPlaybackPreference)
+    } else {
+      preference.addListener?.(syncPlaybackPreference)
+    }
+
+    return () => {
+      if (preference.removeEventListener) {
+        preference.removeEventListener('change', syncPlaybackPreference)
+      } else {
+        preference.removeListener?.(syncPlaybackPreference)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!motionAllowed) {
+      setVideoSource('')
+      setVideoReady(false)
+      setIsPlaying(false)
+      return undefined
+    }
+
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+    if (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || '')) {
+      return undefined
+    }
+
+    const isMobile = window.matchMedia('(max-width: 640px)').matches
+    const timer = window.setTimeout(
+      () => setVideoSource(isMobile ? '/videos/hero-mobile-v2.mp4' : '/videos/hero-desktop-v2.mp4'),
+      isMobile ? 900 : 450,
+    )
+    return () => window.clearTimeout(timer)
+  }, [motionAllowed])
+
+  useEffect(() => {
+    const video = videoRef.current
+    const hero = layerRef.current?.closest('section')
+    if (!video || !hero || !videoSource || !('IntersectionObserver' in window)) return undefined
+
+    let heroVisible = true
+    const syncVisibility = () => {
+      if (!motionAllowed || document.visibilityState === 'hidden' || !heroVisible) {
+        video.pause()
+        return
+      }
+      if (video.readyState >= 2) video.play().catch(() => setIsPlaying(false))
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        heroVisible = entry.isIntersecting
+        syncVisibility()
+      },
+      { threshold: 0.08 },
+    )
+
+    observer.observe(hero)
+    document.addEventListener('visibilitychange', syncVisibility)
+    return () => {
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', syncVisibility)
+    }
+  }, [motionAllowed, videoSource])
+
+  useEffect(() => {
+    const layer = layerRef.current
+    if (!layer) return undefined
+
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const compactViewport = window.matchMedia('(max-width: 640px)')
+    let frame = 0
+
+    const updateParallax = () => {
+      frame = 0
+
+      if (preference.matches || compactViewport.matches) {
+        layer.style.transform = 'translate3d(0, 0, 0) scale(1.08)'
+        return
+      }
+
+      const hero = layer.closest('section')
+      if (!hero) return
+
+      const heroHeight = Math.max(1, hero.offsetHeight)
+      const travelled = Math.min(heroHeight, Math.max(0, -hero.getBoundingClientRect().top))
+      const progress = travelled / heroHeight
+      const offset = travelled * 0.11
+      const scale = 1.08 + progress * 0.035
+
+      layer.style.transform = `translate3d(0, ${offset}px, 0) scale(${scale})`
+    }
+
+    const requestUpdate = () => {
+      if (preference.matches || compactViewport.matches) return
+      if (frame) return
+      frame = window.requestAnimationFrame(updateParallax)
+    }
+
+    updateParallax()
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', requestUpdate, { passive: true })
+    if (preference.addEventListener) {
+      preference.addEventListener('change', requestUpdate)
+      compactViewport.addEventListener('change', updateParallax)
+    } else {
+      preference.addListener?.(requestUpdate)
+      compactViewport.addListener?.(updateParallax)
+    }
+
+    return () => {
+      window.removeEventListener('scroll', requestUpdate)
+      window.removeEventListener('resize', requestUpdate)
+      if (preference.removeEventListener) {
+        preference.removeEventListener('change', requestUpdate)
+        compactViewport.removeEventListener('change', updateParallax)
+      } else {
+        preference.removeListener?.(requestUpdate)
+        compactViewport.removeListener?.(updateParallax)
+      }
+      if (frame) window.cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  const handleVideoReady = () => {
+    setVideoReady(true)
+  }
+
+  const togglePlayback = () => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (video.paused) {
+      video.play().catch(() => setIsPlaying(false))
+    } else {
+      video.pause()
+    }
+  }
+
+  if (videoFailed) {
+    return null
+  }
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-bg-primary">
+      <div
+        ref={layerRef}
+        aria-hidden="true"
+        className="absolute -inset-[10%] will-change-auto sm:will-change-transform"
+        style={{ transform: 'translate3d(0, 0, 0) scale(1.08)' }}
+      >
+          {videoSource && <video
+            id="hero-background-video"
+            ref={videoRef}
+            src={videoSource}
+            aria-hidden="true"
+            tabIndex={-1}
+            autoPlay={motionAllowed}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            disablePictureInPicture
+            onCanPlay={handleVideoReady}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onError={() => setVideoFailed(true)}
+            className={`h-full w-full object-cover object-center transition-opacity duration-700 ${
+              videoReady ? 'opacity-100' : 'opacity-0'
+            }`}
+          />}
+      </div>
+
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,4,2,0.96)_0%,rgba(2,4,2,0.86)_50%,rgba(2,4,2,0.58)_100%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-b from-bg-primary/30 via-transparent to-bg-primary/90"
+      />
+
+      {videoReady && (
+        <button
+          type="button"
+          onClick={togglePlayback}
+          aria-controls="hero-background-video"
+          aria-label={isPlaying ? 'Pausar vídeo de fundo' : 'Reproduzir vídeo de fundo'}
+          className="pointer-events-auto absolute bottom-4 right-4 z-20 inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-white/15 bg-bg-primary/80 px-3 text-xs font-bold text-white backdrop-blur-xl transition-colors hover:border-neon/40 hover:bg-bg-primary sm:bottom-6 sm:right-6"
+        >
+          <PlaybackIcon playing={isPlaying} />
+          <span className="hidden sm:inline">{isPlaying ? 'Pausar vídeo' : 'Reproduzir vídeo'}</span>
+        </button>
+      )}
+    </div>
+  )
+}
+
 /* ----------------------------------
    HERO SECTION
 -----------------------------------*/
 export default function HeroSection() {
   return (
     <section
-      className="relative overflow-hidden bg-futuristic-dense pt-10 sm:pt-16 lg:pt-24"
+      className="relative isolate min-h-[calc(100svh-6rem)] overflow-hidden bg-futuristic-dense"
     >
-      {/* Radial glow superior */}
+      <HeroVideo />
+
+      {/* Radial glow superior — mais discreto */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-[60%] w-[80%] -translate-x-1/2 bg-radial-green opacity-80"
+        className="pointer-events-none absolute left-1/2 top-0 z-[1] h-[55%] w-[75%] -translate-x-1/2 bg-radial-green opacity-22"
       />
 
-      <div className="container-page relative">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div className="container-page relative z-10">
+        <div className="flex min-h-[calc(100svh-6rem)] items-center py-14 pb-24 sm:py-16 sm:pb-24 lg:min-h-[720px] lg:py-24 lg:pb-28">
           {/* Texto */}
-          <div className="relative z-10 animate-fade-up">
+          <div className="relative z-10 max-w-3xl animate-fade-up">
             <div className="mb-5 flex items-center gap-4">
               <img
                 src={siteConfig.logoSrc}
@@ -193,8 +461,8 @@ export default function HeroSection() {
                 width={256}
                 height={256}
                 decoding="async"
-                fetchPriority="high"
-                className="h-20 w-20 rounded-2xl border border-neon/30 bg-bg-primary object-cover shadow-neon-sm sm:h-24 sm:w-24"
+                fetchpriority="high"
+                className="h-20 w-20 rounded-2xl border border-white/15 bg-bg-primary object-cover sm:h-24 sm:w-24"
               />
               <div className="min-w-0">
                 <p className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
@@ -259,7 +527,7 @@ export default function HeroSection() {
                 target="_blank"
                 rel="noreferrer noopener"
                 data-cta-location="hero"
-                className="btn-primary animate-pulse-glow"
+                className="btn-primary"
               >
                 Quero meu plano recomendado
                 <IconWhatsapp className="h-5 w-5" />
@@ -277,41 +545,6 @@ export default function HeroSection() {
             </p>
           </div>
 
-          {/* Mockup */}
-          <div className="relative animate-fade-up delay-200">
-            {/* Notebook ao fundo */}
-            <div className="absolute left-0 top-12 w-[88%] -rotate-2 sm:left-4 sm:w-[80%] lg:left-0 lg:w-[82%]">
-              <MockupLaptop />
-            </div>
-
-            {/* Celular em destaque */}
-            <div className="relative ml-auto w-[240px] sm:w-[280px] lg:w-[320px] animate-float">
-              <MockupPhone />
-            </div>
-
-            {/* Card flutuante de benefício */}
-            <div className="absolute left-2 top-2 hidden rounded-xl border border-neon/30 bg-bg-card/90 p-3 shadow-neon-sm backdrop-blur-xl sm:block lg:left-4 lg:top-4">
-              <p className="text-[10px] font-semibold text-white">
-                Oferta mais clara
-              </p>
-              <p className="mt-1 text-[9px] text-ink-light">
-                Menos dúvidas no atendimento
-              </p>
-            </div>
-
-            {/* Card flutuante WhatsApp */}
-            <div className="absolute -right-2 bottom-4 hidden rounded-xl border border-neon/40 bg-bg-card/90 px-3 py-2 shadow-neon-sm backdrop-blur-xl sm:block">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-neon text-bg-primary">
-                  <IconWhatsapp className="h-4 w-4" />
-                </span>
-                <div>
-                  <p className="text-[10px] font-bold text-white">WhatsApp</p>
-                  <p className="text-[9px] text-ink-light">Resposta rápida</p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

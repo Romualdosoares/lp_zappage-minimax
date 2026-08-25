@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getTestimonials } from '../lib/supabaseClient'
+import useNearViewport from '../hooks/useNearViewport'
 import { IconCheckCircle, IconStar } from './Icons'
 
 function Stars({ rating }) {
@@ -14,8 +15,10 @@ function Stars({ rating }) {
 
 export default function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState([])
+  const [sectionRef, shouldLoad] = useNearViewport('900px 0px')
 
   useEffect(() => {
+    if (!shouldLoad) return undefined
     let active = true
     getTestimonials()
       .then(rows => {
@@ -28,17 +31,19 @@ export default function TestimonialsSection() {
     return () => {
       active = false
     }
-  }, [])
+  }, [shouldLoad])
 
-  if (testimonials.length === 0) return null
+  if (!shouldLoad || testimonials.length === 0) {
+    return <div ref={sectionRef} className="h-px" aria-hidden="true" />
+  }
 
   return (
-    <section className="relative bg-bg-secondary py-20 sm:py-28" aria-labelledby="testimonials-title">
+    <section ref={sectionRef} className="relative bg-bg-secondary py-20 sm:py-28" aria-labelledby="testimonials-title">
       <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-neon/30 to-transparent" />
       <div className="container-page">
-        <div className="mx-auto max-w-3xl text-center">
+        <div data-reveal className="mx-auto max-w-3xl text-center">
           <span className="badge-neon">
-            <IconCheckCircle className="h-3.5 w-3.5" /> Avaliações autorizadas
+            <IconCheckCircle className="h-3.5 w-3.5" /> Prova social autorizada
           </span>
           <h2
             id="testimonials-title"
@@ -52,9 +57,9 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="mx-auto mt-12 grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div data-reveal-group className="mx-auto mt-12 grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map(item => (
-            <article key={item.id} className="flex flex-col rounded-2xl border border-neon/20 bg-bg-card p-6 shadow-neon-sm">
+            <article key={item.id} data-reveal-item className="card-animated-subtle flex flex-col rounded-2xl bg-bg-card p-6">
               <Stars rating={item.rating} />
               <blockquote className="mt-5 flex-1 text-base leading-relaxed text-ink-light">
                 “{item.quote}”
@@ -67,7 +72,7 @@ export default function TestimonialsSection() {
                   height={96}
                   loading="lazy"
                   decoding="async"
-                  className="h-12 w-12 rounded-full border border-neon/30 object-cover"
+                  className="h-12 w-12 rounded-full border border-white/15 object-cover"
                 />
                 <div>
                   <p className="font-bold text-white">{item.client_name}</p>

@@ -4,77 +4,72 @@ import Header from './components/Header.jsx'
 import HeroSection from './components/HeroSection.jsx'
 import TrustStrip from './components/TrustStrip.jsx'
 import ProblemSection from './components/ProblemSection.jsx'
-import TransformationSection from './components/TransformationSection.jsx'
 import TestimonialsSection from './components/TestimonialsSection.jsx'
 import DeliverablesSection from './components/DeliverablesSection.jsx'
-import SupportSection from './components/SupportSection.jsx'
-import NichesSection from './components/NichesSection.jsx'
 import HowItWorksSection from './components/HowItWorksSection.jsx'
-import SpecialOfferSection from './components/SpecialOfferSection.jsx'
 import PricingSection from './components/PricingSection.jsx'
-import PlanComparisonSection from './components/PlanComparisonSection.jsx'
-import ObjectionsSection from './components/ObjectionsSection.jsx'
 import FAQSection from './components/FAQSection.jsx'
 import FinalCTASection from './components/FinalCTASection.jsx'
 import Footer from './components/Footer.jsx'
 import StickyWhatsAppButton from './components/StickyWhatsAppButton.jsx'
 import MobileStickyCTA from './components/MobileStickyCTA.jsx'
+import CookieConsent from './components/CookieConsent.jsx'
+import PortfolioSection from './components/PortfolioSection.jsx'
+import AboutSection from './components/AboutSection.jsx'
+import ScrollExperience from './components/ScrollExperience.jsx'
 import { trackAnalyticsEvent } from './lib/supabaseClient.js'
+import { trackMarketingEvent } from './lib/marketingTracking.js'
 
 export default function App() {
   useEffect(() => {
-    trackAnalyticsEvent('page_view', { label: 'Página de vendas' })
+    const trackInitialPageView = () => {
+      trackAnalyticsEvent('page_view', { label: 'Landing page' })
+      trackMarketingEvent('page_view', { label: 'Landing page' })
+    }
+    let initialTrackingId
+    let initialTrackingTimer
+
+    if ('requestIdleCallback' in window) {
+      initialTrackingId = window.requestIdleCallback(trackInitialPageView, { timeout: 1800 })
+    } else {
+      initialTrackingTimer = window.setTimeout(trackInitialPageView, 900)
+    }
 
     function handleTrackedClick(event) {
-      const link = event.target.closest?.('a')
-      if (!link) return
+      const element = event.target.closest?.('a, button')
+      if (!element || element.closest('[data-cookie-consent]')) return
 
-      const href = link.getAttribute('href') || ''
-      const label = link.textContent?.replace(/\s+/g, ' ').trim().slice(0, 90) || 'CTA'
-      const planName = link.dataset.planName || ''
-      const ctaLocation = link.dataset.ctaLocation || ''
-      const explicitEvent = link.dataset.analyticsEvent
+      const href = element.getAttribute('href') || ''
+      const label = element.textContent?.replace(/\s+/g, ' ').trim().slice(0, 90) || element.getAttribute('aria-label') || 'CTA'
+      const planName = element.dataset.planName || ''
+      const ctaLocation = element.dataset.ctaLocation || ''
+      const explicitEvent = element.dataset.analyticsEvent
+      let eventName = explicitEvent || 'button_click'
 
-      if (explicitEvent) {
-        trackAnalyticsEvent(explicitEvent, {
-          label,
-          plan_name: planName,
-          metadata: { href, cta_location: ctaLocation },
-        })
-        return
-      }
+      if (!explicitEvent && href.includes('wa.me')) eventName = 'whatsapp_click'
+      else if (!explicitEvent && href && href !== '#' && !href.startsWith('#')) eventName = 'outbound_click'
+      else if (!explicitEvent && href.startsWith('#')) eventName = 'cta_click'
 
-      if (href.includes('wa.me')) {
-        trackAnalyticsEvent('whatsapp_click', {
-          label,
-          plan_name: planName,
-          metadata: { href, cta_location: ctaLocation },
-        })
-      } else if (href === '#planos') {
-        trackAnalyticsEvent('cta_click', {
-          label,
-          metadata: { href, target: 'planos', cta_location: ctaLocation },
-        })
-      } else if (href && href !== '#' && !href.startsWith('#')) {
-        trackAnalyticsEvent('outbound_click', {
-          label,
-          metadata: { href, cta_location: ctaLocation },
-        })
-      }
+      trackAnalyticsEvent(eventName, {
+        label,
+        plan_name: planName,
+        metadata: { href, cta_location: ctaLocation },
+      })
+      trackMarketingEvent(eventName, { label, planName, ctaLocation })
     }
 
     document.addEventListener('click', handleTrackedClick)
-    return () => document.removeEventListener('click', handleTrackedClick)
+    return () => {
+      document.removeEventListener('click', handleTrackedClick)
+      if (initialTrackingId) window.cancelIdleCallback(initialTrackingId)
+      if (initialTrackingTimer) window.clearTimeout(initialTrackingTimer)
+    }
   }, [])
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-bg-primary text-white">
-      {/* Gradiente fixo de fundo */}
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-futuristic-dense"
-      />
-
+      <ScrollExperience />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-futuristic-dense" />
       <TopOfferBar />
       <Header />
 
@@ -82,25 +77,20 @@ export default function App() {
         <HeroSection />
         <TrustStrip />
         <ProblemSection />
-        <TransformationSection />
-        <TestimonialsSection />
         <DeliverablesSection />
+        <PortfolioSection />
+        <AboutSection />
+        <TestimonialsSection />
         <PricingSection />
-        <PlanComparisonSection />
-        <SpecialOfferSection />
         <HowItWorksSection />
-        <SupportSection />
-        <NichesSection />
-        <ObjectionsSection />
         <FAQSection />
         <FinalCTASection />
       </main>
 
       <Footer />
-
-      {/* Floating + Sticky CTAs */}
       <StickyWhatsAppButton />
       <MobileStickyCTA />
+      <CookieConsent />
     </div>
   )
 }

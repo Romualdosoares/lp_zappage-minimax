@@ -3,6 +3,7 @@ import { siteConfig } from './siteConfig'
 import {
   createAdminBriefing,
   deleteAdminBriefing,
+  deleteClientSite,
   deletePortfolioService,
   deleteTestimonial,
   getAnalyticsEventsForAdmin,
@@ -12,13 +13,15 @@ import {
   getBriefingsForAdmin,
   getMyBriefing,
   getMyProfile,
+  getClientSites,
   getPortfolioServices,
   getOrdersForAdmin,
+  getPlanBenefits,
   getSession,
   getSupabaseProjectInfo,
   getTestimonials,
-  portfolioSeed,
   saveMyBriefing,
+  saveClientSite,
   savePortfolioService,
   saveTestimonial,
   signIn,
@@ -28,6 +31,7 @@ import {
   uploadBriefingAsset,
   uploadTestimonialPhoto,
 } from './lib/supabaseClient'
+import PlanBenefitsManager from './admin/PlanBenefitsManager.jsx'
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -47,7 +51,7 @@ const inputClass =
   'w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
 const labelClass = 'text-xs font-bold uppercase tracking-wider text-ink-light'
 const panelClass =
-  'rounded-2xl border border-neon/20 bg-[#071007] p-4 shadow-[0_0_24px_rgba(57,255,20,0.07)] sm:p-5'
+  'rounded-2xl border border-neon/20 bg-[#071007] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(57,255,20,0.04)] sm:p-5'
 
 function BackButton({ href = '/', label = 'Voltar' }) {
   return (
@@ -219,7 +223,15 @@ function StatusMessage({ type = 'info', children }) {
     type === 'error'
       ? 'border-red-400/30 bg-red-500/10 text-red-100'
       : 'border-neon/25 bg-neon/10 text-neon'
-  return <p className={`rounded-xl border px-3 py-2 text-sm font-bold ${colors}`}>{children}</p>
+  return (
+    <p
+      role={type === 'error' ? 'alert' : 'status'}
+      aria-live={type === 'error' ? 'assertive' : 'polite'}
+      className={`rounded-xl border px-3 py-2 text-sm font-bold ${colors}`}
+    >
+      {children}
+    </p>
+  )
 }
 
 function parseMoney(value) {
@@ -355,6 +367,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
             <button
               key={key}
               type="button"
+              aria-pressed={active === key}
               onClick={() => {
                 setMode(key)
                 setMessage('')
@@ -439,6 +452,7 @@ function AdminHeader({ active, setActive, onLogout }) {
     ['crm', 'CRM'],
     ['finance', 'Financeiro'],
     ['testimonials', 'Avaliações'],
+    ['plans', 'Planos'],
     ['portfolio', 'Portfólio'],
     ['briefings', 'Briefings'],
     ['links', 'Links'],
@@ -1029,10 +1043,10 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
   )
 }
 
-function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
+function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefitsAvailable, setMessage }) {
   const [editingId, setEditingId] = useState(null)
-  const [form, setForm] = useState({
-    id: uid('portfolio'),
+  const emptyPlan = () => ({
+    id: uid('plan'),
     title: '',
     niche: '',
     price: '',
@@ -1041,6 +1055,7 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
     description: '',
     deliverables: '',
   })
+  const [form, setForm] = useState(emptyPlan)
 
   function editItem(item) {
     setEditingId(item.id)
@@ -1049,28 +1064,20 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
 
   function resetForm() {
     setEditingId(null)
-    setForm({
-      id: uid('portfolio'),
-      title: '',
-      niche: '',
-      price: '',
-      status: 'Ativo',
-      featured: false,
-      description: '',
-      deliverables: '',
-    })
+    setForm(emptyPlan())
   }
 
   async function saveItem(event) {
     event.preventDefault()
     try {
       const saved = await savePortfolioService(form)
-      const next = portfolio.some(item => item.id === saved.id)
-        ? portfolio.map(item => (item.id === saved.id ? saved : item))
-        : [saved, ...portfolio]
-      setPortfolio(next)
+      setPlans(
+        plans.some(item => item.id === saved.id)
+          ? plans.map(item => (item.id === saved.id ? saved : item))
+          : [saved, ...plans],
+      )
       setEditingId(saved.id)
-      setMessage('Serviço salvo no Supabase.')
+      setMessage('Item salvo no Supabase.')
     } catch (error) {
       setMessage(error.message)
     }
@@ -1079,35 +1086,44 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
   async function removeItem(id) {
     try {
       await deletePortfolioService(id)
-      setPortfolio(portfolio.filter(item => item.id !== id))
+      setPlans(plans.filter(item => item.id !== id))
       if (editingId === id) resetForm()
-      setMessage('Serviço removido.')
+      setMessage('Item removido.')
     } catch (error) {
       setMessage(error.message)
     }
   }
 
   return (
-    <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+    <div className="grid gap-5">
+      <PlanBenefitsManager
+        benefits={planBenefits}
+        setBenefits={setPlanBenefits}
+        available={planBenefitsAvailable}
+        setMessage={setMessage}
+      />
+
+      <section className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
       <div className={panelClass}>
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-black uppercase tracking-wider text-neon">
-              Vitrine comercial
+            <p className="text-xs font-black uppercase tracking-wider text-neon">Catálogo interno</p>
+            <h2 className="mt-1 text-2xl font-black text-white">Serviços do portfólio</h2>
+            <p className="mt-2 text-xs text-ink-light">
+              Cadastro separado: estes itens não alteram os três cards de planos acima.
             </p>
-            <h2 className="mt-1 text-2xl font-black text-white">Portfólio de serviços</h2>
           </div>
           <button
             type="button"
             onClick={resetForm}
             className="rounded-xl bg-neon px-4 py-2 text-sm font-black text-black"
           >
-            Novo
+            Novo item
           </button>
         </div>
 
         <div className="mt-5 grid gap-3">
-          {portfolio.map(item => (
+          {plans.map(item => (
             <article
               key={item.id}
               className={`rounded-2xl border p-4 transition ${
@@ -1127,9 +1143,8 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
                   </span>
                 )}
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-ink-light">
-                {item.description}
-              </p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-light">{item.description}</p>
+              <p className="mt-3 font-black text-white">{item.price}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -1153,9 +1168,9 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
 
       <form onSubmit={saveItem} className={panelClass}>
         <p className="text-xs font-black uppercase tracking-wider text-neon">
-          {editingId ? 'Editar serviço' : 'Novo serviço'}
+          {editingId ? 'Editar item' : 'Novo item'}
         </p>
-        <h3 className="mt-1 text-2xl font-black text-white">Dados do item</h3>
+        <h3 className="mt-1 text-2xl font-black text-white">Dados do serviço</h3>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <Field label="Nome do serviço">
@@ -1165,7 +1180,7 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
               required
             />
           </Field>
-          <Field label="Nicho">
+          <Field label="Público / nicho">
             <TextInput
               value={form.niche || ''}
               onChange={event => setForm({ ...form, niche: event.target.value })}
@@ -1217,7 +1232,255 @@ function PortfolioAdmin({ portfolio, setPortfolio, setMessage }) {
           type="submit"
           className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3.5 text-sm font-black text-black shadow-neon"
         >
-          Salvar serviço
+          {editingId ? 'Salvar alterações' : 'Salvar item'}
+          <IconCheckCircle className="h-5 w-5" />
+        </button>
+      </form>
+      </section>
+    </div>
+  )
+}
+
+function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
+  const [editingId, setEditingId] = useState(null)
+  const [form, setForm] = useState({
+    id: uid('site'),
+    company_name: '',
+    site_url: '',
+    is_published: true,
+    featured: false,
+    show_on_landing: false,
+  })
+
+  const publicPortfolioUrl = `${window.location.origin}/portfolio`
+  const landingSelectedCount = portfolio.filter(item => item.show_on_landing).length
+
+  function editItem(item) {
+    setEditingId(item.id)
+    setForm(item)
+  }
+
+  function resetForm() {
+    setEditingId(null)
+    setForm({
+      id: uid('site'),
+      company_name: '',
+      site_url: '',
+      is_published: true,
+      featured: false,
+      show_on_landing: false,
+    })
+  }
+
+  async function copyPublicLink() {
+    try {
+      await navigator.clipboard.writeText(publicPortfolioUrl)
+      setMessage('Link público do portfólio copiado.')
+    } catch {
+      window.prompt('Copie o link do portfólio:', publicPortfolioUrl)
+    }
+  }
+
+  async function saveItem(event) {
+    event.preventDefault()
+    try {
+      const currentItem = portfolio.find(item => item.id === form.id)
+      const isNewLandingSelection = form.show_on_landing && !currentItem?.show_on_landing
+      if (isNewLandingSelection && landingSelectedCount >= 6) {
+        setMessage('A landing page já tem 6 projetos selecionados. Desmarque um deles antes de adicionar outro.')
+        return
+      }
+      const saved = await saveClientSite(form)
+      const next = portfolio.some(item => item.id === saved.id)
+        ? portfolio.map(item => (item.id === saved.id ? saved : item))
+        : [saved, ...portfolio]
+      setPortfolio(next)
+      setEditingId(saved.id)
+      setMessage('Site do cliente salvo no portfólio.')
+    } catch (error) {
+      setMessage(error.message)
+    }
+  }
+
+  async function removeItem(id) {
+    try {
+      await deleteClientSite(id)
+      setPortfolio(portfolio.filter(item => item.id !== id))
+      if (editingId === id) resetForm()
+      setMessage('Site removido do portfólio.')
+    } catch (error) {
+      setMessage(error.message)
+    }
+  }
+
+  return (
+    <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className={panelClass}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-neon">
+              Trabalhos realizados
+            </p>
+            <h2 className="mt-1 text-2xl font-black text-white">Sites de clientes</h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={copyPublicLink}
+              className="inline-flex items-center gap-2 rounded-xl border border-neon/30 px-4 py-2 text-sm font-black text-neon"
+            >
+              <IconCopy className="h-4 w-4" />
+              Copiar link público
+            </button>
+            <button
+              type="button"
+              onClick={resetForm}
+              className="rounded-xl bg-neon px-4 py-2 text-sm font-black text-black"
+            >
+              Novo site
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-xl border border-neon/15 bg-black px-4 py-3">
+          <p className="text-xs font-bold uppercase tracking-wider text-ink-dark">Link para compartilhar</p>
+          <p className="mt-1 break-all text-sm font-bold text-neon">{publicPortfolioUrl}</p>
+          <p className="mt-2 text-xs font-bold text-ink-light">
+            {landingSelectedCount}/6 projetos selecionados para a landing page
+          </p>
+        </div>
+
+        <div className="mt-5 grid gap-3">
+          {portfolio.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-neon/25 bg-black/40 p-6 text-center">
+              <p className="font-black text-white">Nenhum site cadastrado ainda.</p>
+              <p className="mt-2 text-sm text-ink-light">Adicione o primeiro trabalho usando o formulário.</p>
+            </div>
+          )}
+          {portfolio.map(item => (
+            <article
+              key={item.id}
+              className={`rounded-2xl border p-4 transition ${
+                editingId === item.id
+                  ? 'border-neon bg-neon/10'
+                  : 'border-neon/15 bg-black/50 hover:border-neon/45'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-black text-white">{item.company_name}</p>
+                  <p className="mt-1 break-all text-sm text-ink-light">{item.site_url}</p>
+                </div>
+                <div className="flex flex-col items-end gap-1.5">
+                  <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase ${
+                    item.is_published ? 'bg-neon text-black' : 'bg-white/10 text-ink-light'
+                  }`}>
+                    {item.is_published ? 'Publicado' : 'Oculto'}
+                  </span>
+                  {item.show_on_landing && (
+                    <span className="rounded-full border border-neon/40 bg-neon/10 px-2.5 py-1 text-[10px] font-black uppercase text-neon">
+                      Na landing
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a
+                  href={item.site_url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="rounded-lg bg-neon px-3 py-2 text-xs font-black text-black"
+                >
+                  Abrir site
+                </a>
+                <button
+                  type="button"
+                  onClick={() => editItem(item)}
+                  className="rounded-lg border border-neon/30 px-3 py-2 text-xs font-bold text-neon"
+                >
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeItem(item.id)}
+                  className="rounded-lg border border-red-400/30 px-3 py-2 text-xs font-bold text-red-200"
+                >
+                  Remover
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <form onSubmit={saveItem} className={panelClass}>
+        <p className="text-xs font-black uppercase tracking-wider text-neon">
+          {editingId ? 'Editar trabalho' : 'Novo trabalho'}
+        </p>
+        <h3 className="mt-1 text-2xl font-black text-white">Dados do site</h3>
+        <p className="mt-2 text-sm leading-relaxed text-ink-light">
+          Informe a empresa e o endereço do site criado. Itens publicados aparecem no portfólio completo.
+        </p>
+
+        <div className="mt-5 grid gap-4">
+          <Field label="Nome da empresa">
+            <TextInput
+              value={form.company_name}
+              onChange={event => setForm({ ...form, company_name: event.target.value })}
+              placeholder="Ex.: Clínica Sorriso"
+              required
+            />
+          </Field>
+          <Field label="Link do site">
+            <TextInput
+              type="url"
+              value={form.site_url || ''}
+              onChange={event => setForm({ ...form, site_url: event.target.value })}
+              placeholder="https://www.clinicasorriso.com.br"
+              required
+            />
+          </Field>
+        </div>
+
+        <div className="mt-4 grid gap-3">
+          <label className="flex items-center gap-3 rounded-xl border border-neon/20 bg-black px-3 py-3">
+            <input
+              type="checkbox"
+              checked={Boolean(form.is_published)}
+              onChange={event => setForm({ ...form, is_published: event.target.checked })}
+              className="h-4 w-4 accent-[#39ff14]"
+            />
+            <span className="text-sm font-bold text-white">Publicar na página compartilhável</span>
+          </label>
+          <label className="flex items-center gap-3 rounded-xl border border-neon/20 bg-black px-3 py-3">
+            <input
+              type="checkbox"
+              checked={Boolean(form.featured)}
+              onChange={event => setForm({ ...form, featured: event.target.checked })}
+              className="h-4 w-4 accent-[#39ff14]"
+            />
+            <span className="text-sm font-bold text-white">Mostrar primeiro na lista</span>
+          </label>
+          <label className="flex items-start gap-3 rounded-xl border border-neon/30 bg-neon/5 px-3 py-3">
+            <input
+              type="checkbox"
+              checked={Boolean(form.show_on_landing)}
+              onChange={event => setForm({ ...form, show_on_landing: event.target.checked })}
+              disabled={!form.show_on_landing && landingSelectedCount >= 6}
+              className="mt-0.5 h-4 w-4 accent-[#39ff14] disabled:cursor-not-allowed disabled:opacity-40"
+            />
+            <span>
+              <span className="block text-sm font-bold text-white">Exibir na seção Portfólio da landing page</span>
+              <span className="mt-1 block text-xs leading-relaxed text-ink-light">Selecione até 6 sites publicados. Os demais continuam disponíveis em /portfolio.</span>
+            </span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3.5 text-sm font-black text-black shadow-neon"
+        >
+          {editingId ? 'Salvar alterações' : 'Adicionar ao portfólio'}
           <IconCheckCircle className="h-5 w-5" />
         </button>
       </form>
@@ -1802,6 +2065,9 @@ function AdminApp() {
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [portfolio, setPortfolio] = useState([])
+  const [plans, setPlans] = useState([])
+  const [planBenefits, setPlanBenefits] = useState([])
+  const [planBenefitsAvailable, setPlanBenefitsAvailable] = useState(null)
   const [testimonials, setTestimonials] = useState([])
   const [briefings, setBriefings] = useState([])
   const [analyticsEvents, setAnalyticsEvents] = useState([])
@@ -1816,8 +2082,21 @@ function AdminApp() {
       setProfile(currentProfile)
 
       if (isAdminProfile(currentProfile)) {
-        const [portfolioRows, testimonialRows, briefingRows, analyticsRows, crmTaskRows, orderRows] = await Promise.all([
+        const [portfolioRows, planRows, benefitRows, testimonialRows, briefingRows, analyticsRows, crmTaskRows, orderRows] = await Promise.all([
+          getClientSites({ admin: true }),
           getPortfolioServices({ admin: true }),
+          getPlanBenefits({ admin: true })
+            .then(rows => {
+              setPlanBenefitsAvailable(true)
+              return rows
+            })
+            .catch(error => {
+              if (error.status === 404 || error.code === 'PGRST205') {
+                setPlanBenefitsAvailable(false)
+                return []
+              }
+              throw error
+            }),
           getTestimonials({ admin: true }),
           getBriefingsForAdmin(),
           getAnalyticsEventsForAdmin(),
@@ -1825,6 +2104,8 @@ function AdminApp() {
           getOrdersForAdmin(),
         ])
         setPortfolio(portfolioRows)
+        setPlans(planRows)
+        setPlanBenefits(benefitRows)
         setTestimonials(testimonialRows)
         setBriefings(briefingRows)
         setAnalyticsEvents(analyticsRows)
@@ -1847,6 +2128,9 @@ function AdminApp() {
     await signOut()
     setProfile(null)
     setPortfolio([])
+    setPlans([])
+    setPlanBenefits([])
+    setPlanBenefitsAvailable(null)
     setTestimonials([])
     setBriefings([])
     setAnalyticsEvents([])
@@ -1859,7 +2143,7 @@ function AdminApp() {
       <AuthBox
         admin
         title="Entre no painel administrativo."
-        subtitle="Gerencie o portfólio de serviços e acompanhe os briefings enviados pelos clientes."
+        subtitle="Gerencie os sites de clientes, compartilhe seu portfólio e acompanhe os briefings recebidos."
         onReady={loadAdminData}
       />
     )
@@ -1914,8 +2198,9 @@ function AdminApp() {
       <AdminHeader active={active} setActive={setActive} onLogout={logout} />
 
       <main className="container-page py-6 sm:py-10">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard icon={IconSparkles} label="Itens no portfólio" value={portfolio.length} />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <StatCard icon={IconSparkles} label="Sites no portfólio" value={portfolio.length} />
+          <StatCard icon={IconLink} label="Planos cadastrados" value={plans.length} />
           <StatCard icon={IconStar} label="Avaliações autorizadas" value={testimonials.length} />
           <StatCard icon={IconCopy} label="Briefings recebidos" value={briefings.length} />
           <StatCard icon={IconShield} label="Eventos registrados" value={analyticsEvents.length} />
@@ -1923,7 +2208,14 @@ function AdminApp() {
 
         {message && (
           <div className="mt-5">
-            <StatusMessage type={message.includes('salv') || message.includes('removid') || message.includes('enviada') ? 'info' : 'error'}>
+            <StatusMessage
+              type={
+                !/^erro\b/i.test(message) &&
+                /salv|removid|enviad|copiad|criad|atualizad|ativad|ocultad/i.test(message)
+                  ? 'info'
+                  : 'error'
+              }
+            >
               {message}
             </StatusMessage>
           </div>
@@ -1945,8 +2237,18 @@ function AdminApp() {
               />
             </Suspense>
           )}
+          {active === 'plans' && (
+            <PlansAdmin
+              plans={plans}
+              setPlans={setPlans}
+              planBenefits={planBenefits}
+              setPlanBenefits={setPlanBenefits}
+              planBenefitsAvailable={planBenefitsAvailable}
+              setMessage={setMessage}
+            />
+          )}
           {active === 'portfolio' && (
-            <PortfolioAdmin
+            <ClientSitesAdmin
               portfolio={portfolio}
               setPortfolio={setPortfolio}
               setMessage={setMessage}
@@ -2400,7 +2702,7 @@ function BriefingForm({ session, onLogout }) {
         </header>
 
         <main className="container-page flex min-h-[calc(100vh-5rem)] items-center py-10">
-          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#071007] p-6 text-center shadow-[0_0_32px_rgba(57,255,20,0.12)] sm:p-8">
+          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#071007] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(57,255,20,0.055)] sm:p-8">
             <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-neon-sm">
               <IconCheckCircle className="h-7 w-7" />
             </span>
@@ -2748,13 +3050,44 @@ function BriefingApp() {
 function PublicPortfolioApp() {
   const [portfolio, setPortfolio] = useState([])
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    document.title = 'Portfólio de Serviços | Zap Page'
-    getPortfolioServices()
-      .then(rows => setPortfolio(rows.length ? rows : portfolioSeed))
+    document.title = 'Sites de Clientes | Zap Page'
+    getClientSites()
+      .then(setPortfolio)
       .catch(error => setMessage(error.message))
+      .finally(() => setLoading(false))
   }, [])
+
+  async function sharePortfolio() {
+    const shareData = {
+      title: 'Portfólio Zap Page',
+      text: 'Conheça alguns sites que já criamos para nossos clientes.',
+      url: window.location.href,
+    }
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData)
+        return
+      }
+      await navigator.clipboard.writeText(window.location.href)
+      setMessage('Link do portfólio copiado. Agora é só enviar ao cliente.')
+    } catch (error) {
+      if (error?.name !== 'AbortError') {
+        window.prompt('Copie o link do portfólio:', window.location.href)
+      }
+    }
+  }
+
+  function getSiteDomain(value) {
+    try {
+      return new URL(value).hostname.replace(/^www\./, '')
+    } catch {
+      return value
+    }
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -2774,15 +3107,17 @@ function PublicPortfolioApp() {
             />
             <div className="leading-tight">
               <p className="font-black text-white">{siteConfig.brandName}</p>
-              <p className="text-xs font-bold text-neon">Portfólio de serviços</p>
+              <p className="text-xs font-bold text-neon">Sites de clientes</p>
             </div>
           </a>
-          <a
-            href="/briefing"
-            className="rounded-xl bg-neon px-4 py-2.5 text-sm font-black text-black shadow-neon-sm"
+          <button
+            type="button"
+            onClick={sharePortfolio}
+            className="inline-flex items-center gap-2 rounded-xl bg-neon px-4 py-2.5 text-sm font-black text-black shadow-neon-sm"
           >
-            Preencher briefing
-          </a>
+            <IconCopy className="h-4 w-4" />
+            Compartilhar
+          </button>
         </div>
       </header>
 
@@ -2790,28 +3125,42 @@ function PublicPortfolioApp() {
         <section className="mx-auto max-w-4xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-neon/35 bg-neon/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-neon">
             <IconSparkles className="h-4 w-4" />
-            Serviços Zap Page
+            Projetos entregues
           </span>
           <h1 className="mt-6 text-4xl font-black leading-tight text-white sm:text-6xl">
-            Páginas profissionais para negócios que atendem pelo WhatsApp
+            Sites que já criamos para nossos clientes
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink-light sm:text-lg">
-            Escolha uma estrutura, tire dúvidas pelo WhatsApp e depois preencha o
-            briefing para começarmos com as informações certas.
+            Veja alguns trabalhos publicados pela Zap Page. Clique em qualquer projeto
+            para conhecer o site real, funcionando ao vivo.
           </p>
         </section>
 
         {message && (
           <div className="mx-auto mt-6 max-w-2xl">
-            <StatusMessage type="error">{message}</StatusMessage>
+            <StatusMessage type={message.includes('copiado') ? 'info' : 'error'}>{message}</StatusMessage>
           </div>
         )}
 
-        <section className="mt-12 grid gap-5 lg:grid-cols-3">
+        {loading && (
+          <p className="mt-12 text-center font-black text-neon">Carregando projetos...</p>
+        )}
+
+        {!loading && portfolio.length === 0 && !message && (
+          <section className="mx-auto mt-12 max-w-2xl rounded-[1.5rem] border border-neon/20 bg-[#071007] p-8 text-center">
+            <IconSparkles className="mx-auto h-8 w-8 text-neon" />
+            <h2 className="mt-4 text-2xl font-black text-white">Novos projetos em breve</h2>
+            <p className="mt-3 text-sm leading-relaxed text-ink-light">
+              Estamos preparando os primeiros trabalhos para esta vitrine.
+            </p>
+          </section>
+        )}
+
+        <section className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {portfolio.map(item => (
             <article
               key={item.id}
-              className={`flex flex-col rounded-[1.5rem] border p-6 ${
+              className={`group flex min-h-72 flex-col overflow-hidden rounded-[1.5rem] border p-6 transition hover:-translate-y-1 hover:border-neon/60 ${
                 item.featured
                   ? 'border-neon bg-neon/10 shadow-neon'
                   : 'border-neon/20 bg-[#071007]'
@@ -2822,47 +3171,41 @@ function PublicPortfolioApp() {
                   Destaque
                 </span>
               )}
-              <p className="text-sm font-bold text-neon">{item.niche}</p>
-              <h2 className="mt-3 text-2xl font-black text-white">{item.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-ink-light">
-                {item.description}
-              </p>
-              <div className="mt-5 rounded-xl border border-neon/15 bg-black p-4">
-                <p className="text-xs font-black uppercase tracking-wider text-ink-dark">
-                  Entrega
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-ink-light">
-                  {item.deliverables}
-                </p>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-neon/25 bg-black text-neon">
+                <IconLink className="h-6 w-6" />
               </div>
-              <p className="mt-5 text-3xl font-black text-white">{item.price}</p>
+              <p className="mt-6 text-xs font-black uppercase tracking-[0.18em] text-neon">
+                Site desenvolvido
+              </p>
+              <h2 className="mt-2 break-words text-2xl font-black text-white">{item.company_name}</h2>
+              <p className="mt-2 break-all text-sm text-ink-light">{getSiteDomain(item.site_url)}</p>
               <a
-                href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
-                  `Olá! Tenho interesse no serviço: ${item.title}`,
-                )}`}
+                href={item.site_url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3 text-sm font-black text-black shadow-neon"
+                className="mt-auto inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3 text-sm font-black text-black shadow-neon"
               >
-                Chamar no WhatsApp
-                <IconWhatsapp className="h-5 w-5" />
+                Visitar site
+                <IconArrowRight className="h-5 w-5" />
               </a>
             </article>
           ))}
         </section>
 
         <section className="mt-10 rounded-[1.5rem] border border-neon/25 bg-[#071007] p-6 text-center sm:p-8">
-          <h2 className="text-2xl font-black text-white">Já sabe o que precisa?</h2>
+          <h2 className="text-2xl font-black text-white">Quer um site profissional para sua empresa?</h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-light">
-            Preencha o briefing para enviar os dados do seu negócio, serviços,
-            diferenciais, referências e preferências visuais.
+            Fale com a Zap Page pelo WhatsApp e conte o que você precisa. Vamos transformar
+            sua ideia em uma página clara, rápida e pronta para vender.
           </p>
           <a
-            href="/briefing"
+            href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Olá! Vi o portfólio da Zap Page e quero criar um site para minha empresa.')}`}
+            target="_blank"
+            rel="noreferrer noopener"
             className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3 text-sm font-black text-black shadow-neon"
           >
-            Abrir briefing
-            <IconArrowRight className="h-5 w-5" />
+            Pedir meu site
+            <IconWhatsapp className="h-5 w-5" />
           </a>
         </section>
       </main>

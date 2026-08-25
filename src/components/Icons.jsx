@@ -4,6 +4,8 @@
 
 const baseProps = {
   xmlns: 'http://www.w3.org/2000/svg',
+  'aria-hidden': true,
+  focusable: 'false',
   fill: 'none',
   viewBox: '0 0 24 24',
   strokeWidth: 1.6,

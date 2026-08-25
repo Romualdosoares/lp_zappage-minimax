@@ -62,7 +62,7 @@ export default function NichesSection() {
           {NICHES.map(item => (
             <li
               key={item}
-              className="group cursor-default rounded-full border border-neon/25 bg-bg-card px-4 py-2 text-sm font-medium text-ink-light transition-all duration-300 hover:border-neon/60 hover:bg-neon/10 hover:text-white hover:shadow-neon-sm"
+              className="group cursor-default rounded-full border border-neon/25 bg-bg-card px-4 py-2 text-sm font-medium text-ink-light transition-all duration-300 hover:border-neon/60 hover:bg-neon/10 hover:text-white"
             >
               {item}
             </li>

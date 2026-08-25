@@ -17,24 +17,15 @@ export default function SpecialOfferSection() {
   return (
     <section className="relative py-20 sm:py-28" aria-labelledby="offer-title">
       <div className="container-page">
-        <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border-2 border-neon/60 bg-bg-cardPremium p-8 shadow-neon-strong sm:p-12">
-          {/* Brilhos de fundo */}
+        <div className="card-animated-slow relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-bg-cardPremium p-8 sm:p-12">
           <div
             aria-hidden
-            className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-neon/25 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-neon-secondary/20 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-grid-lines bg-grid opacity-20"
+            className="pointer-events-none absolute inset-0 bg-grid-lines bg-grid opacity-10"
           />
 
           <div className="relative grid items-center gap-8 lg:grid-cols-5">
             <div className="lg:col-span-3">
-              <span className="badge-neon mb-4 border-neon/70 bg-neon/15 text-neon text-glow-sm">
+              <span className="badge-neon mb-4">
                 <IconSparkles className="h-3.5 w-3.5" /> Escolha com segurança
               </span>
               <h2
@@ -72,7 +63,7 @@ export default function SpecialOfferSection() {
 
             {/* Card de ação */}
             <div className="lg:col-span-2">
-              <div className="rounded-2xl border border-neon/40 bg-bg-primary/70 p-6 backdrop-blur-xl">
+              <div className="rounded-2xl border border-white/10 bg-bg-primary/70 p-6 backdrop-blur-xl">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-neon">
                   <IconBolt className="h-4 w-4" /> Planos a partir de
                 </div>

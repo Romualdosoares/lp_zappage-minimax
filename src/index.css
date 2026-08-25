@@ -5,6 +5,9 @@
 /* =============== BASE =============== */
 :root {
   color-scheme: dark;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --surface-border: rgba(255, 255, 255, 0.09);
+  --surface-border-hover: rgba(57, 255, 20, 0.32);
 }
 
 html {
@@ -13,7 +16,7 @@ html {
 }
 
 body {
-  background-color: #020402;
+  background: #020402 radial-gradient(circle at 50% -20%, rgba(57, 255, 20, 0.06), transparent 38rem);
   color: #ffffff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     sans-serif;
@@ -25,6 +28,26 @@ body {
 ::selection {
   background: rgba(57, 255, 20, 0.35);
   color: #ffffff;
+}
+
+a,
+button,
+[tabindex]:not([tabindex='-1']) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid rgba(57, 255, 20, 0.9);
+  outline-offset: 4px;
+}
+
+#top > section[id],
+footer[id] {
+  scroll-margin-top: 6.5rem;
+}
+
+main#top {
+  scroll-margin-top: 5rem;
 }
 
 /* =============== UTILITY CLASSES =============== */
@@ -50,39 +73,38 @@ body {
     border-color: rgba(57, 255, 20, 0.45);
   }
 
-  /* Glow utilities */
+  /* Glow utilities — valores calibrados para não poluir visualmente */
   .glow-neon-sm {
-    box-shadow: 0 0 9px rgba(57, 255, 20, 0.32),
-      0 0 24px rgba(57, 255, 20, 0.1);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22),
+      0 0 5px rgba(57, 255, 20, 0.038);
   }
   .glow-neon {
-    box-shadow: 0 0 18px rgba(57, 255, 20, 0.36),
-      0 0 42px rgba(57, 255, 20, 0.14);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28),
+      0 0 8px rgba(57, 255, 20, 0.052);
   }
   .glow-neon-strong {
-    box-shadow: 0 0 24px rgba(57, 255, 20, 0.48),
-      0 0 56px rgba(57, 255, 20, 0.2);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.32),
+      0 0 12px rgba(57, 255, 20, 0.068);
   }
 
-  /* Text glow */
+  /* Text glow — suavizado */
   .text-glow {
-    text-shadow: 0 0 12px rgba(57, 255, 20, 0.6),
-      0 0 28px rgba(57, 255, 20, 0.25);
+    text-shadow: 0 0 14px rgba(57, 255, 20, 0.16);
   }
   .text-glow-sm {
-    text-shadow: 0 0 8px rgba(57, 255, 20, 0.45);
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.14);
   }
 
-  /* Background com leve gradiente + grid futurista */
+  /* Background com leve gradiente + grid futurista — intensidade calibrada */
   .bg-futuristic {
     background-color: #020402;
     background-image: radial-gradient(
         ellipse 80% 60% at 50% 0%,
-        rgba(57, 255, 20, 0.18),
-        transparent 60%
+        rgba(57, 255, 20, 0.11),
+        transparent 55%
       ),
-      linear-gradient(rgba(57, 255, 20, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(57, 255, 20, 0.04) 1px, transparent 1px);
+      linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px);
     background-size: 100% 100%, 48px 48px, 48px 48px;
     background-position: 0 0, 0 0, 0 0;
   }
@@ -90,25 +112,25 @@ body {
     background-color: #020402;
     background-image: radial-gradient(
         ellipse 70% 50% at 50% 100%,
-        rgba(0, 255, 102, 0.14),
-        transparent 60%
+        rgba(0, 255, 102, 0.08),
+        transparent 55%
       ),
       radial-gradient(
         ellipse 60% 40% at 50% 0%,
-        rgba(57, 255, 20, 0.1),
-        transparent 60%
+        rgba(57, 255, 20, 0.06),
+        transparent 55%
       );
   }
 
-  /* Glassmorphism escuro */
+  /* Glassmorphism escuro — blur reduzido para melhor performance */
   .glass {
     background: linear-gradient(
       180deg,
-      rgba(11, 20, 11, 0.85) 0%,
-      rgba(7, 17, 7, 0.85) 100%
+      rgba(11, 20, 11, 0.88) 0%,
+      rgba(7, 17, 7, 0.88) 100%
     );
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 
   /* Cards premium com leve gradiente interno */
@@ -144,20 +166,20 @@ body {
 /* =============== COMPONENTES (botões, cards) =============== */
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl
+    @apply inline-flex items-center justify-center gap-2 rounded-lg
       bg-neon px-6 py-3.5 text-base font-bold text-bg-primary
-      shadow-neon transition-all duration-300
+      shadow-neon transition-[transform,box-shadow,background-color] duration-300
       hover:-translate-y-0.5 hover:shadow-neon-strong
       focus:outline-none focus:ring-4 focus:ring-neon/40
       active:translate-y-0;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl
-      border border-neon/40 bg-transparent px-6 py-3.5
+    @apply inline-flex items-center justify-center gap-2 rounded-lg
+      border border-white/15 bg-white/[0.02] px-6 py-3.5
       text-base font-semibold text-neon
-      transition-all duration-300
-      hover:border-neon hover:bg-neon/10 hover:text-glow-sm
+      transition-[transform,border-color,background-color,color] duration-300
+      hover:-translate-y-0.5 hover:border-neon/50 hover:bg-neon/[0.06]
       focus:outline-none focus:ring-4 focus:ring-neon/30;
   }
 
@@ -168,15 +190,148 @@ body {
   }
 
   .card-base {
-    @apply relative rounded-2xl border border-neon/20
-      bg-bg-card p-6 transition-all duration-300
-      hover:border-neon/50 hover:shadow-neon-sm;
+    @apply relative rounded-2xl border border-white/10
+      bg-bg-card p-6 transition-[border-color,background-color] duration-300
+      hover:border-neon/30 hover:bg-bg-cardPremium;
   }
 
   .badge-neon {
-    @apply inline-flex items-center gap-1.5 rounded-full
-      border border-neon/40 bg-neon/10 px-3 py-1
-      text-xs font-semibold uppercase tracking-wider text-neon;
+    @apply inline-flex items-center gap-1.5 rounded-md
+      border border-white/10 bg-white/[0.035] px-3 py-1.5
+      text-[11px] font-bold uppercase tracking-[0.14em] text-neon;
+  }
+}
+
+/* =============== EXPERIÊNCIA DE SCROLL =============== */
+.scroll-progress {
+  pointer-events: none;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 90;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.scroll-progress__bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(90deg, #39ff14, #00ff66 72%, #b6ff9f);
+  box-shadow: 0 0 14px rgba(57, 255, 20, 0.35);
+  will-change: transform;
+}
+
+.cookie-consent-visible .mobile-sticky-cta {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(110%);
+}
+
+.motion-enhanced [data-reveal],
+.motion-enhanced [data-reveal-group] > [data-reveal-item] {
+  --reveal-x: 0;
+  --reveal-y: 18px;
+  --reveal-scale: 1;
+  opacity: 0;
+  scale: var(--reveal-scale);
+  translate: var(--reveal-x) var(--reveal-y);
+}
+
+.motion-enhanced [data-reveal='left'] {
+  --reveal-x: -24px;
+  --reveal-y: 0;
+}
+
+.motion-enhanced [data-reveal='right'] {
+  --reveal-x: 24px;
+  --reveal-y: 0;
+}
+
+.motion-enhanced [data-reveal='scale'] {
+  --reveal-scale: 0.975;
+  --reveal-y: 0;
+}
+
+@keyframes scroll-reveal-in {
+  from {
+    opacity: 0;
+    scale: var(--reveal-scale);
+    translate: var(--reveal-x) var(--reveal-y);
+  }
+  to {
+    opacity: 1;
+    scale: none;
+    translate: none;
+  }
+}
+
+.motion-enhanced [data-reveal].is-visible,
+.motion-enhanced [data-reveal-group].is-visible > [data-reveal-item] {
+  opacity: 1;
+  scale: none;
+  translate: none;
+  animation: scroll-reveal-in 640ms var(--motion-ease) both;
+}
+
+.motion-enhanced [data-reveal-group].is-visible > [data-reveal-item]:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.motion-enhanced [data-reveal-group].is-visible > [data-reveal-item]:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+.motion-enhanced [data-reveal-group].is-visible > [data-reveal-item]:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.motion-enhanced [data-reveal-group].is-visible > [data-reveal-item]:nth-child(n + 5) {
+  animation-delay: 240ms;
+}
+
+.process-flow::before,
+.process-flow::after {
+  content: '';
+  position: absolute;
+  top: 2.2rem;
+  bottom: 2.2rem;
+  left: 2.35rem;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.process-flow::after {
+  background: linear-gradient(180deg, #39ff14, rgba(0, 255, 102, 0.18));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.15s var(--motion-ease) 180ms;
+}
+
+.process-flow.is-visible::after {
+  transform: scaleY(1);
+}
+
+@media (min-width: 768px) {
+  .process-flow::before,
+  .process-flow::after {
+    top: 2.35rem;
+    right: 10%;
+    bottom: auto;
+    left: 10%;
+    width: auto;
+    height: 1px;
+  }
+
+  .process-flow::after {
+    background: linear-gradient(90deg, #39ff14, rgba(0, 255, 102, 0.18));
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .process-flow.is-visible::after {
+    transform: scaleX(1);
   }
 }
 
@@ -190,40 +345,82 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  .scroll-progress {
+    display: none;
+  }
+
+  [data-reveal],
+  [data-reveal-group] > [data-reveal-item] {
+    opacity: 1 !important;
+    scale: none !important;
+    translate: none !important;
+  }
+
+  .process-flow::after {
+    transform: none !important;
+  }
 }
 
 /* =============== MOBILE PERFORMANCE =============== */
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .animate-float,
+  .animate-pulse,
   .animate-pulse-glow,
   .animate-ping {
     animation: none !important;
   }
 
-  .backdrop-blur-xl {
+  /* Desabilita backdrop-filter em mobile (muito custoso para GPU) */
+  .backdrop-blur-xl,
+  .backdrop-blur-lg,
+  .backdrop-blur-md,
+  .backdrop-blur-sm,
+  .backdrop-blur {
     --tw-backdrop-blur: blur(0px);
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
   }
 
-  .blur-3xl,
-  .blur-2xl {
-    filter: none;
-    opacity: 0.35;
+  .glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
+  /* Esconde elementos puramente decorativos em mobile */
+  .blur-3xl,
+  .blur-2xl,
+  .blur-xl {
+    display: none !important;
+  }
+
+  /* Sombras neon muito mais suaves em mobile */
   .shadow-neon,
   .shadow-neon-sm,
   .shadow-neon-strong {
-    box-shadow: 0 0 12px rgba(57, 255, 20, 0.2);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.28),
+      0 0 4px rgba(57, 255, 20, 0.03);
   }
 
+  .decorative-glow {
+    display: none !important;
+  }
+
+  /* Gradiente de fundo bem mais sutil em mobile */
   .bg-futuristic-dense {
     background-image: radial-gradient(
-      ellipse 90% 45% at 50% 0%,
-      rgba(57, 255, 20, 0.08),
-      transparent 70%
+      ellipse 90% 40% at 50% 0%,
+      rgba(57, 255, 20, 0.05),
+      transparent 65%
     );
+  }
+
+  /* Reduz text-glow em mobile */
+  .text-glow {
+    text-shadow: none;
+  }
+  .text-glow-sm {
+    text-shadow: none;
   }
 }
 
@@ -231,6 +428,211 @@ body {
 @supports (content-visibility: auto) {
   #top > section:not(:first-child) {
     content-visibility: auto;
-    contain-intrinsic-size: auto 760px;
+    contain-intrinsic-size: auto 800px;
+  }
+
+  #top > #portfolio {
+    contain-intrinsic-size: auto 1000px;
+  }
+
+  #top > #planos {
+    contain-intrinsic-size: auto 1300px;
+  }
+
+  #top > #faq {
+    contain-intrinsic-size: auto 900px;
+  }
+}
+
+@media (max-width: 1023px) {
+  @supports (content-visibility: auto) {
+    #top > #portfolio {
+      contain-intrinsic-size: auto 1500px;
+    }
+
+    #top > #planos {
+      contain-intrinsic-size: auto 3000px;
+    }
+
+    #top > #faq {
+      contain-intrinsic-size: auto 1100px;
+    }
+  }
+}
+
+@media (max-width: 639px) {
+  @supports (content-visibility: auto) {
+    #top > #portfolio {
+      contain-intrinsic-size: auto 2500px;
+    }
+
+    #top > #planos {
+      contain-intrinsic-size: auto 4200px;
+    }
+
+    #top > section:not(:first-child) {
+      contain-intrinsic-size: auto 900px;
+    }
+  }
+}
+
+/* =============== OTIMIZAÇÕES ADICIONAIS DE PERFORMANCE =============== */
+
+/* Garante que elementos com will-change sejam promovidos na GPU corretamente */
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Evita reflow em imagens que ainda não carregaram */
+img {
+  content-visibility: auto;
+}
+
+/* =============== BORDA ANIMADA EM DEGRADÊ (CARDS LANDING) =============== */
+@keyframes card-border-spin {
+  from { --card-border-angle: 0deg; }
+  to   { --card-border-angle: 360deg; }
+}
+
+@property --card-border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* --- Base compartilhada --- */
+.portfolio-card-animated,
+.card-animated-slow,
+.card-animated-subtle,
+.card-animated-strong {
+  position: relative;
+  isolation: isolate;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Pseudo-elemento compartilhado: a borda giratória */
+.portfolio-card-animated::before,
+.card-animated-slow::before,
+.card-animated-subtle::before,
+.card-animated-strong::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* --- portfolio-card-animated (portfólio) --- */
+.portfolio-card-animated::before {
+  background: conic-gradient(
+    from var(--card-border-angle),
+    transparent 0%,
+    transparent 35%,
+    rgba(57, 255, 20, 0.7) 50%,
+    rgba(0, 255, 102, 0.5) 55%,
+    transparent 70%,
+    transparent 100%
+  );
+  animation: card-border-spin 4s linear infinite;
+  will-change: --card-border-angle;
+}
+.portfolio-card-animated:hover::before {
+  background: conic-gradient(
+    from var(--card-border-angle),
+    transparent 0%,
+    transparent 20%,
+    rgba(57, 255, 20, 0.95) 38%,
+    rgba(0, 255, 102, 0.8) 50%,
+    rgba(57, 255, 20, 0.95) 62%,
+    transparent 80%,
+    transparent 100%
+  );
+  animation-duration: 2.5s;
+}
+
+/* --- card-animated-subtle (depoimentos, cards menores) --- */
+.card-animated-subtle::before {
+  background: conic-gradient(
+    from var(--card-border-angle),
+    transparent 0%,
+    transparent 40%,
+    rgba(57, 255, 20, 0.5) 50%,
+    rgba(0, 255, 102, 0.35) 56%,
+    transparent 72%,
+    transparent 100%
+  );
+  animation: card-border-spin 5s linear infinite;
+  will-change: --card-border-angle;
+}
+.card-animated-subtle:hover::before {
+  background: conic-gradient(
+    from var(--card-border-angle),
+    transparent 0%,
+    transparent 28%,
+    rgba(57, 255, 20, 0.85) 42%,
+    rgba(0, 255, 102, 0.65) 52%,
+    rgba(57, 255, 20, 0.85) 64%,
+    transparent 78%,
+    transparent 100%
+  );
+  animation-duration: 3s;
+}
+
+/* --- card-animated-slow (CTA grande, blocos wide) --- */
+.card-animated-slow::before {
+  background: conic-gradient(
+    from var(--card-border-angle),
+    transparent 0%,
+    transparent 30%,
+    rgba(57, 255, 20, 0.65) 46%,
+    rgba(0, 255, 102, 0.5) 54%,
+    transparent 70%,
+    transparent 100%
+  );
+  animation: card-border-spin 7s linear infinite;
+  will-change: --card-border-angle;
+}
+
+/* --- card-animated-strong (card de destaque / plano popular) --- */
+.card-animated-strong::before {
+  padding: 1.5px;
+  inset: -1.5px;
+  background: conic-gradient(
+    from var(--card-border-angle),
+    transparent 0%,
+    transparent 20%,
+    rgba(57, 255, 20, 1) 36%,
+    rgba(0, 255, 102, 0.85) 50%,
+    rgba(57, 255, 20, 1) 64%,
+    transparent 80%,
+    transparent 100%
+  );
+  animation: card-border-spin 3s linear infinite;
+  will-change: --card-border-angle;
+}
+
+/* Desabilita animação em mobile para performance */
+@media (max-width: 900px) {
+  .portfolio-card-animated::before,
+  .card-animated-slow::before,
+  .card-animated-subtle::before,
+  .card-animated-strong::before {
+    animation: none;
+    background: conic-gradient(
+      from 45deg,
+      transparent 0%,
+      transparent 30%,
+      rgba(57, 255, 20, 0.3) 50%,
+      transparent 70%,
+      transparent 100%
+    );
   }
 }

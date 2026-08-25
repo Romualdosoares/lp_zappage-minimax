@@ -9,6 +9,9 @@ const SESSION_KEY = 'zapPage.supabaseSession.v1'
 const ANALYTICS_SESSION_KEY = 'zapPage.analyticsSession.v1'
 const BRIEFING_ASSETS_BUCKET = 'briefing-assets'
 const TESTIMONIAL_ASSETS_BUCKET = 'testimonial-assets'
+const PLAN_BENEFITS_EVENT = 'zap-page:plan-benefits-changed'
+const PLAN_BENEFITS_CHANNEL = 'zap-page-plan-benefits'
+const VALID_PLAN_KEYS = new Set(['express', 'professional', 'turbo'])
 const CLIENT_BRIEFING_COLUMNS = [
   'id',
   'order_number',
@@ -117,7 +120,10 @@ async function parseResponse(response) {
   if (!response.ok) {
     const message =
       data?.msg || data?.message || data?.error_description || data?.hint || 'Erro no Supabase.'
-    throw new Error(message)
+    const error = new Error(message)
+    error.status = response.status
+    error.code = data?.code
+    throw error
   }
 
   return data
@@ -239,13 +245,44 @@ export async function getBriefingAssetUrl(asset, expiresIn = 3600) {
   return data?.signedURL ? `${SUPABASE_BASE_URL}/storage/v1${data.signedURL}` : ''
 }
 
+async function optimizeTestimonialPhoto(file) {
+  if (typeof document === 'undefined' || !('createImageBitmap' in window)) return file
+
+  let bitmap
+  try {
+    bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
+    const maxSide = 320
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height))
+    const width = Math.max(1, Math.round(bitmap.width * scale))
+    const height = Math.max(1, Math.round(bitmap.height * scale))
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const context = canvas.getContext('2d', { alpha: false })
+    if (!context) return file
+    context.drawImage(bitmap, 0, 0, width, height)
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.8))
+    return blob?.size && blob.size < file.size ? blob : file
+  } catch {
+    return file
+  } finally {
+    bitmap?.close?.()
+  }
+}
+
 export async function uploadTestimonialPhoto(file) {
   const session = getSession()
   if (!session?.access_token || !session?.user?.id) throw new Error('Sessão inválida.')
   if (!file?.type?.startsWith('image/')) throw new Error('Selecione uma imagem válida.')
   if (file.size > 5 * 1024 * 1024) throw new Error('A foto deve ter no máximo 5 MB.')
 
-  const safeName = sanitizeFileName(file.name) || 'depoimento.jpg'
+  const uploadFile = await optimizeTestimonialPhoto(file)
+  const originalBaseName = String(file.name || 'depoimento').replace(/\.[^.]+$/, '')
+  const extension = uploadFile.type === 'image/webp'
+    ? 'webp'
+    : sanitizeFileName(file.name).split('.').pop() || 'jpg'
+  const safeName = `${sanitizeFileName(originalBaseName) || 'depoimento'}.${extension}`
   const path = `autorizados/${session.user.id}/${Date.now()}-${safeName}`
   const response = await fetch(
     `${SUPABASE_BASE_URL}/storage/v1/object/${TESTIMONIAL_ASSETS_BUCKET}/${path}`,
@@ -254,10 +291,10 @@ export async function uploadTestimonialPhoto(file) {
       headers: {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${session.access_token}`,
-        'Content-Type': file.type,
+        'Content-Type': uploadFile.type || file.type,
         'x-upsert': 'true',
       },
-      body: file,
+      body: uploadFile,
     },
   )
 
@@ -301,6 +338,7 @@ export async function getPortfolioServices({ admin = false } = {}) {
   const filter = admin ? '' : '&status=eq.Ativo'
   const rows = await restRequest(
     `/portfolio_services?select=*&order=featured.desc,created_at.desc${filter}`,
+    admin ? undefined : { token: SUPABASE_ANON_KEY },
   )
   return rows.length ? rows : admin ? portfolioSeed : []
 }
@@ -329,11 +367,194 @@ export async function deletePortfolioService(id) {
   await restRequest(`/portfolio_services?id=eq.${id}`, { method: 'DELETE' })
 }
 
+export async function getPlanBenefits({ admin = false } = {}) {
+  const activeFilter = admin ? '' : '&is_active=eq.true'
+  return restRequest(
+    `/plan_benefits?select=id,plan_key,benefit_text,is_active,sort_order,created_at,updated_at&order=plan_key.asc,sort_order.asc,created_at.asc${activeFilter}`,
+    admin ? undefined : { token: SUPABASE_ANON_KEY },
+  )
+}
+
+function planBenefitPayload(item) {
+  const planKey = String(item?.plan_key || '').trim()
+  const benefitText = String(item?.benefit_text || '').trim()
+  const sortOrder = Math.max(0, Math.round(Number(item?.sort_order) || 0))
+
+  if (!VALID_PLAN_KEYS.has(planKey)) throw new Error('Selecione um plano válido.')
+  if (benefitText.length < 2) throw new Error('Escreva o benefício com pelo menos 2 caracteres.')
+  if (benefitText.length > 240) throw new Error('O benefício deve ter no máximo 240 caracteres.')
+
+  return {
+    plan_key: planKey,
+    benefit_text: benefitText,
+    is_active: item?.is_active !== false,
+    sort_order: sortOrder,
+  }
+}
+
+function notifyPlanBenefitsChanged() {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(PLAN_BENEFITS_EVENT))
+
+  if ('BroadcastChannel' in window) {
+    try {
+      const channel = new BroadcastChannel(PLAN_BENEFITS_CHANNEL)
+      channel.postMessage({ type: 'changed', at: Date.now() })
+      channel.close()
+    } catch {
+      // O evento local e o Realtime continuam cobrindo a atualização.
+    }
+  }
+}
+
+export async function savePlanBenefit(item) {
+  const payload = planBenefitPayload(item)
+  const isUpdate = Boolean(item?.id)
+  const path = isUpdate
+    ? `/plan_benefits?id=eq.${encodeURIComponent(item.id)}&select=*`
+    : '/plan_benefits?select=*'
+  const rows = await restRequest(path, {
+    method: isUpdate ? 'PATCH' : 'POST',
+    body: payload,
+    prefer: 'return=representation',
+  })
+  const saved = rows?.[0]
+  if (!saved) throw new Error('O Supabase não retornou o benefício salvo.')
+  notifyPlanBenefitsChanged()
+  return saved
+}
+
+export async function deletePlanBenefit(id) {
+  if (!id) throw new Error('Benefício inválido.')
+  await restRequest(`/plan_benefits?id=eq.${encodeURIComponent(id)}`, { method: 'DELETE' })
+  notifyPlanBenefitsChanged()
+}
+
+let publicRealtimeClientPromise
+
+function getPublicRealtimeClient() {
+  if (!publicRealtimeClientPromise) {
+    publicRealtimeClientPromise = import('@supabase/supabase-js').then(({ createClient }) =>
+      createClient(SUPABASE_BASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+        },
+      }),
+    )
+  }
+  return publicRealtimeClientPromise
+}
+
+export function subscribeToPlanBenefits(onChange) {
+  if (typeof window === 'undefined' || typeof onChange !== 'function') return () => {}
+
+  let disposed = false
+  let realtimeChannel = null
+  let broadcastChannel = null
+  const handleChange = () => {
+    if (!disposed) onChange()
+  }
+
+  window.addEventListener(PLAN_BENEFITS_EVENT, handleChange)
+  if ('BroadcastChannel' in window) {
+    try {
+      broadcastChannel = new BroadcastChannel(PLAN_BENEFITS_CHANNEL)
+      broadcastChannel.addEventListener('message', handleChange)
+    } catch {
+      broadcastChannel = null
+    }
+  }
+
+  getPublicRealtimeClient()
+    .then(client => {
+      if (disposed) return
+      realtimeChannel = client
+        .channel(`plan-benefits-${Math.random().toString(16).slice(2)}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'plan_benefits' },
+          handleChange,
+        )
+        .subscribe()
+    })
+    .catch(() => {
+      // Foco, reconexão e polling na seção pública continuam como fallback.
+    })
+
+  return () => {
+    disposed = true
+    window.removeEventListener(PLAN_BENEFITS_EVENT, handleChange)
+    if (broadcastChannel) broadcastChannel.close()
+    if (realtimeChannel) {
+      getPublicRealtimeClient()
+        .then(client => client.removeChannel(realtimeChannel))
+        .catch(() => {})
+    }
+  }
+}
+
+function normalizeSiteUrl(value) {
+  const raw = String(value || '').trim()
+  if (!raw) throw new Error('Informe o link do site.')
+
+  const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`
+  let url
+  try {
+    url = new URL(withProtocol)
+  } catch {
+    throw new Error('Informe um link válido, como https://empresa.com.br.')
+  }
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new Error('O link precisa começar com http:// ou https://.')
+  }
+  return url.toString()
+}
+
+export async function getClientSites({ admin = false, landing = false, limit } = {}) {
+  const publishedFilter = admin ? '' : '&is_published=eq.true'
+  const landingFilter = landing && !admin ? '&show_on_landing=eq.true' : ''
+  const rowLimit = Number(limit || (landing ? 6 : 0))
+  const limitFilter = rowLimit > 0 ? `&limit=${rowLimit}` : ''
+  return restRequest(
+    `/client_sites?select=*&order=featured.desc,created_at.desc${publishedFilter}${landingFilter}${limitFilter}`,
+    admin ? undefined : { token: SUPABASE_ANON_KEY },
+  )
+}
+
+export async function saveClientSite(item) {
+  const companyName = String(item.company_name || '').trim()
+  if (companyName.length < 2) throw new Error('Informe o nome da empresa.')
+
+  const payload = {
+    id: item.id,
+    company_name: companyName,
+    site_url: normalizeSiteUrl(item.site_url),
+    is_published: Boolean(item.is_published),
+    featured: Boolean(item.featured),
+    show_on_landing: Boolean(item.show_on_landing),
+  }
+
+  const rows = await restRequest('/client_sites?on_conflict=id&select=*', {
+    method: 'POST',
+    body: payload,
+    prefer: 'resolution=merge-duplicates,return=representation',
+  })
+  return rows?.[0]
+}
+
+export async function deleteClientSite(id) {
+  await restRequest(`/client_sites?id=eq.${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
 export async function getTestimonials({ admin = false } = {}) {
   try {
     const filter = admin ? '' : '&is_published=eq.true'
     return await restRequest(
       `/testimonials?select=*&order=featured.desc,created_at.desc${filter}`,
+      admin ? undefined : { token: SUPABASE_ANON_KEY },
     )
   } catch {
     return []

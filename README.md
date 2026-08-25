@@ -4,11 +4,12 @@ Landing page premium, mobile-first e otimizada para conversão, feita em **React
 
 ## Operação em produção: métricas, CRM e financeiro
 
-Após publicar este código, execute a migração `supabase/migrations/20260819_operational_dashboard.sql` uma única vez no SQL Editor do Supabase. Ela cria o pipeline de CRM, tarefas, pedidos, eventos de pagamento, métricas agregadas e torna privado o bucket de arquivos dos briefings.
+Após publicar este código, execute as migrações da pasta `supabase/migrations` uma única vez, em ordem de data, no SQL Editor do Supabase. A migração `20260821_client_sites_portfolio.sql` cria o portfólio público de sites de clientes. A migração `20260825233000_plan_benefits.sql` cria os benefícios editáveis dos planos, as permissões administrativas e a sincronização Realtime com a landing page.
 
 Na Vercel, cadastre as variáveis mostradas em `.env.example` para Production e Preview. `SUPABASE_SERVICE_ROLE_KEY` deve existir somente no servidor, sem o prefixo `VITE_`.
 
 - Configure `VITE_SITE_URL` e `SITE_URL` como `https://www.zappagepro.com.br`.
+- Para ativar mídia, cadastre `VITE_GA_MEASUREMENT_ID` (GA4) e `VITE_META_PIXEL_ID` (Meta Pixel). Os scripts só carregam após o aceite do visitante no banner de cookies.
 - O painel Financeiro é interno: registre pedidos, pagamentos, pendências e reembolsos manualmente.
 - Clientes têm acesso somente ao briefing; CRM, métricas e financeiro exigem perfil administrativo.
 

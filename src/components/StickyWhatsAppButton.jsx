@@ -24,7 +24,7 @@ export default function StickyWhatsAppButton() {
           className="hidden animate-fade-up items-center gap-2 rounded-full border border-neon/40 bg-bg-primary/90 px-4 py-2 text-sm font-semibold text-white shadow-neon-sm backdrop-blur-xl transition-opacity hover:bg-bg-primary sm:flex"
           aria-label="Fechar lembrete de WhatsApp"
         >
-          <span className="h-2 w-2 animate-pulse rounded-full bg-neon" />
+          <span className="h-2 w-2 rounded-full bg-neon" />
           Receba uma recomendação
           <span className="text-ink-light hover:text-white">
             <IconClose className="h-4 w-4" />
@@ -41,11 +41,6 @@ export default function StickyWhatsAppButton() {
         aria-label="Abrir conversa no WhatsApp"
         className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-neon px-4 py-3 text-bg-primary shadow-neon-strong transition-all duration-300 hover:-translate-y-0.5 hover:shadow-neon sm:px-5 sm:py-3.5"
       >
-        {/* Pulse halo */}
-        <span
-          aria-hidden
-          className="absolute inset-0 -z-10 animate-ping rounded-full bg-neon/40 opacity-60"
-        />
         <IconWhatsapp className="h-5 w-5 sm:h-6 sm:w-6" />
         <span className="hidden text-sm font-extrabold sm:inline">
           Receber orientação

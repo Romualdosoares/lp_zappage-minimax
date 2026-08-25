@@ -38,7 +38,7 @@ export default function ProblemSection() {
     >
       <div className="container-page">
         {/* Cabeçalho */}
-        <div className="mx-auto max-w-3xl text-center">
+        <div data-reveal className="max-w-4xl">
           <span className="badge-neon">
             <IconQuestion className="h-3.5 w-3.5" /> O problema
           </span>
@@ -58,10 +58,11 @@ export default function ProblemSection() {
         </div>
 
         {/* Grid */}
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:gap-6">
+        <div data-reveal-group className="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:gap-6">
           {CARDS.map(({ icon: Icon, title, text }) => (
             <article
               key={title}
+              data-reveal-item
               className="card-base group"
             >
               {/* Glow on hover */}
@@ -69,7 +70,7 @@ export default function ProblemSection() {
                 aria-hidden
                 className="pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-neon/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
               />
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20 group-hover:shadow-neon-sm">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20">
                 <Icon className="h-6 w-6" />
               </span>
               <h3 className="mt-5 text-lg font-bold text-white">{title}</h3>
@@ -81,7 +82,7 @@ export default function ProblemSection() {
         </div>
 
         {/* Pequena chamada de saída */}
-        <div className="mt-12 text-center">
+        <div data-reveal className="mt-12 text-center">
           <p className="inline-flex items-center gap-2 text-sm text-ink-light">
             <IconRocket className="h-4 w-4 text-neon" />
             A solução está a um link de distância.

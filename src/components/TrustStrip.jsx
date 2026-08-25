@@ -35,13 +35,14 @@ export default function TrustStrip() {
       className="relative border-y border-neon/10 bg-bg-secondary/60 py-7 sm:py-9"
     >
       <div className="container-page">
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
+        <ul data-reveal-group className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
           {ITEMS.map(({ icon: Icon, title, desc }) => (
             <li
               key={title}
+              data-reveal-item
               className="group flex items-center gap-3 rounded-xl border border-transparent p-2 transition-all duration-300 hover:border-neon/30 hover:bg-neon/5"
             >
-              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20 group-hover:shadow-neon-sm">
+              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20">
                 <Icon className="h-5 w-5" />
               </span>
               <div className="min-w-0">

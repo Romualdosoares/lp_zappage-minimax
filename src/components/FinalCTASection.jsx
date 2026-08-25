@@ -20,26 +20,16 @@ export default function FinalCTASection() {
       className="relative py-20 sm:py-28"
       aria-labelledby="final-cta-title"
     >
-      {/* Glow */}
+      {/* Glow — mais discreto */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[60%] w-[80%] -translate-x-1/2 -translate-y-1/2 bg-radial-green opacity-70"
+        className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[45%] w-[65%] -translate-x-1/2 -translate-y-1/2 bg-radial-green opacity-12 sm:block"
       />
 
       <div className="container-page relative">
-        <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-neon/40 bg-bg-cardPremium p-8 shadow-neon sm:p-12">
-          {/* Brilhos */}
-          <div
-            aria-hidden
-            className="absolute -left-16 -top-16 h-60 w-60 rounded-full bg-neon/20 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="absolute -right-16 -bottom-16 h-60 w-60 rounded-full bg-neon-secondary/15 blur-3xl"
-          />
-
-          <div className="relative grid items-center gap-8 lg:grid-cols-5">
-            <div className="lg:col-span-3">
+        <div data-reveal="scale" className="card-animated-slow relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-bg-cardPremium p-8 sm:p-12">
+          <div data-reveal-group className="relative grid items-center gap-8 lg:grid-cols-5">
+            <div data-reveal-item className="lg:col-span-3">
               <h2
                 id="final-cta-title"
                 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.7rem]"
@@ -75,7 +65,7 @@ export default function FinalCTASection() {
                   target="_blank"
                   rel="noreferrer noopener"
                   data-cta-location="final-cta"
-                  className="btn-primary animate-pulse-glow"
+                  className="btn-primary"
                 >
                   <IconWhatsapp className="h-5 w-5" />
                   Quero confirmar meu plano
@@ -94,9 +84,9 @@ export default function FinalCTASection() {
             </div>
 
             {/* Selo lateral */}
-            <div className="lg:col-span-2">
-              <div className="rounded-2xl border border-neon/40 bg-bg-primary/70 p-6 text-center backdrop-blur-xl">
-                <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-bg-primary shadow-neon">
+            <div data-reveal-item className="lg:col-span-2">
+              <div className="rounded-2xl border border-white/10 bg-bg-primary/70 p-6 text-center backdrop-blur-xl">
+                <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-bg-primary">
                   <IconWhatsapp className="h-8 w-8" />
                 </div>
                 <h3 className="mt-4 text-lg font-extrabold text-white">

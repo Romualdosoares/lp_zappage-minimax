@@ -29,6 +29,17 @@ create table if not exists public.portfolio_services (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.client_sites (
+  id text primary key default gen_random_uuid()::text,
+  company_name text not null check (char_length(company_name) between 2 and 160),
+  site_url text not null check (site_url ~* '^https?://'),
+  is_published boolean not null default true,
+  featured boolean not null default false,
+  show_on_landing boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.analytics_events (
   id uuid primary key default gen_random_uuid(),
   event_name text not null,
@@ -65,6 +76,10 @@ create index if not exists analytics_events_session_id_idx
 on public.analytics_events(session_id);
 create index if not exists testimonials_published_created_at_idx
 on public.testimonials(is_published, featured desc, created_at desc);
+create index if not exists client_sites_published_created_at_idx
+on public.client_sites(is_published, featured desc, created_at desc);
+create index if not exists client_sites_landing_idx
+on public.client_sites(show_on_landing, is_published, featured desc, created_at desc);
 
 create table if not exists public.briefings (
   id uuid primary key default gen_random_uuid(),
@@ -168,6 +183,11 @@ create trigger portfolio_services_touch_updated_at
 before update on public.portfolio_services
 for each row execute function public.touch_updated_at();
 
+drop trigger if exists client_sites_touch_updated_at on public.client_sites;
+create trigger client_sites_touch_updated_at
+before update on public.client_sites
+for each row execute function public.touch_updated_at();
+
 drop trigger if exists briefings_touch_updated_at on public.briefings;
 create trigger briefings_touch_updated_at
 before update on public.briefings
@@ -228,6 +248,7 @@ $$;
 
 alter table public.profiles enable row level security;
 alter table public.portfolio_services enable row level security;
+alter table public.client_sites enable row level security;
 alter table public.briefings enable row level security;
 alter table public.analytics_events enable row level security;
 alter table public.testimonials enable row level security;
@@ -262,6 +283,26 @@ with check (public.is_admin());
 drop policy if exists "portfolio_admin_delete" on public.portfolio_services;
 create policy "portfolio_admin_delete"
 on public.portfolio_services for delete
+using (public.is_admin());
+
+drop policy if exists "client_sites_public_read_published" on public.client_sites;
+create policy "client_sites_public_read_published"
+on public.client_sites for select
+using (is_published = true or public.is_admin());
+
+drop policy if exists "client_sites_admin_insert" on public.client_sites;
+create policy "client_sites_admin_insert"
+on public.client_sites for insert
+with check (public.is_admin());
+
+drop policy if exists "client_sites_admin_update" on public.client_sites;
+create policy "client_sites_admin_update"
+on public.client_sites for update
+using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "client_sites_admin_delete" on public.client_sites;
+create policy "client_sites_admin_delete"
+on public.client_sites for delete
 using (public.is_admin());
 
 drop policy if exists "analytics_public_insert" on public.analytics_events;
@@ -438,3 +479,109 @@ on conflict (id) do update set
   email = excluded.email,
   full_name = excluded.full_name,
   role = 'master_admin';
+
+-- Benefícios exibidos nos cards de preço da landing page.
+create table if not exists public.plan_benefits (
+  id text primary key default gen_random_uuid()::text,
+  plan_key text not null check (plan_key in ('express', 'professional', 'turbo')),
+  benefit_text text not null check (char_length(btrim(benefit_text)) between 2 and 240),
+  is_active boolean not null default true,
+  sort_order integer not null default 0 check (sort_order >= 0),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (plan_key, benefit_text)
+);
+
+create index if not exists plan_benefits_plan_order_idx
+  on public.plan_benefits(plan_key, sort_order, created_at);
+
+drop trigger if exists plan_benefits_touch_updated_at on public.plan_benefits;
+create trigger plan_benefits_touch_updated_at
+before update on public.plan_benefits
+for each row execute function public.touch_updated_at();
+
+alter table public.plan_benefits replica identity full;
+alter table public.plan_benefits enable row level security;
+
+revoke all on public.plan_benefits from anon, authenticated;
+grant select on public.plan_benefits to anon, authenticated;
+grant insert, update, delete on public.plan_benefits to authenticated;
+
+drop policy if exists "plan_benefits_public_read" on public.plan_benefits;
+create policy "plan_benefits_public_read"
+on public.plan_benefits for select
+to anon, authenticated
+using (true);
+
+drop policy if exists "plan_benefits_admin_insert" on public.plan_benefits;
+create policy "plan_benefits_admin_insert"
+on public.plan_benefits for insert
+to authenticated
+with check (public.is_admin());
+
+drop policy if exists "plan_benefits_admin_update" on public.plan_benefits;
+create policy "plan_benefits_admin_update"
+on public.plan_benefits for update
+to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+drop policy if exists "plan_benefits_admin_delete" on public.plan_benefits;
+create policy "plan_benefits_admin_delete"
+on public.plan_benefits for delete
+to authenticated
+using (public.is_admin());
+
+insert into public.plan_benefits (plan_key, benefit_text, is_active, sort_order)
+values
+  ('express', 'Página profissional simples', true, 10),
+  ('express', 'Botão direto para WhatsApp', true, 20),
+  ('express', 'Nome, cidade e dados do negócio', true, 30),
+  ('express', 'Lista básica de serviços', true, 40),
+  ('express', 'Visual moderno', true, 50),
+  ('express', 'Otimizada para celular', true, 60),
+  ('express', 'Link pronto para divulgar', true, 70),
+  ('express', 'Suporte técnico inicial', true, 80),
+  ('express', '3 revisões incluídas', true, 90),
+  ('professional', 'Página profissional completa', true, 10),
+  ('professional', 'Apresentação do negócio', true, 20),
+  ('professional', 'Seção de serviços', true, 30),
+  ('professional', 'Seção de diferenciais', true, 40),
+  ('professional', 'Copy persuasiva', true, 50),
+  ('professional', 'Botões estratégicos de WhatsApp', true, 60),
+  ('professional', 'Design premium', true, 70),
+  ('professional', 'Otimizada para celular', true, 80),
+  ('professional', 'Link pronto para Instagram e anúncios', true, 90),
+  ('professional', 'Suporte técnico', true, 100),
+  ('professional', '3 revisões incluídas', true, 110),
+  ('professional', 'Suporte comercial guiado por 30 dias', true, 120),
+  ('professional', 'Orientação passo a passo para divulgação', true, 130),
+  ('turbo', 'Tudo do plano Profissional', true, 10),
+  ('turbo', 'Página com estrutura mais persuasiva', true, 20),
+  ('turbo', 'Copy de venda aprimorada', true, 30),
+  ('turbo', '10 criativos para anúncio', true, 40),
+  ('turbo', 'Texto principal para Facebook/Instagram Ads', true, 50),
+  ('turbo', 'Título e descrição para anúncio', true, 60),
+  ('turbo', 'Direcionamento inicial para campanha', true, 70),
+  ('turbo', 'Estrutura premium para tráfego pago', true, 80),
+  ('turbo', 'Suporte técnico', true, 90),
+  ('turbo', '3 revisões incluídas', true, 100),
+  ('turbo', 'Suporte comercial guiado por 30 dias', true, 110),
+  ('turbo', 'Acompanhamento passo a passo', true, 120)
+on conflict (plan_key, benefit_text) do nothing;
+
+do $$
+begin
+  if exists (
+    select 1 from pg_publication where pubname = 'supabase_realtime'
+  ) and not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'plan_benefits'
+  ) then
+    alter publication supabase_realtime add table public.plan_benefits;
+  end if;
+end
+$$;

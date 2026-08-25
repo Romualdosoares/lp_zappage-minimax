@@ -8,7 +8,7 @@ export default function Footer() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon/40 to-transparent"
       />
-      <div className="container-page">
+      <div data-reveal className="container-page">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
             <a href="#top" className="flex items-center gap-2.5">
@@ -48,7 +48,10 @@ export default function Footer() {
             <ul className="mt-4 space-y-2">
               {[
                 { label: 'Benefícios', href: '#beneficios' },
+                { label: 'Demonstrações', href: '#portfolio' },
+                { label: 'Quem somos', href: '#quem-somos' },
                 { label: 'Planos', href: '#planos' },
+                { label: 'Portfólio', href: '/portfolio' },
                 { label: 'Dúvidas', href: '#faq' },
                 { label: 'WhatsApp', href: buildWhatsappUrl() },
               ].map(item => (

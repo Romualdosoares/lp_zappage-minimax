@@ -49,7 +49,7 @@ export default function HowItWorksSection() {
       <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-neon/30 to-transparent" />
 
       <div className="container-page">
-        <div className="mx-auto max-w-3xl text-center">
+        <div data-reveal className="max-w-4xl">
           <span className="badge-neon">
             <IconRocket className="h-3.5 w-3.5" /> Passo a passo
           </span>
@@ -67,20 +67,13 @@ export default function HowItWorksSection() {
         </div>
 
         {/* Steps timeline */}
-        <ol className="mx-auto mt-14 grid max-w-5xl gap-5 md:grid-cols-5 md:gap-4">
-          {STEPS.map((s, idx) => (
+        <ol data-reveal-group className="process-flow relative mx-auto mt-14 grid max-w-5xl gap-5 md:grid-cols-5 md:gap-4">
+          {STEPS.map(s => (
             <li
               key={s.num}
-              className="relative rounded-2xl border border-neon/25 bg-bg-card p-5 transition-all duration-300 hover:border-neon/60 hover:shadow-neon-sm"
+              data-reveal-item
+              className="relative z-10 rounded-2xl border border-white/10 bg-bg-card p-5 transition-[border-color,background-color] duration-300 hover:border-neon/30 hover:bg-bg-cardPremium"
             >
-              {/* Linha conectora */}
-              {idx < STEPS.length - 1 && (
-                <div
-                  aria-hidden
-                  className="absolute left-1/2 top-full hidden h-5 w-px -translate-x-1/2 bg-gradient-to-b from-neon/60 to-transparent md:block"
-                />
-              )}
-
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neon/40 bg-neon/10 text-sm font-extrabold text-neon">
                   {s.num}
@@ -100,7 +93,7 @@ export default function HowItWorksSection() {
         </ol>
 
         {/* Selo final */}
-        <div className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3 rounded-full border border-neon/30 bg-bg-primary px-5 py-3 text-sm font-medium text-ink-light">
+        <div data-reveal className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3 rounded-full border border-white/10 bg-bg-primary px-5 py-3 text-sm font-medium text-ink-light">
           <IconWhatsapp className="h-5 w-5 text-neon" />
           No fim, você recebe um link profissional pronto para divulgar.
         </div>
