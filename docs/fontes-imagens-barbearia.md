@@ -4,15 +4,17 @@ Data: 29/09/2026.
 
 ## Imagens usadas na landing
 
-As três imagens finais foram geradas com a ferramenta ImageGen integrada ao Codex. Nenhuma fotografia de cliente, profissional ou espaço real foi usada. As imagens não contêm logotipos, texto, marcas comerciais nem rostos identificáveis.
+As cinco imagens finais foram geradas com a ferramenta ImageGen integrada ao Codex. Nenhuma fotografia de cliente, profissional ou espaço real foi usada. As imagens não contêm logotipos, texto, marcas comerciais nem rostos identificáveis.
 
 | Arquivo | Uso | Origem |
 | --- | --- | --- |
 | `public/assets/barbershop/hero-atelier-gold.webp` | Hero | Geração original orientada pela composição e atmosfera da referência fornecida pelo usuário: `hero-dark.webp` |
-| `public/assets/barbershop/chair-atelier-gold.webp` | Entregas e demonstração | Geração original derivada da direção visual aprovada |
+| `public/assets/barbershop/chair-atelier-gold.webp` | Demonstração | Geração original derivada da direção visual aprovada |
 | `public/assets/barbershop/craft-atelier-gold.webp` | Entregas e benefícios | Geração original derivada da direção visual aprovada |
+| `public/assets/barbershop/interior-atelier-gold.webp` | Entrega “Página para sua barbearia” | Geração original de interior, criada para evitar repetição da imagem da cadeira |
+| `public/assets/barbershop/creative-studio-gold.webp` | Entrega “Criativos para aparecer” | Geração original de bancada de ferramentas e produtos, criada para evitar repetição da imagem do hero |
 
-Arquivos gerados em PNG foram convertidos para WebP com qualidade 84. Tamanhos finais: hero 1672 × 941; cadeira e cena de trabalho 1280 × 853.
+Arquivos gerados em PNG foram convertidos para WebP com qualidade 84. Tamanhos finais: hero, interior e bancada criativa 1672 × 941; cadeira e cena de trabalho 1280 × 853.
 
 ## Resumo dos prompts finais
 
@@ -28,6 +30,14 @@ Cadeira vintage de couro preto com ferragens em latão envelhecido e braços de 
 
 Enquadramento fechado de mãos realizando corte com tesoura sobre pente, rostos fora da composição, capa preta e luz dourada controlada. Sem identificação pessoal, texto, logos, tatuagens ou joias.
 
+### Interior
+
+Interior amplo de barbearia com bancada de mármore preto, madeira escura, espelho arqueado e iluminação de latão. Sem pessoas, texto, logos ou marcações reconhecíveis.
+
+### Bancada criativa
+
+Máquina profissional, navalha, tesoura, pomada, pincel e capa preta sobre bancada de pedra, com luz lateral dourada e espaço negativo. Sem pessoas, texto, logos ou marca d’água.
+
 ## Pesquisa visual e licenças
 
 A pesquisa de repertório considerou Pexels e Unsplash. Nenhuma imagem de banco foi incorporada aos arquivos finais.
@@ -37,4 +47,4 @@ A pesquisa de repertório considerou Pexels e Unsplash. Nenhuma imagem de banco 
 - Uso comercial no Unsplash: https://help.unsplash.com/en/articles/2612315-can-i-use-unsplash-images-for-personal-or-commercial-projects
 - Referência de interior/cadeira encontrada durante a pesquisa: https://unsplash.com/photos/a-barber-shop-with-a-chair-and-a-mirror-BBGyxhtPpC0
 
-O repertório serviu apenas para confirmar linguagem fotográfica e disponibilidade de fontes licenciadas. A landing usa somente as três imagens originais geradas acima.
+O repertório serviu apenas para confirmar linguagem fotográfica e disponibilidade de fontes licenciadas. A landing usa somente as cinco imagens originais geradas acima.
