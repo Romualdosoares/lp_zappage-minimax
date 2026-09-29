@@ -51,7 +51,7 @@ const inputClass =
   'w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
 const labelClass = 'text-xs font-bold uppercase tracking-wider text-ink-light'
 const panelClass =
-  'rounded-2xl border border-neon/20 bg-[#071007] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(57,255,20,0.04)] sm:p-5'
+  'rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(57,255,20,0.04)] sm:p-5'
 
 function BackButton({ href = '/', label = 'Voltar' }) {
   return (
@@ -517,7 +517,7 @@ function StatCard({ icon: Icon, label, value }) {
 
 function MetricCard({ label, value, detail }) {
   return (
-    <article className="rounded-2xl border border-neon/20 bg-[#071007] p-5">
+    <article className="rounded-2xl border border-neon/20 bg-[#0C0905] p-5">
       <p className="text-xs font-black uppercase tracking-wider text-ink-dark">{label}</p>
       <p className="mt-3 break-words text-2xl font-black text-white sm:text-3xl">{value}</p>
       {detail && <p className="mt-2 text-sm leading-relaxed text-ink-light">{detail}</p>}
@@ -1005,7 +1005,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={form.consentConfirmed}
               onChange={event => setForm({ ...form, consentConfirmed: event.target.checked })}
-              className="mt-1 h-4 w-4 accent-[#39ff14]"
+              className="mt-1 h-4 w-4 accent-[#e7b825]"
               required
             />
             <span>Confirmo que o cliente autorizou o uso público do texto, nome, segmento e foto.</span>
@@ -1015,7 +1015,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={Boolean(form.is_published)}
               onChange={event => setForm({ ...form, is_published: event.target.checked })}
-              className="h-4 w-4 accent-[#39ff14]"
+              className="h-4 w-4 accent-[#e7b825]"
             />
             Publicar esta avaliação na landing page
           </label>
@@ -1024,7 +1024,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#39ff14]"
+              className="h-4 w-4 accent-[#e7b825]"
             />
             Destacar no topo da lista
           </label>
@@ -1222,7 +1222,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#39ff14]"
+              className="h-4 w-4 accent-[#e7b825]"
             />
             <span className="text-sm font-bold text-white">Mostrar como destaque</span>
           </label>
@@ -1448,7 +1448,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               type="checkbox"
               checked={Boolean(form.is_published)}
               onChange={event => setForm({ ...form, is_published: event.target.checked })}
-              className="h-4 w-4 accent-[#39ff14]"
+              className="h-4 w-4 accent-[#e7b825]"
             />
             <span className="text-sm font-bold text-white">Publicar na página compartilhável</span>
           </label>
@@ -1457,7 +1457,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#39ff14]"
+              className="h-4 w-4 accent-[#e7b825]"
             />
             <span className="text-sm font-bold text-white">Mostrar primeiro na lista</span>
           </label>
@@ -1467,7 +1467,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               checked={Boolean(form.show_on_landing)}
               onChange={event => setForm({ ...form, show_on_landing: event.target.checked })}
               disabled={!form.show_on_landing && landingSelectedCount >= 6}
-              className="mt-0.5 h-4 w-4 accent-[#39ff14] disabled:cursor-not-allowed disabled:opacity-40"
+              className="mt-0.5 h-4 w-4 accent-[#e7b825] disabled:cursor-not-allowed disabled:opacity-40"
             />
             <span>
               <span className="block text-sm font-bold text-white">Exibir na seção Portfólio da landing page</span>
@@ -1511,7 +1511,7 @@ function AssetLinks({ logo, images }) {
           <button
             type="button"
             onClick={() => openAsset(logo)}
-            className="rounded-xl border border-neon/15 bg-[#071007] px-3 py-2 text-sm font-bold text-white hover:border-neon"
+            className="rounded-xl border border-neon/15 bg-[#0C0905] px-3 py-2 text-sm font-bold text-white hover:border-neon"
           >
             Logo: {logo.name || 'abrir arquivo'}
           </button>
@@ -1521,7 +1521,7 @@ function AssetLinks({ logo, images }) {
             key={`${image.path || image.url}-${index}`}
             type="button"
             onClick={() => openAsset(image)}
-            className="rounded-xl border border-neon/15 bg-[#071007] px-3 py-2 text-sm font-bold text-white hover:border-neon"
+            className="rounded-xl border border-neon/15 bg-[#0C0905] px-3 py-2 text-sm font-bold text-white hover:border-neon"
           >
             Imagem {index + 1}: {image.name || 'abrir arquivo'}
           </button>
@@ -2461,7 +2461,7 @@ function AdminBriefingRoute({ orderNumber }) {
                 ['Referências', briefing.reference_links],
                 ['Observações', briefing.notes],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-2xl border border-neon/15 bg-[#071007] p-4">
+                <div key={label} className="rounded-2xl border border-neon/15 bg-[#0C0905] p-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-neon">
                     {label}
                   </p>
@@ -2523,7 +2523,7 @@ function CheckboxGroup({ value, onChange }) {
             type="checkbox"
             checked={value.includes(option)}
             onChange={() => toggle(option)}
-            className="h-4 w-4 accent-[#39ff14]"
+            className="h-4 w-4 accent-[#e7b825]"
           />
           <span className="text-sm font-bold text-white">{option}</span>
         </label>
@@ -2702,7 +2702,7 @@ function BriefingForm({ session, onLogout }) {
         </header>
 
         <main className="container-page flex min-h-[calc(100vh-5rem)] items-center py-10">
-          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#071007] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(57,255,20,0.055)] sm:p-8">
+          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(57,255,20,0.055)] sm:p-8">
             <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-neon-sm">
               <IconCheckCircle className="h-7 w-7" />
             </span>
@@ -2913,7 +2913,7 @@ function BriefingForm({ session, onLogout }) {
                     <p className="mt-2 text-xs font-bold text-neon">Enviando logo...</p>
                   )}
                   {form.logo_file?.url && (
-                    <div className="mt-3 rounded-xl border border-neon/15 bg-[#071007] p-3">
+                    <div className="mt-3 rounded-xl border border-neon/15 bg-[#0C0905] p-3">
                       <a
                         href={form.logo_file.url}
                         target="_blank"
@@ -2959,7 +2959,7 @@ function BriefingForm({ session, onLogout }) {
                       {form.page_images.map((image, index) => (
                         <div
                           key={`${image.url}-${index}`}
-                          className="rounded-xl border border-neon/15 bg-[#071007] p-3"
+                          className="rounded-xl border border-neon/15 bg-[#0C0905] p-3"
                         >
                           <a
                             href={image.url}
@@ -3147,7 +3147,7 @@ function PublicPortfolioApp() {
         )}
 
         {!loading && portfolio.length === 0 && !message && (
-          <section className="mx-auto mt-12 max-w-2xl rounded-[1.5rem] border border-neon/20 bg-[#071007] p-8 text-center">
+          <section className="mx-auto mt-12 max-w-2xl rounded-[1.5rem] border border-neon/20 bg-[#0C0905] p-8 text-center">
             <IconSparkles className="mx-auto h-8 w-8 text-neon" />
             <h2 className="mt-4 text-2xl font-black text-white">Novos projetos em breve</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-light">
@@ -3163,7 +3163,7 @@ function PublicPortfolioApp() {
               className={`group flex min-h-72 flex-col overflow-hidden rounded-[1.5rem] border p-6 transition hover:-translate-y-1 hover:border-neon/60 ${
                 item.featured
                   ? 'border-neon bg-neon/10 shadow-neon'
-                  : 'border-neon/20 bg-[#071007]'
+                  : 'border-neon/20 bg-[#0C0905]'
               }`}
             >
               {item.featured && (
@@ -3192,7 +3192,7 @@ function PublicPortfolioApp() {
           ))}
         </section>
 
-        <section className="mt-10 rounded-[1.5rem] border border-neon/25 bg-[#071007] p-6 text-center sm:p-8">
+        <section className="mt-10 rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center sm:p-8">
           <h2 className="text-2xl font-black text-white">Quer um site profissional para sua empresa?</h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-light">
             Fale com a Zap Page pelo WhatsApp e conte o que você precisa. Vamos transformar

@@ -75,7 +75,7 @@ export default function Header() {
       <div className="container-page flex h-16 items-center justify-between sm:h-20">
         {/* Logo */}
         <a href="#top" className="group flex items-center gap-2.5">
-          <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl border border-neon/25 bg-bg-primary shadow-neon-sm transition-transform duration-300 group-hover:scale-105">
+          <span className="relative inline-flex h-11 w-11 items-center justify-center transition-transform duration-300 group-hover:scale-105">
             <img
               src={siteConfig.logoSrc}
               alt={`${siteConfig.brandName} logo`}
@@ -83,12 +83,12 @@ export default function Header() {
               height={256}
               decoding="async"
               fetchpriority="high"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain"
             />
-            <span className="absolute -inset-1 -z-10 rounded-xl bg-neon/30 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
+            <span className="absolute -inset-1 -z-10 rounded-full bg-neon/20 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
           </span>
           <div className="flex flex-col leading-tight">
-            <span className="text-lg font-extrabold tracking-tight text-white sm:text-xl">
+            <span className="barber-brand-wordmark text-lg font-extrabold tracking-tight sm:text-xl">
               {siteConfig.brandName}
             </span>
             <span className="hidden text-[11px] font-medium text-ink-light sm:block">

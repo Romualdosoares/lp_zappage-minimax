@@ -34,7 +34,7 @@ export default function DemoPage({ demoId }) {
   const whatsappUrl = buildWhatsappUrl(`Vi a demonstração ${demo.name} e quero um modelo semelhante para o meu negócio.`)
 
   return (
-    <div className="min-h-screen bg-[#071007] text-white">
+    <div className="min-h-screen bg-[#0C0905] text-white">
       <div className={`pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b ${demo.palette} opacity-[0.12]`} />
       <header className="border-b border-white/10 bg-black/40 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-4 py-3">
@@ -83,7 +83,7 @@ export default function DemoPage({ demoId }) {
             <div className="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
               {demo.services.map((service, index) => (
                 <article key={service} className="rounded-2xl border border-white/15 bg-white/5 p-5">
-                  <span className="text-sm font-black text-[#6fff4e]">0{index + 1}</span>
+                  <span className="text-sm font-black text-neon">0{index + 1}</span>
                   <h3 className="mt-4 text-lg font-bold">{service}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-white/65">Apresentação objetiva com um convite claro para tirar dúvidas ou agendar.</p>
                 </article>
@@ -99,7 +99,7 @@ export default function DemoPage({ demoId }) {
               <h2 className="mt-3 text-3xl font-black">Um caminho simples até a conversa.</h2>
             </div>
             <ul className="space-y-4">
-              {demo.benefits.map(item => <li key={item} className="flex items-center gap-3 text-sm text-white/80"><IconCheckCircle className="h-5 w-5 shrink-0 text-[#6fff4e]" />{item}</li>)}
+              {demo.benefits.map(item => <li key={item} className="flex items-center gap-3 text-sm text-white/80"><IconCheckCircle className="h-5 w-5 shrink-0 text-neon" />{item}</li>)}
             </ul>
           </div>
         </section>

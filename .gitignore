@@ -33,5 +33,6 @@ backups/
 # Artefatos locais de análise e QA
 graphify-out/
 docs/qa/
+output/
 
 .env*

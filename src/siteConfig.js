@@ -8,8 +8,9 @@
 export const siteConfig = {
   // --------- Identidade ---------
   brandName: 'Zap Page',
-  logoSrc: '/assets/zap-page-logo-128.webp',
-  shareImageSrc: '/assets/zap-page-logo-512.png',
+  logoSrc: '/assets/zap-page-icon-gold.png',
+  logoFullSrc: '/assets/zap-page-logo-gold.png',
+  shareImageSrc: '/assets/zap-page-logo-gold.png',
   tagline: 'Páginas profissionais e links da bio para barbearias',
   // VITE_SITE_URL permite sobrescrever o domínio em ambientes de preview.
   domain: import.meta.env.VITE_SITE_URL || 'https://www.zappagepro.com.br',

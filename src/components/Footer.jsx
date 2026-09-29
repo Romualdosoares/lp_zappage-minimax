@@ -11,21 +11,16 @@ export default function Footer() {
       <div data-reveal className="container-page">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <a href="#top" className="flex items-center gap-2.5">
-              <span className="inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-neon/25 bg-bg-primary shadow-neon-sm">
-                <img
-                  src={siteConfig.logoSrc}
-                  alt={`${siteConfig.brandName} logo`}
-                  width={256}
-                  height={256}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                />
-              </span>
-              <span className="text-xl font-extrabold tracking-tight text-white">
-                {siteConfig.brandName}
-              </span>
+            <a href="#top" className="inline-flex" aria-label={`${siteConfig.brandName} — voltar ao topo`}>
+              <img
+                src={siteConfig.logoFullSrc}
+                alt={`${siteConfig.brandName} — Páginas que vendem. Conversas que convertem.`}
+                width={1254}
+                height={1254}
+                loading="lazy"
+                decoding="async"
+                className="barber-footer-logo"
+              />
             </a>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink-light">
               {siteConfig.tagline}.
