@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,6 +12,10 @@ export default defineConfig({
     // Reduz tamanho do CSS inlined no JS
     cssMinify: true,
     rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        bio: resolve(import.meta.dirname, 'bio.html'),
+      },
       output: {
         // Mantém assets com hash para cache-busting confiável
         assetFileNames: 'assets/[name].[hash][extname]',
