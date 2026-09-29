@@ -14,20 +14,20 @@ import {
 const DEFAULT_PLANS = [
   {
     key: 'express',
-    badge: 'Entrada rápida',
+    badge: 'Presença essencial',
     name: siteConfig.planExpress.name,
     price: siteConfig.planExpress.price,
     description: siteConfig.planExpress.description,
     highlight: false,
-    microcopy: 'Para validar sua presença digital com uma estrutura essencial.',
+    microcopy: 'Uma presença digital com a identidade da sua barbearia.',
     items: [
-      'Página profissional simples',
+      'Página profissional para barbearia',
       'Botão direto para WhatsApp',
-      'Nome, cidade e dados do negócio',
+      'Nome, cidade e dados da barbearia',
       'Lista básica de serviços',
       'Visual moderno',
       'Otimizada para celular',
-      'Link pronto para divulgar',
+      'Bio personalizada para o Instagram',
       'Suporte técnico inicial',
       '3 revisões incluídas',
     ],
@@ -35,22 +35,24 @@ const DEFAULT_PLANS = [
   },
   {
     key: 'professional',
-    badge: 'Mais vendido',
+    badge: 'Página completa',
     name: siteConfig.planProfessional.name,
     price: siteConfig.planProfessional.price,
     description: siteConfig.planProfessional.description,
     highlight: true,
-    microcopy: 'A escolha mais completa para a maioria dos negócios locais.',
+    microcopy: 'Apresente sua barbearia e comece a divulgar.',
     items: [
       'Página profissional completa',
-      'Apresentação do negócio',
+      'Apresentação da barbearia',
       'Seção de serviços',
       'Seção de diferenciais',
       'Copy persuasiva',
       'Botões estratégicos de WhatsApp',
       'Design premium',
       'Otimizada para celular',
-      'Link pronto para Instagram e anúncios',
+      'Bio personalizada para o Instagram',
+      '4 arquivos finais de criativos, incluindo adaptações',
+      'Artes para Meta Ads, WhatsApp e Instagram',
       'Suporte técnico',
       '3 revisões incluídas',
       'Suporte comercial guiado por 30 dias',
@@ -60,17 +62,18 @@ const DEFAULT_PLANS = [
   },
   {
     key: 'turbo',
-    badge: 'Melhor para anunciar',
+    badge: 'Mais criativos',
     name: siteConfig.planTurbo.name,
     price: siteConfig.planTurbo.price,
     description: siteConfig.planTurbo.description,
     highlight: false,
-    microcopy: 'Para quem quer uma página preparada para divulgar em campanhas.',
+    microcopy: 'Mais opções de artes para divulgar sua barbearia.',
     items: [
       'Tudo do plano Profissional',
+      'Bio personalizada para o Instagram',
       'Página com estrutura mais persuasiva',
       'Copy de venda aprimorada',
-      '10 criativos para anúncio',
+      '10 arquivos finais de criativos no total, incluindo adaptações',
       'Texto principal para Facebook/Instagram Ads',
       'Título e descrição para anúncio',
       'Direcionamento inicial para campanha',
@@ -101,9 +104,9 @@ function PlanCard({ plan, popular }) {
             popular ? 'bg-neon/20 border-neon text-neon text-glow-sm' : ''
           }`}
         >
-          {plan.badge === 'Mais vendido' ? (
+          {popular ? (
             <IconCrown className="h-3.5 w-3.5" />
-          ) : plan.badge === 'Melhor para anunciar' ? (
+          ) : plan.key === 'turbo' ? (
             <IconBolt className="h-3.5 w-3.5" />
           ) : (
             <IconSparkles className="h-3.5 w-3.5" />
@@ -112,7 +115,7 @@ function PlanCard({ plan, popular }) {
         </span>
         {popular && (
           <span className="hidden rounded-full bg-neon px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-bg-primary sm:inline-block">
-            Top
+            Destaque
           </span>
         )}
       </div>
@@ -291,12 +294,12 @@ export default function PricingSection() {
             id="pricing-title"
             className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
           >
-            Escolha a estrutura certa para{' '}
-            <span className="text-gradient-neon">vender com mais clareza</span>
+            Sua barbearia. Seu momento.{' '}
+            <span className="text-gradient-neon">Seu plano.</span>
           </h2>
           <p className="mt-5 text-base text-ink-light sm:text-lg">
-            Veja o que cada plano entrega, escolha o que faz sentido para seu
-            negócio e confirme tudo pelo WhatsApp antes de iniciar. A entrega
+            Página e bio personalizada nos três planos. Criativos no
+            Profissional e Turbo. Confirme tudo pelo WhatsApp antes de iniciar. A entrega
             acontece de 3 a 5 dias após a confirmação do pagamento.
           </p>
         </div>

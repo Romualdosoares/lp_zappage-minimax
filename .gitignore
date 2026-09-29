@@ -30,4 +30,8 @@ pnpm-debug.log*
 .vercel
 backups/
 
+# Artefatos locais de análise e QA
+graphify-out/
+docs/qa/
+
 .env*

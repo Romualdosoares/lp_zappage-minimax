@@ -1,9 +1,9 @@
 import { IconCheckCircle, IconRocket, IconShield } from './Icons'
 
 const commitments = [
-  'Comunicação simples, sem termos técnicos desnecessários.',
-  'Estrutura pensada primeiro para quem acessa pelo celular.',
-  'Escopo e próximos passos confirmados antes da produção.',
+  'Sua marca, seus serviços e suas fotos no centro do projeto.',
+  'Página e bio personalizada pensadas para quem acessa pelo celular.',
+  'Entregas, prazo e revisões combinados antes da produção.',
 ]
 
 export default function AboutSection() {
@@ -13,10 +13,10 @@ export default function AboutSection() {
         <div data-reveal="left">
           <span className="badge-neon"><IconRocket className="h-3.5 w-3.5" /> Quem somos</span>
           <h2 id="about-title" className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-            A Zap Page cria páginas diretas para negócios que <span className="text-gradient-neon">vendem conversando.</span>
+            A Zap Page cuida da página. Você cuida do <span className="text-gradient-neon">próximo corte.</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-ink-light sm:text-lg">
-            Transformamos informações espalhadas em uma apresentação profissional, rápida e fácil de divulgar. O objetivo é simples: deixar claro o que você oferece e tornar o próximo passo pelo WhatsApp mais natural.
+            Criamos páginas para barbearias que querem apresentar seu trabalho com a mesma atenção que dedicam a cada corte. Reunimos sua identidade, serviços e contato em uma experiência feita para o celular.
           </p>
         </div>
         <div data-reveal="right" className="card-animated-subtle rounded-2xl bg-bg-card p-6 sm:p-8">

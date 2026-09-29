@@ -1,113 +1,71 @@
-import {
-  IconRocket,
-  IconCheckCircle,
-  IconLink,
-  IconShield,
-  IconCopy,
-  IconDevice,
-  IconStar,
-  IconSparkles,
-  IconChart,
-  IconWhatsapp,
-} from './Icons'
+import { IconArrowRight, IconCheck, IconDevice, IconLink, IconSparkles } from './Icons'
 
-const ITEMS = [
+const PRODUCTS = [
   {
-    icon: IconRocket,
-    title: 'Apresentação do negócio',
-    text: 'Uma seção clara explicando quem você é e o que oferece.',
-  },
-  {
-    icon: IconCheckCircle,
-    title: 'Lista de serviços',
-    text: 'Organização dos seus principais serviços, produtos ou especialidades.',
-  },
-  {
-    icon: IconWhatsapp,
-    title: 'Botões de WhatsApp',
-    text: 'Chamadas estratégicas para o cliente falar com você.',
-  },
-  {
-    icon: IconStar,
-    title: 'Benefícios e diferenciais',
-    text: 'Mostre por que o cliente deve escolher seu negócio.',
-  },
-  {
+    number: '01',
     icon: IconDevice,
-    title: 'Fotos e identidade visual',
-    text: 'Use imagens, cores e informações que reforçam sua marca.',
+    label: 'Sua vitrine digital',
+    title: 'Página para sua barbearia.',
+    description: 'Apresente seu trabalho, serviços e informações. Facilite o contato pelo WhatsApp ou pelo link do seu sistema de agendamento.',
+    included: 'Nos três planos',
+    image: '/assets/barbershop/chair-atelier-gold.webp',
+    alt: 'Cadeira de barbeiro em couro preto em um ambiente com luz dourada',
+    width: 1280,
+    height: 853,
+    type: 'page',
   },
   {
+    number: '02',
     icon: IconLink,
-    title: 'Link pronto para divulgar',
-    text: 'Use na bio do Instagram, WhatsApp, anúncios e cartão digital.',
+    label: 'Sua marca na bio',
+    title: 'Um link. A sua identidade.',
+    description: 'Uma página própria para a bio do Instagram, com visual personalizado e dois botões principais: Contato e Agendamento.',
+    included: 'Nos três planos',
+    image: '/assets/barbershop/craft-atelier-gold.webp',
+    alt: 'Mãos de barbeiro trabalhando em um corte sob iluminação quente',
+    width: 1280,
+    height: 853,
+    type: 'bio',
   },
   {
-    icon: IconShield,
-    title: 'Layout responsivo',
-    text: 'A página fica bonita no celular, tablet e computador.',
-  },
-  {
-    icon: IconCopy,
-    title: 'Copy persuasiva',
-    text: 'Textos pensados para explicar melhor sua oferta e gerar ação.',
+    number: '03',
+    icon: IconSparkles,
+    label: 'Sua divulgação',
+    title: 'Criativos para aparecer.',
+    description: 'Artes com a identidade da barbearia para Meta Ads, Instagram e WhatsApp. São 4 arquivos finais no Profissional e 10 no Turbo.',
+    included: 'Profissional e Turbo',
+    image: '/assets/barbershop/hero-atelier-gold.webp',
+    alt: 'Navalha, tesoura e pente dispostos em uma bancada escura',
+    width: 1672,
+    height: 941,
+    type: 'creative',
   },
 ]
 
 export default function DeliverablesSection() {
   return (
-    <section
-      className="relative py-20 sm:py-28"
-      aria-labelledby="deliverables-title"
-    >
+    <section id="entregas" className="barber-deliverables barber-section" aria-labelledby="deliverables-title">
       <div className="container-page">
-        <div data-reveal className="max-w-4xl">
-          <span className="badge-neon">
-            <IconSparkles className="h-3.5 w-3.5" /> Entregáveis
-          </span>
-          <h2
-            id="deliverables-title"
-            className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl"
-          >
-            O que sua página{' '}
-            <span className="text-gradient-neon">pode incluir</span>
-          </h2>
-          <p className="mt-5 text-base text-ink-light sm:text-lg">
-            Cada plano reúne os elementos certos para explicar sua oferta,
-            transmitir confiança e direcionar visitantes ao WhatsApp.
-          </p>
+        <div data-reveal className="barber-section-heading">
+          <div><p className="barber-eyebrow">Feito para a sua barbearia</p><h2 id="deliverables-title">Presença de respeito.<br /><span className="text-gradient-neon">Dentro e fora da bio.</span></h2></div>
+          <p>Seu trabalho merece uma apresentação à altura. Escolha a estrutura certa para mostrar sua marca e divulgar seus serviços.</p>
         </div>
-
-        {/* Grid */}
-        <div data-reveal-group className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-5">
-          {ITEMS.map(({ icon: Icon, title, text }) => (
-            <article
-              key={title}
-              data-reveal-item
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-bg-card p-5 transition-[border-color,background-color] duration-300 hover:border-neon/30 hover:bg-bg-cardPremium"
-            >
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-neon/30 bg-neon/10 text-neon transition-all duration-300 group-hover:bg-neon/20">
-                <Icon className="h-6 w-6" />
-              </span>
-              <h3 className="mt-4 text-base font-bold text-white">{title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-ink-light">
-                {text}
-              </p>
-              {/* Detalhe */}
-              <span
-                aria-hidden
-                className="absolute bottom-0 left-0 h-[2px] w-0 bg-neon transition-all duration-500 group-hover:w-full"
-              />
+        <div className="barber-products" data-reveal-group>
+          {PRODUCTS.map(({ number, icon: Icon, label, title, description, included, image, alt, width, height, type }) => (
+            <article className={`barber-product barber-product-${type}`} key={number} data-reveal-item>
+              <figure className="barber-product-figure">
+                <img src={image} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+              </figure>
+              <div className="barber-product-copy">
+                <div className="barber-product-top"><span><Icon className="h-4 w-4" /> {label}</span><span>{number}</span></div>
+                <span className="barber-included"><IconCheck className="h-3.5 w-3.5" /> {included}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
             </article>
           ))}
         </div>
-
-        {/* Subtítulo extra com confiança */}
-        <div data-reveal className="mt-14 flex items-center justify-center gap-2 text-sm text-ink-light">
-          <IconChart className="h-5 w-5 text-neon" />
-          Os itens incluídos variam conforme o plano escolhido. Confira os
-          detalhes antes de contratar.
-        </div>
+        <a href="#planos" className="barber-text-link">Compare o que vem em cada plano <IconArrowRight className="h-4 w-4" /></a>
       </div>
     </section>
   )

@@ -5,15 +5,23 @@ import { IconChevronDown, IconQuestion, IconShield } from './Icons'
 const FAQS = [
   {
     q: 'Essa página é um site?',
-    a: 'É uma página profissional de apresentação, criada para divulgar seu negócio, organizar suas informações e levar clientes direto para o WhatsApp.',
+    a: 'Sim. É uma página profissional para apresentar sua barbearia, seus serviços, fotos e informações, com botões que facilitam o contato e o agendamento.',
   },
   {
-    q: 'Serve para o meu tipo de negócio?',
-    a: 'Funciona especialmente bem para negócios locais, profissionais e empresas que atendem, vendem ou agendam pelo WhatsApp.',
+    q: 'O que é a bio personalizada incluída nos planos?',
+    a: 'É uma página separada, com a identidade da sua barbearia e dois botões principais: Contato e Agendamento. Você coloca o endereço dessa página na bio do Instagram. Está incluída nos três planos.',
   },
   {
     q: 'O cliente fala direto no meu WhatsApp?',
-    a: 'Sim. Os botões podem ser conectados ao WhatsApp do seu negócio, com uma mensagem inicial já preenchida.',
+    a: 'Sim. Os botões levam ao WhatsApp da sua barbearia. O botão de agendamento também pode abrir o link de um sistema que você já utiliza. Os planos não incluem um sistema próprio de agenda.',
+  },
+  {
+    q: 'Quantos criativos recebo e onde posso usar?',
+    a: 'O Profissional inclui 4 arquivos finais e o Turbo inclui 10 arquivos finais no total, já contando adaptações de formato. São artes para divulgar sua barbearia no Meta Ads, Instagram e WhatsApp. O Express não inclui criativos. Os formatos são combinados no briefing.',
+  },
+  {
+    q: 'Vocês também gerenciam meus anúncios?',
+    a: 'Os planos incluem as entregas e orientações descritas em cada oferta. Gestão de campanhas, publicação dos anúncios e verba de mídia não estão incluídas.',
   },
   {
     q: 'Posso divulgar no Instagram e em anúncios?',
@@ -33,7 +41,7 @@ const FAQS = [
   },
   {
     q: 'O que acontece depois que eu chamar no WhatsApp?',
-    a: 'Você informa seu segmento e objetivo. Confirmamos o plano e o escopo. Após o pagamento, enviamos o briefing para reunir os dados do seu negócio.',
+    a: 'Você conta sobre sua barbearia e onde quer divulgar. Confirmamos o plano e o escopo. Após o pagamento, enviamos o briefing para reunir a marca, fotos, serviços e contatos da barbearia.',
   },
 ]
 

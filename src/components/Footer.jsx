@@ -47,8 +47,8 @@ export default function Footer() {
             </h4>
             <ul className="mt-4 space-y-2">
               {[
-                { label: 'Benefícios', href: '#beneficios' },
-                { label: 'Demonstrações', href: '#portfolio' },
+                { label: 'Entregas', href: '#entregas' },
+                { label: 'Exemplos', href: '#portfolio' },
                 { label: 'Quem somos', href: '#quem-somos' },
                 { label: 'Planos', href: '#planos' },
                 { label: 'Portfólio', href: '/portfolio' },
@@ -74,10 +74,10 @@ export default function Footer() {
               Compromisso
             </h4>
             <p className="mt-4 text-xs leading-relaxed text-ink-light">
-              Não prometemos resultados específicos. A página ajuda a apresentar
-              seu negócio de forma mais profissional e facilitar o contato com
-              seus clientes. Resultados dependem de mercado, oferta,
-              atendimento, tráfego e divulgação.
+              Criamos a presença digital da sua barbearia com escopo claro.
+              Agendamentos e vendas dependem da sua oferta, atendimento e
+              divulgação. Verba de anúncios e gestão de campanhas não estão
+              incluídas nos planos.
             </p>
           </div>
         </div>

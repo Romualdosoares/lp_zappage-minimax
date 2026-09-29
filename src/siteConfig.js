@@ -10,36 +10,36 @@ export const siteConfig = {
   brandName: 'Zap Page',
   logoSrc: '/assets/zap-page-logo-128.webp',
   shareImageSrc: '/assets/zap-page-logo-512.png',
-  tagline: 'Páginas profissionais com WhatsApp para negócios locais',
+  tagline: 'Páginas profissionais e links da bio para barbearias',
   // VITE_SITE_URL permite sobrescrever o domínio em ambientes de preview.
   domain: import.meta.env.VITE_SITE_URL || 'https://www.zappagepro.com.br',
 
   // --------- Contato / WhatsApp ---------
   whatsappNumber: '5543991229181', // DDI + DDD + número
   whatsappMessage:
-    'Olá! Vim pela Zap Page e quero uma página profissional para o meu negócio.',
+    'Olá! Vim pela Zap Page e quero uma página profissional para a minha barbearia.',
 
   // --------- Planos ---------
   planExpress: {
     name: 'Página Express',
-    badge: 'Entrada rápida',
+    badge: 'Presença essencial',
     price: 'R$197',
     description:
-      'Para quem precisa de uma página simples, bonita e direta para começar a divulgar.',
+      'O essencial para apresentar os serviços da sua barbearia e facilitar o primeiro contato.',
   },
   planProfessional: {
     name: 'Página Profissional',
-    badge: 'Mais vendido',
+    badge: 'Presença + divulgação',
     price: 'R$297',
     description:
-      'Para quem quer uma página mais completa, com textos persuasivos e orientação para usar a estrutura da forma correta.',
+      'Uma apresentação completa para valorizar sua barbearia e apoiar sua divulgação.',
   },
   planTurbo: {
     name: 'Turbo Vendas',
-    badge: 'Melhor para anunciar',
+    badge: 'Mais criativos',
     price: 'R$497',
     description:
-      'Para quem quer página, copy, criativos e orientação inicial para divulgar com mais força.',
+      'Uma estrutura mais completa para quem quer investir na divulgação da barbearia.',
   },
 
   // --------- Rodapé / institucional ---------
@@ -48,7 +48,7 @@ export const siteConfig = {
   // --------- FAQ – respostas dinâmicas (se preferir customizar) ---------
   faqCustomAnswers: {
     mensalidade:
-      'A publicação pode ser feita gratuitamente pela Vercel, em um endereço padrão. Se você quiser um domínio próprio e hospedagem personalizada, essa contratação pode ser feita à parte.',
+      'A criação tem pagamento único. A publicação pode ser feita gratuitamente pela Vercel, em um endereço padrão. Domínio próprio e hospedagem personalizada são contratados à parte.',
     prazo:
       'A entrega acontece de 3 a 5 dias após a confirmação do pagamento.',
   },
@@ -58,11 +58,11 @@ export const siteConfig = {
 // informou dados que ainda precisa preencher.
 export const whatsappMessages = {
   recommendation:
-    'Meu negócio é: [segmento]\nQuero usar a página para: [Instagram, anúncios, link da bio ou outro]\nPode me recomendar o plano ideal e confirmar os próximos passos?',
+    'Minha barbearia se chama: [nome]\nQuero divulgar em: [Instagram, WhatsApp ou anúncios]\nPode me ajudar a escolher o plano e confirmar os próximos passos?',
   general:
-    'Meu negócio é: [segmento]\nQuero entender qual plano é mais indicado para mim.',
+    'Minha barbearia se chama: [nome]\nQuero entender qual plano é mais indicado para minha barbearia.',
   plan: (planName, price) =>
-    `Quero confirmar o ${planName} (${price}).\nMeu negócio é: [segmento]\nVou usar a página em: [canal]\nPode me confirmar os próximos passos?`,
+    `Quero confirmar o ${planName} (${price}).\nMinha barbearia se chama: [nome]\nVou divulgar em: [canal]\nPode me confirmar os próximos passos?`,
 }
 
 // ----------------------------

@@ -25,7 +25,7 @@ export default function StickyWhatsAppButton() {
           aria-label="Fechar lembrete de WhatsApp"
         >
           <span className="h-2 w-2 rounded-full bg-neon" />
-          Receba uma recomendação
+          Página para sua barbearia
           <span className="text-ink-light hover:text-white">
             <IconClose className="h-4 w-4" />
           </span>
@@ -43,7 +43,7 @@ export default function StickyWhatsAppButton() {
       >
         <IconWhatsapp className="h-5 w-5 sm:h-6 sm:w-6" />
         <span className="hidden text-sm font-extrabold sm:inline">
-          Receber orientação
+          Criar minha página
         </span>
         {/* Mobile: ícone + wordmark */}
         <span className="text-[11px] font-extrabold uppercase tracking-wide sm:hidden">

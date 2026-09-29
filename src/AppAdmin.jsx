@@ -367,7 +367,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
             <button
               key={key}
               type="button"
-              aria-pressed={active === key}
+              aria-pressed={mode === key}
               onClick={() => {
                 setMode(key)
                 setMessage('')

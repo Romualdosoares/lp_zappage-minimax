@@ -10,10 +10,10 @@ export default function MobileStickyCTA() {
       <div className="flex items-center gap-3">
         <div className="leading-tight">
           <p className="text-[10px] font-bold uppercase tracking-wider text-neon">
-            Planos para negócios locais
+            Feito para barbearias
           </p>
           <p className="text-sm font-extrabold text-white">
-            Página a partir de <span className="text-neon">R$197</span>
+            Página + bio desde <span className="text-neon">R$197</span>
           </p>
         </div>
         <a
@@ -24,7 +24,7 @@ export default function MobileStickyCTA() {
           className="btn-primary ml-auto px-4 py-2.5 text-sm"
         >
           <IconWhatsapp className="h-4 w-4" />
-          Ver meu plano
+          Criar página
         </a>
       </div>
     </div>

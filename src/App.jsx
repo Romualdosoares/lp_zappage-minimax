@@ -4,7 +4,6 @@ import Header from './components/Header.jsx'
 import HeroSection from './components/HeroSection.jsx'
 import TrustStrip from './components/TrustStrip.jsx'
 import ProblemSection from './components/ProblemSection.jsx'
-import TestimonialsSection from './components/TestimonialsSection.jsx'
 import DeliverablesSection from './components/DeliverablesSection.jsx'
 import HowItWorksSection from './components/HowItWorksSection.jsx'
 import PricingSection from './components/PricingSection.jsx'
@@ -67,7 +66,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-bg-primary text-white">
+    <div className="barber-landing relative min-h-screen overflow-x-hidden bg-bg-primary text-white">
       <ScrollExperience />
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-futuristic-dense" />
       <TopOfferBar />
@@ -76,13 +75,12 @@ export default function App() {
       <main id="top">
         <HeroSection />
         <TrustStrip />
-        <ProblemSection />
         <DeliverablesSection />
+        <ProblemSection />
         <PortfolioSection />
-        <AboutSection />
-        <TestimonialsSection />
         <PricingSection />
         <HowItWorksSection />
+        <AboutSection />
         <FAQSection />
         <FinalCTASection />
       </main>

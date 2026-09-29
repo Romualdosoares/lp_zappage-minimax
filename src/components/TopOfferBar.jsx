@@ -9,11 +9,10 @@ export default function TopOfferBar() {
     >
       <div className="container-page flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-neon/40 bg-neon/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-neon">
-          <IconBolt className="h-3 w-3" /> Planos
+          <IconBolt className="h-3 w-3" /> Barbearias
         </span>
         <p className="text-xs font-medium text-ink-light sm:text-sm">
-          <span className="font-bold text-white">Página profissional com WhatsApp</span>{' '}
-          para apresentar seu negócio e receber pedidos{' '}
+          <span className="font-bold text-white">Sua página + bio personalizada</span>{' '}
           <span className="font-bold text-neon">a partir de R$197</span>
         </p>
         <span className="inline-flex items-center gap-1 text-xs font-semibold text-neon hover:text-glow-sm">

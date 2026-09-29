@@ -7,11 +7,11 @@ import {
 } from './Icons'
 
 const BULLETS = [
-  'Um link para concentrar sua oferta',
-  'Mais clareza para o cliente decidir',
+  'Página com a identidade da barbearia',
+  'Bio personalizada em uma página separada',
   'Botões diretos para o seu WhatsApp',
   'Planos a partir de R$197',
-  'Entrega de 3 a 5 dias e 3 revisões incluídas',
+  '3 revisões em todos os planos',
 ]
 
 export default function FinalCTASection() {
@@ -34,15 +34,14 @@ export default function FinalCTASection() {
                 id="final-cta-title"
                 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.7rem]"
               >
-                Pare de explicar tudo em mensagens{' '}
+                Seu próximo cartão de visitas{' '}
                 <span className="text-gradient-neon text-glow">
-                  soltas no WhatsApp.
+                  cabe em um link.
                 </span>
               </h2>
               <p className="mt-5 text-base text-ink-light sm:text-lg">
-                Dê ao cliente uma página clara para entender sua oferta,
-                ganhar confiança e chegar ao seu WhatsApp mais preparado para
-                contratar.
+                Mostre seus cortes, valorize sua marca e facilite o contato.
+                Vamos criar a página da sua barbearia?
               </p>
 
               <ul className="mt-6 grid gap-2 sm:grid-cols-2">
@@ -68,7 +67,7 @@ export default function FinalCTASection() {
                   className="btn-primary"
                 >
                   <IconWhatsapp className="h-5 w-5" />
-                  Quero confirmar meu plano
+                  Criar minha página
                 </a>
                 <a href="#planos" data-cta-location="final-plans" className="btn-secondary">
                   Comparar planos
@@ -93,8 +92,8 @@ export default function FinalCTASection() {
                   Atendimento pelo WhatsApp
                 </h3>
                 <p className="mt-2 text-sm text-ink-light">
-                  Conte seu segmento, confirme o plano e receba a orientação
-                  para iniciar seu projeto.
+                  Conte como é sua barbearia. Ajudamos a escolher o plano
+                  e os materiais para começar.
                 </p>
                 <a
                   href={buildWhatsappUrl(whatsappMessages.general)}
@@ -103,7 +102,7 @@ export default function FinalCTASection() {
                   data-cta-location="final-whatsapp-card"
                   className="btn-primary mt-5 w-full"
                 >
-                  Receber orientação no WhatsApp
+                  Tirar dúvidas no WhatsApp
                   <IconWhatsapp className="h-5 w-5" />
                 </a>
               </div>

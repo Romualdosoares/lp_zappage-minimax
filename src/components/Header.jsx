@@ -3,11 +3,9 @@ import { siteConfig, buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import { IconMenu, IconClose, IconBolt } from './Icons'
 
 const NAV = [
-  { label: 'Benefícios', href: '#beneficios' },
-  { label: 'Demonstrações', href: '#portfolio' },
-  { label: 'Quem somos', href: '#quem-somos' },
+  { label: 'Entregas', href: '#entregas' },
+  { label: 'Exemplos', href: '#portfolio' },
   { label: 'Planos', href: '#planos' },
-  { label: 'Como funciona', href: '#como-funciona' },
   { label: 'Dúvidas', href: '#faq' },
 ]
 
@@ -94,8 +92,7 @@ export default function Header() {
               {siteConfig.brandName}
             </span>
             <span className="hidden text-[11px] font-medium text-ink-light sm:block">
-              Página <span className="text-neon">+</span> WhatsApp{' '}
-              <span className="text-neon">+</span> Conversão
+              Presença digital <span className="text-neon">para barbearias</span>
             </span>
           </div>
         </a>
@@ -127,7 +124,7 @@ export default function Header() {
             data-cta-location="header"
             className="btn-primary px-5 py-2.5 text-sm"
           >
-            Receber recomendação
+            Criar minha página
             <IconBolt className="h-4 w-4" />
           </a>
         </div>
@@ -176,7 +173,7 @@ export default function Header() {
             data-cta-location="mobile-menu"
             className="btn-primary mt-3 justify-center"
           >
-            Receber recomendação
+            Criar minha página
             <IconBolt className="h-4 w-4" />
           </a>
         </nav>

@@ -11,19 +11,19 @@ const STEPS = [
     num: '01',
     icon: IconCheckCircle,
     title: 'Chame no WhatsApp',
-    text: 'Conte seu segmento e como pretende divulgar. Assim indicamos o plano mais adequado.',
+    text: 'Conte sobre sua barbearia e onde quer divulgar. Ajudamos você a escolher o plano.',
   },
   {
     num: '02',
     icon: IconDevice,
     title: 'Confirme o plano',
-    text: 'Você confere o que está incluído e confirma os próximos passos antes de iniciar.',
+    text: 'Confira a página, a bio personalizada e os criativos incluídos no plano escolhido.',
   },
   {
     num: '03',
     icon: IconRocket,
-    title: 'Confirme o pagamento e o briefing',
-    text: 'Com o pagamento confirmado, você recebe o briefing para enviar nome, serviços, fotos, logo e diferenciais.',
+    title: 'Envie os materiais',
+    text: 'Após o pagamento, envie nome, logo, fotos dos cortes, serviços, endereço e contatos da barbearia.',
   },
   {
     num: '04',
@@ -35,7 +35,7 @@ const STEPS = [
     num: '05',
     icon: IconLink,
     title: 'Você começa a divulgar',
-    text: 'Use o link no Instagram, WhatsApp, anúncios, cartão digital e materiais de divulgação.',
+    text: 'Coloque a bio personalizada no Instagram e divulgue a página no WhatsApp e nos seus anúncios.',
   },
 ]
 
@@ -95,7 +95,7 @@ export default function HowItWorksSection() {
         {/* Selo final */}
         <div data-reveal className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3 rounded-full border border-white/10 bg-bg-primary px-5 py-3 text-sm font-medium text-ink-light">
           <IconWhatsapp className="h-5 w-5 text-neon" />
-          No fim, você recebe um link profissional pronto para divulgar.
+          Sua página e sua bio personalizada, prontas para divulgar.
         </div>
       </div>
     </section>
