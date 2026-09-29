@@ -23,7 +23,7 @@ export default function FinalCTASection() {
       {/* Glow — mais discreto */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[45%] w-[65%] -translate-x-1/2 -translate-y-1/2 bg-radial-green opacity-12 sm:block"
+        className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[45%] w-[65%] -translate-x-1/2 -translate-y-1/2 bg-radial-gold opacity-12 sm:block"
       />
 
       <div className="container-page relative">

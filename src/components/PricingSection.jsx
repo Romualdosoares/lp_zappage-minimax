@@ -279,7 +279,7 @@ export default function PricingSection() {
       {/* Glow de fundo — mais discreto */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/3 hidden h-1/2 w-[65%] -translate-x-1/2 bg-radial-green opacity-12 sm:block"
+        className="pointer-events-none absolute left-1/2 top-1/3 hidden h-1/2 w-[65%] -translate-x-1/2 bg-radial-gold opacity-12 sm:block"
       />
 
       <div className="container-page relative">

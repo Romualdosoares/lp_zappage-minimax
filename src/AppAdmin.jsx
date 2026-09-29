@@ -48,10 +48,10 @@ import {
 const AdminOperationsPanels = lazy(() => import('./admin/AdminOperationsPanels.jsx'))
 
 const inputClass =
-  'w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
+  'admin-field w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
 const labelClass = 'text-xs font-bold uppercase tracking-wider text-ink-light'
 const panelClass =
-  'rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(57,255,20,0.04)] sm:p-5'
+  'admin-panel rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(231,184,37,0.08)] sm:p-5'
 
 function BackButton({ href = '/', label = 'Voltar' }) {
   return (
@@ -332,7 +332,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
   }
 
   return (
-    <div className="mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-5 py-10 lg:grid-cols-[0.9fr_1.1fr]">
+    <div className="admin-shell mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-5 py-10 lg:grid-cols-[0.9fr_1.1fr]">
       <div>
         <a href="/" className="flex items-center gap-3">
           <img
@@ -340,7 +340,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
             alt={`${siteConfig.brandName} logo`}
             width={256}
             height={256}
-            className="h-12 w-12 rounded-xl border border-neon/30 object-cover shadow-neon-sm"
+            className="h-12 w-12 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(231,184,37,0.18)]"
           />
           <div>
             <p className="text-2xl font-black text-white">{siteConfig.brandName}</p>
@@ -435,7 +435,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
         <button
           type="submit"
           disabled={busy}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3.5 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
         >
           {busy ? 'Aguarde...' : mode === 'register' ? 'Criar acesso' : 'Entrar'}
           <IconArrowRight className="h-5 w-5" />
@@ -467,7 +467,7 @@ function AdminHeader({ active, setActive, onLogout }) {
             alt={`${siteConfig.brandName} logo`}
             width={256}
             height={256}
-            className="h-10 w-10 rounded-xl border border-neon/30 object-cover shadow-neon-sm"
+            className="h-10 w-10 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(231,184,37,0.18)]"
           />
           <div className="leading-tight">
             <p className="text-lg font-black text-white">Painel Zap Page</p>
@@ -483,7 +483,7 @@ function AdminHeader({ active, setActive, onLogout }) {
               onClick={() => setActive(key)}
               className={`shrink-0 rounded-xl px-3 py-2 text-sm font-bold transition sm:px-4 ${
                 active === key
-                  ? 'bg-neon text-black shadow-neon-sm'
+                  ? 'bg-neon text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]'
                   : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
               }`}
             >
@@ -670,7 +670,7 @@ function AdminDashboard({ briefings, analyticsEvents }) {
                 onClick={() => setRangeMode(key)}
                 className={`rounded-xl px-3 py-2.5 text-sm font-black transition sm:px-4 ${
                   rangeMode === key
-                    ? 'bg-neon text-black shadow-neon-sm'
+                    ? 'bg-neon text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]'
                     : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
                 }`}
               >
@@ -861,7 +861,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
           <button
             type="button"
             onClick={resetForm}
-            className="shrink-0 rounded-xl bg-neon px-4 py-2 text-sm font-black text-black"
+            className="shrink-0 admin-action rounded-full bg-neon px-4 py-2 text-sm font-black text-black"
           >
             Nova
           </button>
@@ -1033,7 +1033,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
         <button
           type="submit"
           disabled={uploading}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-4 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
         >
           {editingId ? 'Salvar alterações' : 'Salvar avaliação'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1116,7 +1116,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
           <button
             type="button"
             onClick={resetForm}
-            className="rounded-xl bg-neon px-4 py-2 text-sm font-black text-black"
+            className="admin-action rounded-full bg-neon px-4 py-2 text-sm font-black text-black"
           >
             Novo item
           </button>
@@ -1230,7 +1230,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
 
         <button
           type="submit"
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3.5 text-sm font-black text-black shadow-neon"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
         >
           {editingId ? 'Salvar alterações' : 'Salvar item'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1335,7 +1335,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-xl bg-neon px-4 py-2 text-sm font-black text-black"
+              className="admin-action rounded-full bg-neon px-4 py-2 text-sm font-black text-black"
             >
               Novo site
             </button>
@@ -1478,7 +1478,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
 
         <button
           type="submit"
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3.5 text-sm font-black text-black shadow-neon"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
         >
           {editingId ? 'Salvar alterações' : 'Adicionar ao portfólio'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1562,14 +1562,14 @@ function BriefingPromptPanel({ briefing }) {
         <button
           type="button"
           onClick={copyPrompt}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon-sm"
+          className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]"
         >
           Copiar prompt
           <IconCopy className="h-5 w-5" />
         </button>
       </div>
       {copyStatus && <p className="mt-3 text-xs font-bold text-neon">{copyStatus}</p>}
-      <pre className="mt-4 max-h-[520px] overflow-auto whitespace-pre-wrap rounded-xl border border-neon/15 bg-[#030803] p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
+      <pre className="mt-4 max-h-[520px] overflow-auto whitespace-pre-wrap rounded-xl border border-neon/15 bg-[#080705] p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
         {prompt}
       </pre>
     </section>
@@ -1781,7 +1781,7 @@ function AdminBriefingCreator({ initialBriefing, onSaved, onCancel, setMessage }
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-4 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
+        className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
       >
         {busy ? 'Salvando...' : editing ? 'Salvar alterações' : 'Salvar novo briefing'}
         <IconCheckCircle className="h-5 w-5" />
@@ -1852,7 +1852,7 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
               setEditingId('')
               setSelectedId('')
             }}
-            className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon-sm"
+            className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]"
           >
             Novo briefing
           </button>
@@ -1946,7 +1946,7 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
                 {selected.order_number && (
                   <a
                     href={`/admin/briefing/${selected.order_number}`}
-                    className="w-fit rounded-full bg-neon px-3 py-1 text-xs font-black text-black"
+                    className="w-fit admin-action rounded-full bg-neon px-3 py-1 text-xs font-black text-black"
                   >
                     Abrir rota interna
                   </a>
@@ -2151,7 +2151,7 @@ function AdminApp() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#080705] text-white">
         <p className="font-black text-neon">Carregando painel...</p>
       </div>
     )
@@ -2159,7 +2159,7 @@ function AdminApp() {
 
   if (!isAdminProfile(profile)) {
     return (
-      <div className="mx-auto flex min-h-screen max-w-3xl items-center px-5 text-white">
+      <div className="admin-shell mx-auto flex min-h-screen max-w-3xl items-center bg-[#080705] px-5 text-white">
         <div className={panelClass}>
           <IconShield className="h-10 w-10 text-neon" />
           <h1 className="mt-4 text-3xl font-black">Usuário sem acesso administrativo</h1>
@@ -2172,7 +2172,7 @@ function AdminApp() {
             <button
               type="button"
               onClick={loadAdminData}
-              className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black"
+              className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black"
             >
               Verificar novamente
             </button>
@@ -2190,10 +2190,10 @@ function AdminApp() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="admin-shell min-h-screen bg-[#080705] text-white">
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(57,255,20,0.18),transparent_40%),linear-gradient(rgba(57,255,20,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.035)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]"
+        className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
       />
       <AdminHeader active={active} setActive={setActive} onLogout={logout} />
 
@@ -2324,7 +2324,7 @@ function AdminBriefingRoute({ orderNumber }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#080705] text-white">
         <p className="font-black text-neon">Carregando briefing interno...</p>
       </div>
     )
@@ -2332,7 +2332,7 @@ function AdminBriefingRoute({ orderNumber }) {
 
   if (!isAdminProfile(profile)) {
     return (
-      <div className="mx-auto flex min-h-screen max-w-3xl items-center px-5 text-white">
+      <div className="admin-shell mx-auto flex min-h-screen max-w-3xl items-center bg-[#080705] px-5 text-white">
         <div className={panelClass}>
           <IconShield className="h-10 w-10 text-neon" />
           <h1 className="mt-4 text-3xl font-black">Acesso interno bloqueado</h1>
@@ -2343,7 +2343,7 @@ function AdminBriefingRoute({ orderNumber }) {
             <button
               type="button"
               onClick={loadBriefingOrder}
-              className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black"
+              className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black"
             >
               Verificar novamente
             </button>
@@ -2361,10 +2361,10 @@ function AdminBriefingRoute({ orderNumber }) {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="admin-shell min-h-screen bg-[#080705] text-white">
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(57,255,20,0.18),transparent_40%),linear-gradient(rgba(57,255,20,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.035)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]"
+        className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
       />
       <header className="sticky top-0 z-40 border-b border-neon/15 bg-black/85 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
@@ -2486,7 +2486,7 @@ function ProgressBar({ value }) {
   return (
     <div className="h-2 overflow-hidden rounded-full bg-white/10">
       <div
-        className="h-full rounded-full bg-neon shadow-neon-sm transition-all"
+        className="h-full rounded-full bg-neon shadow-[0_0_14px_rgba(231,184,37,0.18)] transition-all"
         style={{ width: `${value}%` }}
       />
     </div>
@@ -2659,7 +2659,7 @@ function BriefingForm({ session, onLogout }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#080705] text-white">
         <p className="font-black text-neon">Carregando briefing...</p>
       </div>
     )
@@ -2667,10 +2667,10 @@ function BriefingForm({ session, onLogout }) {
 
   if (submittedBriefing) {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className="admin-shell min-h-screen bg-[#080705] text-white">
         <div
           aria-hidden
-          className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(57,255,20,0.18),transparent_40%),linear-gradient(rgba(57,255,20,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.035)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]"
+          className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
         />
         <header className="border-b border-neon/15 bg-black/85 backdrop-blur-xl">
           <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
@@ -2702,8 +2702,8 @@ function BriefingForm({ session, onLogout }) {
         </header>
 
         <main className="container-page flex min-h-[calc(100vh-5rem)] items-center py-10">
-          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(57,255,20,0.055)] sm:p-8">
-            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-neon-sm">
+          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(231,184,37,0.1)] sm:p-8">
+            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]">
               <IconCheckCircle className="h-7 w-7" />
             </span>
             <p className="mt-5 text-xs font-black uppercase tracking-wider text-neon">
@@ -2720,7 +2720,7 @@ function BriefingForm({ session, onLogout }) {
               href={getBriefingWhatsappUrl(submittedBriefing)}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-neon px-5 py-4 text-sm font-black uppercase tracking-wide text-black shadow-neon sm:w-auto"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black uppercase tracking-wide text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] sm:w-auto"
             >
               Confirmar envio no WhatsApp
               <IconWhatsapp className="h-5 w-5" />
@@ -2732,7 +2732,7 @@ function BriefingForm({ session, onLogout }) {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="admin-shell min-h-screen bg-[#080705] text-white">
       <header className="sticky top-0 z-40 border-b border-neon/15 bg-black/85 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
           <a href="/" className="flex min-w-0 items-center gap-3">
@@ -2789,7 +2789,7 @@ function BriefingForm({ session, onLogout }) {
                   type="button"
                   onClick={() => persist('Enviado')}
                   disabled={Boolean(uploading)}
-                  className="rounded-xl bg-neon px-4 py-3 text-sm font-black text-black shadow-neon disabled:cursor-wait disabled:opacity-60"
+                  className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
                 >
                   Enviar briefing
                 </button>
@@ -3090,10 +3090,10 @@ function PublicPortfolioApp() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="admin-shell min-h-screen bg-[#080705] text-white">
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(57,255,20,0.2),transparent_42%),linear-gradient(rgba(57,255,20,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.035)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]"
+        className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
       />
       <header className="border-b border-neon/15 bg-black/85 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
@@ -3113,7 +3113,7 @@ function PublicPortfolioApp() {
           <button
             type="button"
             onClick={sharePortfolio}
-            className="inline-flex items-center gap-2 rounded-xl bg-neon px-4 py-2.5 text-sm font-black text-black shadow-neon-sm"
+            className="inline-flex items-center gap-2 admin-action rounded-full bg-neon px-4 py-2.5 text-sm font-black text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]"
           >
             <IconCopy className="h-4 w-4" />
             Compartilhar
@@ -3162,7 +3162,7 @@ function PublicPortfolioApp() {
               key={item.id}
               className={`group flex min-h-72 flex-col overflow-hidden rounded-[1.5rem] border p-6 transition hover:-translate-y-1 hover:border-neon/60 ${
                 item.featured
-                  ? 'border-neon bg-neon/10 shadow-neon'
+                  ? 'border-neon bg-neon/10 shadow-[0_0_24px_rgba(231,184,37,0.18)]'
                   : 'border-neon/20 bg-[#0C0905]'
               }`}
             >
@@ -3183,7 +3183,7 @@ function PublicPortfolioApp() {
                 href={item.site_url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="mt-auto inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3 text-sm font-black text-black shadow-neon"
+                className="mt-auto inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
               >
                 Visitar site
                 <IconArrowRight className="h-5 w-5" />
@@ -3202,7 +3202,7 @@ function PublicPortfolioApp() {
             href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Olá! Vi o portfólio da Zap Page e quero criar um site para minha empresa.')}`}
             target="_blank"
             rel="noreferrer noopener"
-            className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-neon px-5 py-3 text-sm font-black text-black shadow-neon"
+            className="mt-5 inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
           >
             Pedir meu site
             <IconWhatsapp className="h-5 w-5" />

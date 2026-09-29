@@ -20,7 +20,7 @@ const PLAN_GROUPS = [
 ]
 
 const inputClass =
-  'w-full rounded-xl border border-neon/20 bg-black px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-ink-dark focus:border-neon focus:ring-2 focus:ring-neon/20 disabled:opacity-60'
+  'admin-field w-full rounded-xl border border-neon/20 bg-black px-3 py-2.5 text-sm text-white outline-none transition placeholder:text-ink-dark focus:border-neon focus:ring-2 focus:ring-neon/20 disabled:opacity-60'
 
 function sortedBenefits(items) {
   return [...items].sort(
@@ -180,7 +180,7 @@ export default function PlanBenefitsManager({ benefits, setBenefits, setMessage,
   }
 
   return (
-    <section className="rounded-2xl border border-neon/25 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(57,255,20,0.045)] sm:p-5">
+    <section className="admin-panel rounded-2xl border border-neon/25 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(231,184,37,0.08)] sm:p-5">
       <div className="flex flex-col gap-3 border-b border-neon/15 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-wider text-neon">Página de vendas</p>
@@ -190,7 +190,7 @@ export default function PlanBenefitsManager({ benefits, setBenefits, setMessage,
           </p>
         </div>
         <div className="inline-flex w-fit items-center gap-2 rounded-full border border-neon/20 bg-black px-3 py-2 text-xs font-bold text-ink-light">
-          <span className="h-2 w-2 rounded-full bg-neon shadow-neon-sm" />
+          <span className="h-2 w-2 rounded-full bg-neon shadow-[0_0_14px_rgba(231,184,37,0.18)]" />
           Sincronização automática
         </div>
       </div>
@@ -310,7 +310,7 @@ export default function PlanBenefitsManager({ benefits, setBenefits, setMessage,
                   <button
                     type="submit"
                     disabled={pending[`add-${plan.key}`]}
-                    className="shrink-0 rounded-xl bg-neon px-3.5 py-2 text-xs font-black text-black transition hover:brightness-110 disabled:cursor-wait disabled:opacity-60"
+                    className="shrink-0 admin-action rounded-full bg-neon px-3.5 py-2 text-xs font-black text-black transition hover:brightness-110 disabled:cursor-wait disabled:opacity-60"
                   >
                     {pending[`add-${plan.key}`] ? '…' : 'Adicionar'}
                   </button>

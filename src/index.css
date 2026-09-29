@@ -4,19 +4,19 @@
 
 /* Identidade preto e ouro da nova logo Zap Page. */
 .barber-landing {
-  --barber-charcoal: #010101;
-  --barber-surface: #080705;
-  --barber-gold: #e7b825;
-  --barber-gold-light: #ffe071;
+  --barber-charcoal: var(--brand-black);
+  --barber-surface: var(--brand-surface);
+  --barber-gold: var(--brand-gold);
+  --barber-gold-light: var(--brand-gold-light);
   --barber-gold-highlight: #fff0b0;
   --barber-bronze: #996810;
-  --barber-ivory: #f8f6ef;
-  --barber-muted: #c6baa4;
+  --barber-white: var(--brand-white);
+  --barber-muted: var(--brand-muted);
   background: var(--barber-charcoal);
-  color: var(--barber-ivory);
+  color: var(--barber-white);
 }
 
-.barber-landing ::selection { background: rgba(231, 184, 37, .38); color: var(--barber-ivory); }
+.barber-landing ::selection { background: rgba(231, 184, 37, .38); color: var(--barber-white); }
 .barber-landing :where(a, button, [tabindex]):focus-visible { outline-color: var(--barber-gold-light); }
 .barber-landing .barber-brand-wordmark {
   background: linear-gradient(110deg, var(--barber-gold-highlight), var(--barber-gold) 52%, var(--barber-bronze) 82%, var(--barber-gold-light));
@@ -38,7 +38,7 @@
 .barber-landing [class~="bg-bg-secondary/60"] { background-color: rgba(8, 7, 5, .84); }
 .barber-landing .text-ink-light,
 .barber-landing .text-ink-dark { color: var(--barber-muted); }
-.barber-landing .text-white { color: var(--barber-ivory); }
+.barber-landing .text-white { color: var(--barber-white); }
 .barber-landing .text-neon,
 .barber-landing [class~="hover:text-neon"]:hover { color: var(--barber-gold-light); }
 .barber-landing .text-bg-primary { color: var(--barber-charcoal); }
@@ -78,8 +78,8 @@
 .barber-landing [class~="via-neon/40"] { --tw-gradient-via: rgba(231, 184, 37, .4); }
 .barber-landing [class*="via-neon"] { --tw-gradient-stops: var(--tw-gradient-from), rgba(231, 184, 37, .3), var(--tw-gradient-to); }
 .barber-landing [class~="to-neon-dark/40"] { --tw-gradient-to: rgba(231, 184, 37, .12); }
-.barber-landing .bg-radial-green,
-.barber-landing .bg-radial-green-bottom { background-image: radial-gradient(ellipse at center, rgba(231, 184, 37, .14), transparent 68%); }
+.barber-landing .bg-radial-gold,
+.barber-landing .bg-radial-gold-bottom { background-image: radial-gradient(ellipse at center, rgba(231, 184, 37, .14), transparent 68%); }
 .barber-landing .bg-futuristic-dense { background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(231, 184, 37, .08), transparent 65%), var(--barber-charcoal); }
 .barber-landing .glow-neon,
 .barber-landing .glow-neon-sm,
@@ -100,9 +100,9 @@
 .barber-landing .btn-primary:hover { filter: brightness(1.08); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .54), 0 15px 34px rgba(0, 0, 0, .4), 0 0 31px rgba(231, 184, 37, .2) !important; }
 .barber-landing .btn-secondary { border-color: rgba(255, 224, 113, .32); background: rgba(1, 1, 1, .66); color: var(--barber-gold-light); }
 .barber-landing .btn-primary::after,
-.barber-landing .btn-secondary::after { left: 18%; right: 18%; background: linear-gradient(90deg, transparent, var(--barber-ivory), transparent); }
+.barber-landing .btn-secondary::after { left: 18%; right: 18%; background: linear-gradient(90deg, transparent, var(--barber-white), transparent); }
 .barber-landing .btn-primary:focus-visible,
-.barber-landing .btn-secondary:focus-visible { outline: 2px solid var(--barber-ivory); outline-offset: 5px; }
+.barber-landing .btn-secondary:focus-visible { outline: 2px solid var(--barber-white); outline-offset: 5px; }
 .barber-landing header { background: rgba(1, 1, 1, .95); border-bottom: 1px solid rgba(231, 184, 37, .14); }
 .barber-landing h2 { text-wrap: balance; letter-spacing: -.045em; }
 .barber-landing .barber-section { padding: 108px 0; }
@@ -115,7 +115,7 @@
 .barber-landing .barber-hero-shade { position: absolute; inset: 0; z-index: -2; background: linear-gradient(90deg, rgba(7, 6, 4, .98) 0%, rgba(7, 6, 4, .93) 31%, rgba(7, 6, 4, .46) 58%, rgba(7, 6, 4, .12) 100%), linear-gradient(0deg, rgba(7, 6, 4, .62), transparent 46%); }
 .barber-landing .barber-hero-grid { display: grid; grid-template-columns: minmax(0, 620px) 1fr; align-items: center; min-height: 600px; padding-top: 76px; padding-bottom: 64px; }
 .barber-landing .barber-hero-copy { position: relative; z-index: 2; }
-.barber-landing .barber-hero h1 { max-width: 700px; color: var(--barber-ivory); font-size: clamp(3.35rem, 5.5vw, 5.3rem); line-height: .97; letter-spacing: -.065em; font-weight: 950; }
+.barber-landing .barber-hero h1 { max-width: 700px; color: var(--barber-white); font-size: clamp(3.35rem, 5.5vw, 5.3rem); line-height: .97; letter-spacing: -.065em; font-weight: 950; }
 .barber-landing .barber-hero h1 span {
   display: inline-block;
   background: linear-gradient(112deg, var(--barber-gold-highlight), var(--barber-gold-light) 30%, var(--barber-gold) 70%, #b98112);
@@ -124,15 +124,15 @@
   color: transparent;
   filter: drop-shadow(0 9px 28px rgba(231, 184, 37, .22));
 }
-.barber-landing .barber-hero-lead { margin-top: 26px; font-size: 19px; line-height: 1.5; color: var(--barber-ivory); font-weight: 650; max-width: 430px; }
+.barber-landing .barber-hero-lead { margin-top: 26px; font-size: 19px; line-height: 1.5; color: var(--barber-white); font-weight: 650; max-width: 430px; }
 .barber-landing .barber-hero-description { margin-top: 14px; color: var(--barber-muted); max-width: 500px; font-size: 15px; line-height: 1.8; }
 .barber-landing .barber-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 .barber-landing .barber-hero-details { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; color: var(--barber-muted); font-size: 12px; }
 .barber-landing .barber-hero-details span { display: flex; align-items: center; gap: 7px; }
 .barber-landing .barber-hero-details svg { color: var(--barber-gold-light); }
-.barber-landing .barber-hero-details strong { color: var(--barber-ivory); }
+.barber-landing .barber-hero-details strong { color: var(--barber-white); }
 .barber-landing .barber-hero-bottom { position: relative; z-index: 2; border-top: 1px solid rgba(231, 184, 37, .2); padding-top: 21px; padding-bottom: 21px; display: flex; justify-content: space-between; gap: 20px; color: var(--barber-muted); font-size: 12px; }
-.barber-landing .barber-hero-bottom strong { color: var(--barber-ivory); font-weight: 500; }
+.barber-landing .barber-hero-bottom strong { color: var(--barber-white); font-weight: 500; }
 .barber-landing .barber-hero-bottom a { color: var(--barber-gold-light); display: flex; gap: 12px; align-items: center; }
 
 .barber-landing .barber-deliverables { background: linear-gradient(180deg, var(--barber-charcoal), var(--barber-surface) 52%, var(--barber-charcoal)); }
@@ -148,10 +148,10 @@
 .barber-landing .barber-product-creative .barber-product-figure img { object-position: 67% center; }
 .barber-landing .barber-product-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(34px, 5vw, 72px); background: rgba(16, 13, 9, .76); }
 .barber-landing .barber-product-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 52px; color: var(--barber-muted); font-size: 11px; }
-.barber-landing .barber-product-top span:first-child { display: flex; align-items: center; gap: 8px; color: var(--barber-ivory); }
+.barber-landing .barber-product-top span:first-child { display: flex; align-items: center; gap: 8px; color: var(--barber-white); }
 .barber-landing .barber-product-top svg { color: var(--barber-gold-light); }
 .barber-landing .barber-included { display: inline-flex; align-self: flex-start; gap: 6px; align-items: center; color: var(--barber-gold-light); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
-.barber-landing .barber-product-copy h3 { font-size: clamp(1.75rem, 3vw, 2.65rem); font-weight: 850; letter-spacing: -.045em; line-height: 1.08; margin-top: 16px; color: var(--barber-ivory); }
+.barber-landing .barber-product-copy h3 { font-size: clamp(1.75rem, 3vw, 2.65rem); font-weight: 850; letter-spacing: -.045em; line-height: 1.08; margin-top: 16px; color: var(--barber-white); }
 .barber-landing .barber-product-copy p { margin-top: 18px; color: var(--barber-muted); font-size: 14px; line-height: 1.85; }
 .barber-landing .barber-text-link { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 34px; color: var(--barber-gold-light); font-size: 13px; padding: 12px; }
 
@@ -232,6 +232,12 @@
 /* =============== BASE =============== */
 :root {
   color-scheme: dark;
+  --brand-black: #010101;
+  --brand-surface: #080705;
+  --brand-gold: #e7b825;
+  --brand-gold-light: #ffe071;
+  --brand-white: #ffffff;
+  --brand-muted: #c9c9c9;
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --surface-border: rgba(255, 255, 255, 0.09);
   --surface-border-hover: rgba(231, 184, 37, 0.32);
@@ -243,8 +249,8 @@ html {
 }
 
 body {
-  background: #030302 radial-gradient(circle at 50% -20%, rgba(231, 184, 37, 0.06), transparent 38rem);
-  color: #ffffff;
+  background: var(--brand-black) radial-gradient(circle at 50% -20%, rgba(231, 184, 37, 0.06), transparent 38rem);
+  color: var(--brand-white);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -264,7 +270,7 @@ button,
 }
 
 :where(a, button, [tabindex]):focus-visible {
-  outline: 2px solid rgba(231, 184, 37, 0.9);
+  outline: 2px solid var(--brand-gold-light);
   outline-offset: 4px;
 }
 
@@ -324,7 +330,7 @@ main#top {
 
   /* Background com leve gradiente + grid futurista — intensidade calibrada */
   .bg-futuristic {
-    background-color: #030302;
+    background-color: var(--brand-black);
     background-image: radial-gradient(
         ellipse 80% 60% at 50% 0%,
         rgba(231, 184, 37, 0.11),
@@ -336,7 +342,7 @@ main#top {
     background-position: 0 0, 0 0, 0 0;
   }
   .bg-futuristic-dense {
-    background-color: #030302;
+    background-color: var(--brand-black);
     background-image: radial-gradient(
         ellipse 70% 50% at 50% 100%,
         rgba(255, 224, 113, 0.08),
@@ -349,13 +355,14 @@ main#top {
       );
   }
 
-  /* Glassmorphism escuro — blur reduzido para melhor performance */
+  /* Vidro escuro com reflexo dourado discreto. */
   .glass {
     background: linear-gradient(
       180deg,
-      rgba(11, 20, 11, 0.88) 0%,
-      rgba(7, 17, 7, 0.88) 100%
+      rgba(20, 16, 8, 0.9) 0%,
+      rgba(8, 7, 5, 0.92) 100%
     );
+    border-color: rgba(231, 184, 37, 0.18);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
@@ -364,9 +371,10 @@ main#top {
   .card-premium {
     background: linear-gradient(
       180deg,
-      rgba(16, 28, 16, 0.95) 0%,
-      rgba(11, 20, 11, 0.95) 100%
+      rgba(23, 17, 9, 0.96) 0%,
+      rgba(8, 7, 5, 0.98) 100%
     );
+    border-color: rgba(231, 184, 37, 0.2);
   }
 
   /* Scrollbar dark */
@@ -405,11 +413,11 @@ main#top {
 
 @layer components {
   .btn-primary {
-    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full
       bg-neon px-6 py-3.5 text-base font-bold text-bg-primary
       transition-[transform,background-color,filter] duration-300
       hover:-translate-y-0.5 hover:brightness-105
-      focus:outline-none focus:ring-2 focus:ring-neon/60
+      focus:outline-none focus:ring-2 focus:ring-neon/60 focus:ring-offset-2 focus:ring-offset-bg-primary
       active:translate-y-0;
     box-shadow: none !important;
   }
@@ -431,12 +439,12 @@ main#top {
   }
 
   .btn-secondary {
-    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full
       border border-white/15 bg-white/[0.02] px-6 py-3.5
       text-base font-semibold text-neon
       transition-[transform,border-color,background-color,color] duration-300
       hover:-translate-y-0.5 hover:border-neon/40 hover:bg-neon/[0.06] hover:text-white
-      focus:outline-none focus:ring-2 focus:ring-neon/30;
+      focus:outline-none focus:ring-2 focus:ring-neon/60 focus:ring-offset-2 focus:ring-offset-bg-primary;
     box-shadow: none !important;
   }
   .btn-secondary::after {
@@ -458,8 +466,8 @@ main#top {
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-      rounded-lg px-4 py-2 text-sm font-semibold text-ink-light
-      transition-colors duration-200 hover:text-white;
+      rounded-full px-4 py-2 text-sm font-semibold text-ink-light
+      transition-colors duration-200 hover:bg-neon/10 hover:text-white;
   }
 
   .card-base {
@@ -473,6 +481,82 @@ main#top {
       border border-white/10 bg-white/[0.035] px-3 py-1.5
       text-[11px] font-bold uppercase tracking-[0.14em] text-neon;
   }
+}
+
+/* Painel: mesma identidade da vitrine, com leitura clara em dados e formulários. */
+.admin-shell {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: var(--brand-black);
+  color: var(--brand-white);
+}
+
+.admin-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 36% at 50% -12%, rgba(231, 184, 37, 0.13), transparent 75%),
+    linear-gradient(180deg, var(--brand-black), var(--brand-surface) 56%, var(--brand-black));
+}
+
+.admin-atmosphere::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.32;
+  background-image: linear-gradient(rgba(231, 184, 37, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(231, 184, 37, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, #000, transparent 70%);
+}
+
+.admin-shell .admin-panel {
+  border: 1px solid rgba(231, 184, 37, 0.16);
+  border-radius: 24px;
+  background: linear-gradient(150deg, rgba(23, 17, 9, 0.94), rgba(8, 7, 5, 0.96));
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.admin-shell .admin-panel:hover {
+  border-color: rgba(255, 224, 113, 0.32);
+}
+
+.admin-shell .admin-field {
+  border: 1px solid rgba(231, 184, 37, 0.2);
+  border-radius: 12px;
+  background: rgba(1, 1, 1, 0.72);
+  color: var(--brand-white);
+}
+
+.admin-shell .admin-field::placeholder { color: #a9a9a9; }
+.admin-shell .admin-field:focus-visible {
+  outline: 2px solid var(--brand-gold-light);
+  outline-offset: 2px;
+  border-color: var(--brand-gold-light);
+}
+
+.admin-shell .admin-action {
+  border: 1px solid var(--brand-gold-light);
+  border-radius: 999px;
+  background: linear-gradient(110deg, var(--brand-gold-light), var(--brand-gold) 70%);
+  color: var(--brand-black);
+  font-weight: 700;
+  transition: filter 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.admin-shell .admin-action:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(231, 184, 37, 0.18);
+}
+
+.admin-shell .admin-action:focus-visible {
+  outline: 2px solid var(--brand-white);
+  outline-offset: 3px;
 }
 
 /* =============== EXPERIÊNCIA DE SCROLL =============== */

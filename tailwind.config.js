@@ -6,7 +6,7 @@ export default {
       colors: {
         // Preto e ouro da identidade Zap Page.
         bg: {
-          primary: '#030302',
+          primary: '#010101',
           secondary: '#080705',
           card: '#100D08',
           cardPremium: '#171109',
@@ -18,8 +18,8 @@ export default {
         },
         ink: {
           white: '#FFFFFF',
-          light: '#CFC5AE',
-          dark: '#A99A7C',
+          light: '#C9C9C9',
+          dark: '#A9A9A9',
         },
       },
       fontFamily: {
@@ -42,9 +42,9 @@ export default {
         neon: 'rgba(231, 184, 37, 0.25)',
       },
       backgroundImage: {
-        'radial-green':
+        'radial-gold':
           'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(231, 184, 37, 0.12), transparent 58%)',
-        'radial-green-bottom':
+        'radial-gold-bottom':
           'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(255, 224, 113, 0.10), transparent 58%)',
         'grid-lines':
           "linear-gradient(rgba(231, 184, 37, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(231, 184, 37, 0.05) 1px, transparent 1px)",

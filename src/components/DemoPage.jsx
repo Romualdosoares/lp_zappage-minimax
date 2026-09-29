@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { getDemo } from '../data/demos'
-import { buildWhatsappUrl } from '../siteConfig'
+import { buildWhatsappUrl, siteConfig } from '../siteConfig'
 import { trackMarketingEvent } from '../lib/marketingTracking'
 import { trackAnalyticsEvent } from '../lib/supabaseClient'
 import { IconArrowRight, IconCheckCircle, IconWhatsapp } from './Icons'
@@ -34,12 +34,12 @@ export default function DemoPage({ demoId }) {
   const whatsappUrl = buildWhatsappUrl(`Vi a demonstração ${demo.name} e quero um modelo semelhante para o meu negócio.`)
 
   return (
-    <div className="min-h-screen bg-[#0C0905] text-white">
+    <div className="min-h-screen bg-bg-primary text-white">
       <div className={`pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b ${demo.palette} opacity-[0.12]`} />
-      <header className="border-b border-white/10 bg-black/40 backdrop-blur-xl">
+      <header className="border-b border-neon/20 bg-black/85 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-4 py-3">
-          <a href="/" className="text-sm font-extrabold text-white">← Zap Page</a>
-          <span className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold text-white/90">Demonstração</span>
+          <a href="/" className="flex items-center gap-2 text-sm font-extrabold text-neon transition hover:text-neon-secondary"><img src={siteConfig.logoSrc} alt="" className="h-8 w-8 object-contain" />Zap Page</a>
+          <span className="rounded-full border border-neon/30 bg-neon/10 px-3 py-1 text-xs font-bold text-neon-secondary">Demonstração</span>
         </div>
       </header>
 
@@ -47,26 +47,26 @@ export default function DemoPage({ demoId }) {
         <section className="container-page py-12 sm:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-2">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-white/70">{demo.eyebrow}</p>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-neon-secondary">{demo.eyebrow}</p>
               <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">{demo.title}</h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">{demo.description}</p>
               <div className="mt-7 flex flex-wrap gap-3">
-                <a href="#servicos" className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-black">Conhecer serviços</a>
-                <a href={whatsappUrl} target="_blank" rel="noreferrer noopener" data-cta-location="demo-hero" className="rounded-xl border border-white/40 bg-white/10 px-5 py-3 text-sm font-bold text-white">
+                <a href="#servicos" className="rounded-full bg-neon px-5 py-3 text-sm font-bold text-black transition hover:bg-neon-secondary">Conhecer serviços</a>
+                <a href={whatsappUrl} target="_blank" rel="noreferrer noopener" data-cta-location="demo-hero" className="rounded-full border border-neon/40 bg-neon/10 px-5 py-3 text-sm font-bold text-neon-secondary transition hover:border-neon hover:bg-neon/15">
                   <IconWhatsapp className="mr-2 inline h-4 w-4" />Agendar pelo WhatsApp
                 </a>
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-white/25 bg-black/25 p-4 shadow-2xl backdrop-blur-sm sm:p-6">
-              <div className="rounded-[1.4rem] border border-white/20 bg-[#101510] p-5 sm:p-7">
+            <div className="rounded-[2rem] border border-neon/25 bg-bg-secondary/60 p-4 shadow-neon backdrop-blur-sm sm:p-6">
+              <div className="rounded-[1.4rem] border border-neon/20 bg-bg-card p-5 sm:p-7">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/55">{demo.category}</p>
                 <h2 className="mt-2 text-3xl font-black">{demo.name}</h2>
                 <div className={`mt-6 h-36 rounded-2xl bg-gradient-to-br ${demo.palette} p-5`}>
                   <p className="text-sm font-bold text-black/75">Atendimento pensado para você</p>
                   <p className="mt-2 max-w-48 text-xl font-black leading-tight text-black">Informações importantes em um só lugar.</p>
                 </div>
-                <a href={whatsappUrl} target="_blank" rel="noreferrer noopener" data-cta-location="demo-preview" className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[#38f214] px-4 py-3 text-sm font-extrabold text-black">
+                <a href={whatsappUrl} target="_blank" rel="noreferrer noopener" data-cta-location="demo-preview" className="mt-5 flex items-center justify-center gap-2 rounded-full bg-neon px-4 py-3 text-sm font-extrabold text-black transition hover:bg-neon-secondary">
                   <IconWhatsapp className="h-5 w-5" />Falar agora
                 </a>
               </div>
@@ -74,7 +74,7 @@ export default function DemoPage({ demoId }) {
           </div>
         </section>
 
-        <section id="servicos" className="border-y border-white/10 bg-black/25 py-14 sm:py-20">
+        <section id="servicos" className="border-y border-neon/15 bg-bg-secondary py-14 sm:py-20">
           <div className="container-page">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-white/60">Estrutura de demonstração</p>
@@ -82,7 +82,7 @@ export default function DemoPage({ demoId }) {
             </div>
             <div className="mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
               {demo.services.map((service, index) => (
-                <article key={service} className="rounded-2xl border border-white/15 bg-white/5 p-5">
+                <article key={service} className="rounded-2xl border border-neon/20 bg-bg-card p-5">
                   <span className="text-sm font-black text-neon">0{index + 1}</span>
                   <h3 className="mt-4 text-lg font-bold">{service}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-white/65">Apresentação objetiva com um convite claro para tirar dúvidas ou agendar.</p>
@@ -93,7 +93,7 @@ export default function DemoPage({ demoId }) {
         </section>
 
         <section className="container-page py-14 sm:py-20">
-          <div className="mx-auto grid max-w-5xl gap-8 rounded-3xl border border-white/15 bg-black/25 p-7 sm:grid-cols-2 sm:p-10">
+          <div className="mx-auto grid max-w-5xl gap-8 rounded-3xl border border-neon/20 bg-bg-card p-7 sm:grid-cols-2 sm:p-10">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-white/60">Por que funciona</p>
               <h2 className="mt-3 text-3xl font-black">Um caminho simples até a conversa.</h2>
@@ -105,10 +105,10 @@ export default function DemoPage({ demoId }) {
         </section>
       </main>
 
-      <footer className="border-t border-white/10 bg-black/35 py-8">
+      <footer className="border-t border-neon/15 bg-black py-8">
         <div className="container-page flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
           <p className="text-sm text-white/65">Esta é uma demonstração criada pela Zap Page.</p>
-          <a href={whatsappUrl} target="_blank" rel="noreferrer noopener" data-cta-location="demo-footer" className="inline-flex items-center gap-2 rounded-xl bg-[#38f214] px-5 py-3 text-sm font-extrabold text-black">
+          <a href={whatsappUrl} target="_blank" rel="noreferrer noopener" data-cta-location="demo-footer" className="inline-flex items-center gap-2 rounded-full bg-neon px-5 py-3 text-sm font-extrabold text-black transition hover:bg-neon-secondary">
             Quero um modelo semelhante <IconArrowRight className="h-4 w-4" />
           </a>
         </div>

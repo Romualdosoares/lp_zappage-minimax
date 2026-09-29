@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #fff7dc;
-  background: #050505;
+  color: #ffffff;
+  background: #010101;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -17,7 +17,7 @@ body { margin: 0; min-width: 320px; }
   min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
-  background: #050505;
+  background: #010101;
   isolation: isolate;
 }
 
@@ -33,8 +33,8 @@ body { margin: 0; min-width: 320px; }
   z-index: -1;
   background:
     radial-gradient(ellipse 42% 45% at 72% 35%, rgba(231,184,37,.1), transparent 78%),
-    linear-gradient(90deg, #050505 0%, rgba(5,5,5,.98) 21%, rgba(5,5,5,.84) 40%, rgba(5,5,5,.15) 78%),
-    linear-gradient(0deg, #050505 0%, transparent 22%, transparent 72%, rgba(5,5,5,.24) 100%);
+    linear-gradient(90deg, #010101 0%, rgba(1,1,1,.98) 21%, rgba(1,1,1,.84) 40%, rgba(1,1,1,.15) 78%),
+    linear-gradient(0deg, #010101 0%, transparent 22%, transparent 72%, rgba(1,1,1,.24) 100%);
 }
 
 .bio-layout {
@@ -88,7 +88,7 @@ body { margin: 0; min-width: 320px; }
 .bio-copy { max-width: 490px; }
 .bio-copy h1 {
   margin: 0;
-  color: #fff9e8;
+  color: #ffffff;
   font-size: clamp(36px, 4vw, 54px);
   font-weight: 850;
   letter-spacing: -.055em;
@@ -104,7 +104,7 @@ body { margin: 0; min-width: 320px; }
 .bio-copy p {
   max-width: 440px;
   margin: 17px 0 0;
-  color: #dfd3b8;
+  color: #c9c9c9;
   font-size: 15px;
   line-height: 1.65;
 }
@@ -126,14 +126,14 @@ body { margin: 0; min-width: 320px; }
 }
 .bio-button:hover { transform: translateY(-3px); }
 .bio-button:active { transform: translateY(0) scale(.985); }
-.bio-button:focus-visible { outline: 3px solid #fff0b0; outline-offset: 4px; }
+.bio-button:focus-visible { outline: 3px solid #ffe071; outline-offset: 4px; }
 .bio-button-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 30px; }
 .bio-button-icon svg { width: 27px; height: 27px; }
 .bio-arrow { width: 20px; height: 20px; margin-left: auto; transition: transform .22s ease; }
 .bio-button:hover .bio-arrow { transform: translateX(4px); }
 .bio-button-primary {
   overflow: hidden;
-  color: #0b0801;
+  color: #010101;
   background: linear-gradient(106deg, #fff0b0 0%, #ffe071 22%, #e7b825 68%, #c88e12 100%);
   border-color: #ffe071;
   box-shadow: 0 13px 36px rgba(196,135,9,.25), inset 0 1px rgba(255,255,255,.7);
@@ -151,15 +151,15 @@ body { margin: 0; min-width: 320px; }
 .bio-button-primary:hover { box-shadow: 0 17px 42px rgba(231,184,37,.4), inset 0 1px rgba(255,255,255,.8); }
 .bio-button-secondary {
   color: #ffe071;
-  background: linear-gradient(#0c0a05, #0c0a05) padding-box,
+  background: linear-gradient(#080705, #080705) padding-box,
               linear-gradient(120deg, #fff0b0, #e7b825 55%, #79570c) border-box;
   box-shadow: 0 8px 28px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.05);
 }
-.bio-button-secondary:hover { background: linear-gradient(#191303, #191303) padding-box, linear-gradient(120deg, #fff0b0, #e7b825 55%, #79570c) border-box; }
+.bio-button-secondary:hover { background: linear-gradient(#171109, #171109) padding-box, linear-gradient(120deg, #fff0b0, #e7b825 55%, #79570c) border-box; }
 .bio-footnote {
   width: min(100%, 430px);
   margin: 22px 0 0;
-  color: #a9996b;
+  color: #b6b6b6;
   font-size: 10px;
   font-weight: 650;
   letter-spacing: .13em;
@@ -172,7 +172,7 @@ body { margin: 0; min-width: 320px; }
   .bio-backdrop { background-position: 68% top; opacity: .78; }
   .bio-vignette {
     background:
-      linear-gradient(180deg, rgba(5,5,5,.36) 0%, rgba(5,5,5,.78) 30%, #050505 68%),
+      linear-gradient(180deg, rgba(1,1,1,.36) 0%, rgba(1,1,1,.78) 30%, #010101 68%),
       radial-gradient(ellipse at 50% 18%, rgba(231,184,37,.12), transparent 60%);
   }
   .bio-layout { align-items: center; justify-content: center; padding: 29px 23px 38px; }
