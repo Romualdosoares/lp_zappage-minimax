@@ -35,26 +35,33 @@ export async function withSessionRetry({ getValidSession, request }) {
 }
 
 export function createSessionManager({ load, save, clear, refresh, now = () => Date.now() }) {
-  let refreshPromise
+  let refreshJob
 
   function refreshSession(session) {
-    if (!refreshPromise) {
-      refreshPromise = Promise.resolve()
-        .then(() => refresh(session.refresh_token))
-        .then(refreshedSession => {
-          save(refreshedSession)
-          return refreshedSession
-        })
-        .catch(error => {
-          clear()
-          throw error
-        })
-        .finally(() => {
-          refreshPromise = null
-        })
-    }
+    if (refreshJob?.token === session.refresh_token) return refreshJob.promise
 
-    return refreshPromise
+    const job = { token: session.refresh_token }
+    const sessionChangedError = () => new Error('Sua sessÃ£o foi alterada. Tente novamente.')
+    const isSourceSessionCurrent = async () => (await load())?.refresh_token === job.token
+
+    job.promise = Promise.resolve()
+      .then(() => refresh(job.token))
+      .then(async refreshedSession => {
+        if (!await isSourceSessionCurrent()) throw sessionChangedError()
+        save(refreshedSession)
+        return refreshedSession
+      })
+      .catch(async error => {
+        if (!await isSourceSessionCurrent()) throw sessionChangedError()
+        clear()
+        throw error
+      })
+      .finally(() => {
+        if (refreshJob === job) refreshJob = null
+      })
+
+    refreshJob = job
+    return job.promise
   }
 
   return {

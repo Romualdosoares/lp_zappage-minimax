@@ -118,3 +118,67 @@ test('isExpiredTokenError rejects non-expired errors', () => {
   assert.equal(isExpiredTokenError(Object.assign(new Error('permission denied'), { status: 401 })), false)
   assert.equal(isExpiredTokenError(Object.assign(new Error('JWT expired'), { status: 500 })), false)
 })
+
+test('stale refresh result cannot overwrite a newer signed-in session', async () => {
+  const now = 1_700_000_000_000
+  const oldSession = { access_token: jwt(Math.floor(now / 1000) - 1), refresh_token: 'old-token' }
+  const newSession = { access_token: jwt(Math.floor(now / 1000) + 3_600), refresh_token: 'new-token' }
+  const oldRefresh = { access_token: jwt(Math.floor(now / 1000) + 3_600), refresh_token: 'old-next' }
+  let stored = oldSession
+  let resolveRefresh
+  const saved = []
+  let clearCalls = 0
+  const manager = createSessionManager({
+    load: () => stored,
+    save: session => { saved.push(session); stored = session },
+    clear: () => { clearCalls += 1; stored = null },
+    refresh: () => new Promise(resolve => { resolveRefresh = resolve }),
+    now: () => now,
+  })
+
+  const pending = manager.getValidSession()
+  await tick()
+  stored = newSession
+  resolveRefresh(oldRefresh)
+
+  await assert.rejects(pending, /Sua sessÃ£o foi alterada\. Tente novamente\./)
+  assert.equal(stored, newSession)
+  assert.deepEqual(saved, [])
+  assert.equal(clearCalls, 0)
+})
+
+test('refresh for a new refresh token does not join older pending refresh', async () => {
+  const now = 1_700_000_000_000
+  const oldSession = { access_token: jwt(Math.floor(now / 1000) - 1), refresh_token: 'old-token' }
+  const newSession = { access_token: jwt(Math.floor(now / 1000) - 1), refresh_token: 'new-token' }
+  const newRefresh = { access_token: jwt(Math.floor(now / 1000) + 3_600), refresh_token: 'new-next' }
+  let stored = oldSession
+  const resolvers = new Map()
+  const refreshCalls = []
+  const saved = []
+  const manager = createSessionManager({
+    load: () => stored,
+    save: session => { saved.push(session); stored = session },
+    clear: () => { stored = null },
+    refresh: token => new Promise(resolve => {
+      refreshCalls.push(token)
+      resolvers.set(token, resolve)
+    }),
+    now: () => now,
+  })
+
+  const oldPending = manager.getValidSession()
+  await tick()
+  stored = newSession
+  const newPending = manager.getValidSession()
+  await tick()
+
+  assert.deepEqual(refreshCalls, ['old-token', 'new-token'])
+  const oldResult = assert.rejects(oldPending, /Sua sessÃ£o foi alterada\. Tente novamente\./)
+  resolvers.get('old-token')({ access_token: jwt(Math.floor(now / 1000) + 3_600), refresh_token: 'old-next' })
+  resolvers.get('new-token')(newRefresh)
+
+  await oldResult
+  assert.equal(await newPending, newRefresh)
+  assert.deepEqual(saved, [newRefresh])
+})

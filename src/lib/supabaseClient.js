@@ -187,6 +187,32 @@ async function restRequest(path, { method = 'GET', body, token, prefer } = {}) {
   })
 }
 
+async function storageRequest(path, { session, method = 'POST', body, contentType, upsert } = {}) {
+  return withSessionRetry({
+    getValidSession: options => options?.forceRefresh
+      ? getAuthenticatedSession(options)
+      : Promise.resolve(session),
+    request: async requestSession => {
+      if (requestSession?.user?.id !== session?.user?.id) {
+        throw new Error('Sua sessÃ£o foi alterada. Tente novamente.')
+      }
+
+      const response = await fetch(`${SUPABASE_BASE_URL}/storage/v1${path}`, {
+        method,
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${requestSession.access_token}`,
+          'Content-Type': contentType,
+          ...(upsert ? { 'x-upsert': 'true' } : {}),
+        },
+        body,
+      })
+
+      return parseResponse(response)
+    },
+  })
+}
+
 function sanitizeFileName(name) {
   return String(name || 'arquivo')
     .normalize('NFD')
@@ -227,21 +253,12 @@ export async function uploadBriefingAsset(file, folder = 'imagens') {
   const safeFolder = sanitizeFileName(folder)
   const safeName = sanitizeFileName(file.name) || 'imagem'
   const path = `${session.user.id}/${safeFolder}/${Date.now()}-${safeName}`
-  const response = await fetch(
-    `${SUPABASE_BASE_URL}/storage/v1/object/${BRIEFING_ASSETS_BUCKET}/${path}`,
-    {
-      method: 'POST',
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${session.access_token}`,
-        'Content-Type': file.type || 'application/octet-stream',
-        'x-upsert': 'true',
-      },
-      body: file,
-    },
-  )
-
-  await parseResponse(response)
+  await storageRequest(`/object/${BRIEFING_ASSETS_BUCKET}/${path}`, {
+    session,
+    body: file,
+    contentType: file.type || 'application/octet-stream',
+    upsert: true,
+  })
 
   const asset = {
     name: file.name,
@@ -259,19 +276,11 @@ export async function getBriefingAssetUrl(asset, expiresIn = 3600) {
   if (!asset?.path) return asset?.url || ''
   const session = await getAuthenticatedSession()
   if (!session?.access_token) throw new Error('Entre novamente para acessar este arquivo.')
-  const response = await fetch(
-    `${SUPABASE_BASE_URL}/storage/v1/object/sign/${BRIEFING_ASSETS_BUCKET}/${asset.path}`,
-    {
-      method: 'POST',
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${session.access_token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ expiresIn }),
-    },
-  )
-  const data = await parseResponse(response)
+  const data = await storageRequest(`/object/sign/${BRIEFING_ASSETS_BUCKET}/${asset.path}`, {
+    session,
+    body: JSON.stringify({ expiresIn }),
+    contentType: 'application/json',
+  })
   return data?.signedURL ? `${SUPABASE_BASE_URL}/storage/v1${data.signedURL}` : ''
 }
 
@@ -314,21 +323,12 @@ export async function uploadTestimonialPhoto(file) {
     : sanitizeFileName(file.name).split('.').pop() || 'jpg'
   const safeName = `${sanitizeFileName(originalBaseName) || 'depoimento'}.${extension}`
   const path = `autorizados/${session.user.id}/${Date.now()}-${safeName}`
-  const response = await fetch(
-    `${SUPABASE_BASE_URL}/storage/v1/object/${TESTIMONIAL_ASSETS_BUCKET}/${path}`,
-    {
-      method: 'POST',
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${session.access_token}`,
-        'Content-Type': uploadFile.type || file.type,
-        'x-upsert': 'true',
-      },
-      body: uploadFile,
-    },
-  )
-
-  await parseResponse(response)
+  await storageRequest(`/object/${TESTIMONIAL_ASSETS_BUCKET}/${path}`, {
+    session,
+    body: uploadFile,
+    contentType: uploadFile.type || file.type,
+    upsert: true,
+  })
   return {
     name: file.name,
     path,
@@ -634,12 +634,11 @@ export async function uploadPortfolioImage(file) {
   validatePortfolioImage(file)
   const extension = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' }[file.type]
   const path = `${session.user.id}/${crypto.randomUUID()}.${extension}`
-  const response = await fetch(`${SUPABASE_BASE_URL}/storage/v1/object/portfolio-images/${path}`, {
-    method: 'POST',
-    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${session.access_token}`, 'Content-Type': file.type },
+  await storageRequest(`/object/portfolio-images/${path}`, {
+    session,
     body: file,
+    contentType: file.type,
   })
-  await parseResponse(response)
   return `${SUPABASE_BASE_URL}/storage/v1/object/public/portfolio-images/${path}`
 }
 
