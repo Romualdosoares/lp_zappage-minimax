@@ -18,6 +18,22 @@ function getTokenExpiry(accessToken) {
   }
 }
 
+export function isExpiredTokenError(error) {
+  if (error?.status !== 401 || typeof error.message !== 'string') return false
+  return /\b(?:jwt|token)\b.*\bexpir\w*\b|\bexpir\w*\b.*\b(?:jwt|token)\b/i.test(error.message)
+}
+
+export async function withSessionRetry({ getValidSession, request }) {
+  const session = await getValidSession()
+
+  try {
+    return await request(session)
+  } catch (error) {
+    if (!isExpiredTokenError(error)) throw error
+    return request(await getValidSession({ forceRefresh: true }))
+  }
+}
+
 export function createSessionManager({ load, save, clear, refresh, now = () => Date.now() }) {
   let refreshPromise
 

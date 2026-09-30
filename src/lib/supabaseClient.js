@@ -1,4 +1,5 @@
 import { portfolioImageFields, validatePortfolioImage } from './portfolioImages'
+import { createSessionManager, withSessionRetry } from './authSession'
 
 const SUPABASE_BASE_URL =
   import.meta.env.VITE_SUPABASE_URL || 'https://yeqcojnwxxpffvfxoiwc.supabase.co'
@@ -102,6 +103,17 @@ export function clearSession() {
   window.localStorage.removeItem(SESSION_KEY)
 }
 
+const sessionManager = createSessionManager({
+  load: getSession,
+  save: saveSession,
+  clear: clearSession,
+  refresh: refreshToken => authRequest('/token?grant_type=refresh_token', { refresh_token: refreshToken }),
+})
+
+export function getAuthenticatedSession(options) {
+  return sessionManager.getValidSession(options)
+}
+
 function getAnalyticsSessionId() {
   try {
     let sessionId = window.localStorage.getItem(ANALYTICS_SESSION_KEY)
@@ -144,12 +156,14 @@ async function authRequest(path, body) {
   return parseResponse(response)
 }
 
-async function restRequest(path, { method = 'GET', body, token, prefer } = {}) {
+async function sendRestRequest(path, { method = 'GET', body, token, prefer } = {}) {
+  if (!token) throw new Error('Token de autenticaÃ§Ã£o obrigatÃ³rio.')
+
   const response = await fetch(`${SUPABASE_REST_URL}${path}`, {
     method,
     headers: {
       apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${token || getSession()?.access_token || SUPABASE_ANON_KEY}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
       ...(prefer ? { Prefer: prefer } : {}),
     },
@@ -157,6 +171,20 @@ async function restRequest(path, { method = 'GET', body, token, prefer } = {}) {
   })
 
   return parseResponse(response)
+}
+
+async function restRequest(path, { method = 'GET', body, token, prefer } = {}) {
+  if (token) return sendRestRequest(path, { method, body, token, prefer })
+
+  return withSessionRetry({
+    getValidSession: getAuthenticatedSession,
+    request: session => sendRestRequest(path, {
+      method,
+      body,
+      token: session.access_token,
+      prefer,
+    }),
+  })
 }
 
 function sanitizeFileName(name) {
@@ -192,7 +220,7 @@ export async function signIn(email, password) {
 }
 
 export async function uploadBriefingAsset(file, folder = 'imagens') {
-  const session = getSession()
+  const session = await getAuthenticatedSession()
   if (!session?.access_token || !session?.user?.id) throw new Error('Sessão inválida.')
   if (!file) throw new Error('Selecione uma imagem.')
 
@@ -229,7 +257,7 @@ export async function uploadBriefingAsset(file, folder = 'imagens') {
 
 export async function getBriefingAssetUrl(asset, expiresIn = 3600) {
   if (!asset?.path) return asset?.url || ''
-  const session = getSession()
+  const session = await getAuthenticatedSession()
   if (!session?.access_token) throw new Error('Entre novamente para acessar este arquivo.')
   const response = await fetch(
     `${SUPABASE_BASE_URL}/storage/v1/object/sign/${BRIEFING_ASSETS_BUCKET}/${asset.path}`,
@@ -274,7 +302,7 @@ async function optimizeTestimonialPhoto(file) {
 }
 
 export async function uploadTestimonialPhoto(file) {
-  const session = getSession()
+  const session = await getAuthenticatedSession()
   if (!session?.access_token || !session?.user?.id) throw new Error('Sessão inválida.')
   if (!file?.type?.startsWith('image/')) throw new Error('Selecione uma imagem válida.')
   if (file.size > 5 * 1024 * 1024) throw new Error('A foto deve ter no máximo 5 MB.')
@@ -327,11 +355,10 @@ export async function signOut() {
 }
 
 export async function getMyProfile() {
-  const session = getSession()
+  const session = await getAuthenticatedSession()
   if (!session?.user?.id) return null
   const rows = await restRequest(
     `/profiles?select=*&id=eq.${session.user.id}&limit=1`,
-    { token: session.access_token },
   )
   return rows?.[0] || null
 }
@@ -602,7 +629,7 @@ export async function deleteClientSite(id) {
 }
 
 export async function uploadPortfolioImage(file) {
-  const session = getSession()
+  const session = await getAuthenticatedSession()
   if (!session?.access_token || !session?.user?.id) throw new Error('Sessão inválida.')
   validatePortfolioImage(file)
   const extension = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' }[file.type]
@@ -812,7 +839,7 @@ export async function getBriefingByOrder(orderNumber) {
 }
 
 export async function getMyBriefing() {
-  const session = getSession()
+  const session = await getAuthenticatedSession()
   if (!session?.user?.id) return null
   const rows = await restRequest(
     `/briefings?select=${CLIENT_BRIEFING_COLUMNS}&user_id=eq.${session.user.id}&limit=1`,
@@ -821,7 +848,7 @@ export async function getMyBriefing() {
 }
 
 export async function saveMyBriefing(form, status) {
-  const session = getSession()
+  const session = await getAuthenticatedSession()
   if (!session?.user?.id) throw new Error('Sessão inválida.')
 
   const { id, created_at, order_number, admin_prompt, ...clientFields } = form
