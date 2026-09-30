@@ -9,7 +9,7 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/bio", "destination": "/bio.html" },
-    { "source": "/v2", "destination": "/landing-v2/index.html" },
+    { "source": "/v2", "destination": "/landing-v2" },
     { "source": "/(.*)", "destination": "/" }
   ],
   "headers": [
