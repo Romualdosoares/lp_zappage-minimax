@@ -114,6 +114,39 @@ test('withSessionRetry refreshes once and retries an expired JWT request', async
   assert.equal(isExpiredTokenError(expiredError), true)
 })
 
+test('withSessionRetry rejects when session changes after an expired request', async () => {
+  const now = 1_700_000_000_000
+  const sessionA = { access_token: jwt(Math.floor(now / 1000) + 3_600), refresh_token: 'token-a' }
+  const sessionB = { access_token: jwt(Math.floor(now / 1000) + 3_600), refresh_token: 'token-b' }
+  const expiredError = Object.assign(new Error('JWT expired'), { status: 401 })
+  let stored = sessionA
+  let requestCalls = 0
+  let refreshCalls = 0
+  const manager = createSessionManager({
+    load: () => stored,
+    save: session => { stored = session },
+    clear: () => { stored = null },
+    refresh: async () => { refreshCalls += 1; return sessionB },
+    now: () => now,
+  })
+
+  await assert.rejects(
+    withSessionRetry({
+      getValidSession: manager.getValidSession,
+      request: async session => {
+        requestCalls += 1
+        assert.equal(session, sessionA)
+        stored = sessionB
+        throw expiredError
+      },
+    }),
+    /Sua sessÃ£o foi alterada\. Tente novamente\./,
+  )
+
+  assert.equal(requestCalls, 1)
+  assert.equal(refreshCalls, 0)
+})
+
 test('isExpiredTokenError rejects non-expired errors', () => {
   assert.equal(isExpiredTokenError(Object.assign(new Error('permission denied'), { status: 401 })), false)
   assert.equal(isExpiredTokenError(Object.assign(new Error('JWT expired'), { status: 500 })), false)

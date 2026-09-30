@@ -23,6 +23,10 @@ export function isExpiredTokenError(error) {
   return /\b(?:jwt|token)\b.*\bexpir\w*\b|\bexpir\w*\b.*\b(?:jwt|token)\b/i.test(error.message)
 }
 
+function sessionChangedError() {
+  return new Error('Sua sessÃ£o foi alterada. Tente novamente.')
+}
+
 export async function withSessionRetry({ getValidSession, request }) {
   const session = await getValidSession()
 
@@ -30,7 +34,10 @@ export async function withSessionRetry({ getValidSession, request }) {
     return await request(session)
   } catch (error) {
     if (!isExpiredTokenError(error)) throw error
-    return request(await getValidSession({ forceRefresh: true }))
+    return request(await getValidSession({
+      forceRefresh: true,
+      expectedRefreshToken: session.refresh_token,
+    }))
   }
 }
 
@@ -41,7 +48,6 @@ export function createSessionManager({ load, save, clear, refresh, now = () => D
     if (refreshJob?.token === session.refresh_token) return refreshJob.promise
 
     const job = { token: session.refresh_token }
-    const sessionChangedError = () => new Error('Sua sessÃ£o foi alterada. Tente novamente.')
     const isSourceSessionCurrent = async () => (await load())?.refresh_token === job.token
 
     job.promise = Promise.resolve()
@@ -65,8 +71,15 @@ export function createSessionManager({ load, save, clear, refresh, now = () => D
   }
 
   return {
-    async getValidSession({ forceRefresh = false } = {}) {
+    async getValidSession(options = {}) {
+      const { forceRefresh = false, expectedRefreshToken } = options
       const session = await load()
+      if (
+        Object.prototype.hasOwnProperty.call(options, 'expectedRefreshToken') &&
+        session?.refresh_token !== expectedRefreshToken
+      ) {
+        throw sessionChangedError()
+      }
       if (!session?.access_token) throw new Error('Entre novamente para continuar.')
 
       const expiresAt = getTokenExpiry(session.access_token)
