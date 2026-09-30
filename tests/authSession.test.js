@@ -16,7 +16,7 @@ test('expired session refreshes and saves returned session', async () => {
     load: () => current,
     save: session => { saved = session },
     clear: () => { clearCalls += 1 },
-    refresh: async session => { refreshCalls += 1; assert.equal(session, current); return refreshed },
+    refresh: async token => { refreshCalls += 1; assert.equal(token, current.refresh_token); return refreshed },
     now: () => now,
   })
 
@@ -43,6 +43,26 @@ test('refresh failure clears stored session then rethrows error', async () => {
 
   await assert.rejects(manager.getValidSession(), failure)
   assert.deepEqual(events, ['refresh', 'clear'])
+})
+
+test('synchronous refresh failure resets shared promise for next request', async () => {
+  const now = 1_700_000_000_000
+  const current = { access_token: jwt(Math.floor(now / 1000) - 1), refresh_token: 'refresh-token' }
+  const failure = new Error('refresh unavailable')
+  let refreshCalls = 0
+  let clearCalls = 0
+  const manager = createSessionManager({
+    load: () => current,
+    save: () => {},
+    clear: () => { clearCalls += 1 },
+    refresh: () => { refreshCalls += 1; throw failure },
+    now: () => now,
+  })
+
+  await assert.rejects(manager.getValidSession(), failure)
+  await assert.rejects(manager.getValidSession(), failure)
+  assert.equal(refreshCalls, 2)
+  assert.equal(clearCalls, 2)
 })
 
 test('concurrent expired-session requests share one refresh', async () => {

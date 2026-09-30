@@ -23,18 +23,19 @@ export function createSessionManager({ load, save, clear, refresh, now = () => D
 
   function refreshSession(session) {
     if (!refreshPromise) {
-      refreshPromise = (async () => {
-        try {
-          const refreshedSession = await refresh(session)
+      refreshPromise = Promise.resolve()
+        .then(() => refresh(session.refresh_token))
+        .then(refreshedSession => {
           save(refreshedSession)
           return refreshedSession
-        } catch (error) {
+        })
+        .catch(error => {
           clear()
           throw error
-        } finally {
+        })
+        .finally(() => {
           refreshPromise = null
-        }
-      })()
+        })
     }
 
     return refreshPromise
