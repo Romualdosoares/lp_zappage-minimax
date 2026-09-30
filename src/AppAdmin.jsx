@@ -32,6 +32,8 @@ import {
   uploadTestimonialPhoto,
 } from './lib/supabaseClient'
 import PlanBenefitsManager from './admin/PlanBenefitsManager.jsx'
+import PortfolioImage from './components/PortfolioImage.jsx'
+import { uploadPortfolioImage } from './lib/supabaseClient'
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -1243,17 +1245,21 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
 
 function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
   const [editingId, setEditingId] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [form, setForm] = useState({
     id: uid('site'),
     company_name: '',
     site_url: '',
+    image_url: '',
+    image_kind: 'logo',
     is_published: true,
     featured: false,
     show_on_landing: false,
   })
 
   const publicPortfolioUrl = `${window.location.origin}/portfolio`
-  const landingSelectedCount = portfolio.filter(item => item.show_on_landing).length
+  const landingSelectedCount = portfolio.filter(item => item.is_published && item.show_on_landing).length
 
   function editItem(item) {
     setEditingId(item.id)
@@ -1266,6 +1272,8 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
       id: uid('site'),
       company_name: '',
       site_url: '',
+      image_url: '',
+      image_kind: 'logo',
       is_published: true,
       featured: false,
       show_on_landing: false,
@@ -1281,24 +1289,44 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
     }
   }
 
+  async function chooseImage(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    setUploading(true)
+    try {
+      const url = await uploadPortfolioImage(file)
+      setForm(current => ({ ...current, image_url: url }))
+      setMessage('Imagem enviada. Salve o trabalho para publicá-la no portfólio.')
+    } catch (error) {
+      setMessage(error.message)
+    } finally { setUploading(false) }
+  }
+
   async function saveItem(event) {
     event.preventDefault()
+    if (saving || uploading) return
+    setSaving(true)
     try {
-      const currentItem = portfolio.find(item => item.id === form.id)
-      const isNewLandingSelection = form.show_on_landing && !currentItem?.show_on_landing
-      if (isNewLandingSelection && landingSelectedCount >= 6) {
-        setMessage('A landing page já tem 6 projetos selecionados. Desmarque um deles antes de adicionar outro.')
+      const latest = await getClientSites({ admin: true })
+      setPortfolio(latest)
+      const selectedOthers = latest.filter(item => item.id !== form.id && item.is_published && item.show_on_landing).length
+      if (form.is_published && form.show_on_landing && selectedOthers >= 6) {
+        setMessage('A página principal já tem 6 projetos selecionados. Desmarque um deles antes de adicionar outro.')
         return
       }
       const saved = await saveClientSite(form)
-      const next = portfolio.some(item => item.id === saved.id)
-        ? portfolio.map(item => (item.id === saved.id ? saved : item))
-        : [saved, ...portfolio]
+      const next = latest.some(item => item.id === saved.id)
+        ? latest.map(item => (item.id === saved.id ? saved : item))
+        : [saved, ...latest]
       setPortfolio(next)
       setEditingId(saved.id)
+      setForm(saved)
       setMessage('Site do cliente salvo no portfólio.')
     } catch (error) {
       setMessage(error.message)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -1335,6 +1363,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
             <button
               type="button"
               onClick={resetForm}
+              disabled={uploading || saving}
               className="admin-action rounded-full bg-neon px-4 py-2 text-sm font-black text-black"
             >
               Novo site
@@ -1346,8 +1375,9 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
           <p className="text-xs font-bold uppercase tracking-wider text-ink-dark">Link para compartilhar</p>
           <p className="mt-1 break-all text-sm font-bold text-neon">{publicPortfolioUrl}</p>
           <p className="mt-2 text-xs font-bold text-ink-light">
-            {landingSelectedCount}/6 projetos selecionados para a landing page
+            {landingSelectedCount}/6 projetos selecionados para a página principal
           </p>
+          <a href="/#portfolio" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm font-bold text-neon underline">Ver seção na página principal</a>
         </div>
 
         <div className="mt-5 grid gap-3">
@@ -1377,9 +1407,9 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
                   }`}>
                     {item.is_published ? 'Publicado' : 'Oculto'}
                   </span>
-                  {item.show_on_landing && (
+                  {item.is_published && item.show_on_landing && (
                     <span className="rounded-full border border-neon/40 bg-neon/10 px-2.5 py-1 text-[10px] font-black uppercase text-neon">
-                      Na landing
+                      Na página principal
                     </span>
                   )}
                 </div>
@@ -1396,6 +1426,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
                 <button
                   type="button"
                   onClick={() => editItem(item)}
+                  disabled={uploading || saving}
                   className="rounded-lg border border-neon/30 px-3 py-2 text-xs font-bold text-neon"
                 >
                   Editar
@@ -1403,6 +1434,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
                 <button
                   type="button"
                   onClick={() => removeItem(item.id)}
+                  disabled={uploading || saving}
                   className="rounded-lg border border-red-400/30 px-3 py-2 text-xs font-bold text-red-200"
                 >
                   Remover
@@ -1443,11 +1475,33 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
         </div>
 
         <div className="mt-4 grid gap-3">
+          <fieldset disabled={uploading || saving} className="min-w-0 rounded-2xl border border-neon/20 bg-black p-4">
+            <legend className="px-2 text-sm font-bold text-white">Imagem do projeto</legend>
+            <p className="mb-4 text-xs leading-relaxed text-ink-light">Use a logo da barbearia ou uma captura da página. A mesma imagem aparece na página principal e no portfólio completo.</p>
+            <div className="grid gap-4">
+              <Field label="Tipo de imagem">
+                <select className={inputClass} value={form.image_kind || 'logo'} onChange={event => setForm({ ...form, image_kind: event.target.value })}>
+                  <option value="logo">Logo — mostrar inteira</option>
+                  <option value="preview">Prévia do site — destacar o topo</option>
+                </select>
+              </Field>
+              <Field label="Enviar logo ou captura">
+                <input type="file" accept="image/png,image/jpeg,image/webp" onChange={chooseImage} className="w-full min-w-0 text-sm text-ink-light file:mr-3 file:rounded-full file:border-0 file:bg-neon file:px-4 file:py-2 file:font-bold file:text-black" />
+              </Field>
+              <p className="text-xs text-ink-light" role="status">{uploading ? 'Enviando imagem…' : 'PNG, JPG ou WebP, até 5 MB.'}</p>
+              <Field label="Ou cole o link da imagem">
+                <TextInput type="url" value={form.image_url || ''} onChange={event => setForm({ ...form, image_url: event.target.value })} placeholder="https://seusite.com/logo.png" />
+              </Field>
+              <PortfolioImage site={form} />
+              {form.image_url && <button type="button" className="text-sm font-bold text-neon underline" onClick={() => setForm({ ...form, image_url: '', image_kind: 'logo' })}>Remover imagem personalizada</button>}
+              <p className="text-xs leading-relaxed text-ink-light">Sem imagem personalizada, usamos o ícone do site ou as iniciais da empresa. Salve para aplicar as alterações.</p>
+            </div>
+          </fieldset>
           <label className="flex items-center gap-3 rounded-xl border border-neon/20 bg-black px-3 py-3">
             <input
               type="checkbox"
               checked={Boolean(form.is_published)}
-              onChange={event => setForm({ ...form, is_published: event.target.checked })}
+              onChange={event => setForm({ ...form, is_published: event.target.checked, show_on_landing: event.target.checked && form.show_on_landing })}
               className="h-4 w-4 accent-[#d4af37]"
             />
             <span className="text-sm font-bold text-white">Publicar na página compartilhável</span>
@@ -1466,21 +1520,22 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               type="checkbox"
               checked={Boolean(form.show_on_landing)}
               onChange={event => setForm({ ...form, show_on_landing: event.target.checked })}
-              disabled={!form.show_on_landing && landingSelectedCount >= 6}
+              disabled={!form.is_published || (!form.show_on_landing && landingSelectedCount >= 6)}
               className="mt-0.5 h-4 w-4 accent-[#d4af37] disabled:cursor-not-allowed disabled:opacity-40"
             />
             <span>
-              <span className="block text-sm font-bold text-white">Exibir na seção Portfólio da landing page</span>
-              <span className="mt-1 block text-xs leading-relaxed text-ink-light">Selecione até 6 sites publicados. Os demais continuam disponíveis em /portfolio.</span>
+              <span className="block text-sm font-bold text-white">Exibir na seção Portfólio da página principal</span>
+              <span className="mt-1 block text-xs leading-relaxed text-ink-light">Selecione até 6 sites publicados e salve. A página principal será atualizada automaticamente. Os demais continuam no portfólio completo.</span>
             </span>
           </label>
         </div>
 
         <button
           type="submit"
+          disabled={saving || uploading}
           className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
         >
-          {editingId ? 'Salvar alterações' : 'Adicionar ao portfólio'}
+          {saving ? 'Salvando…' : editingId ? 'Salvar alterações' : 'Adicionar ao portfólio'}
           <IconCheckCircle className="h-5 w-5" />
         </button>
       </form>
@@ -3171,9 +3226,7 @@ function PublicPortfolioApp() {
                   Destaque
                 </span>
               )}
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-neon/25 bg-black text-neon">
-                <IconLink className="h-6 w-6" />
-              </div>
+              <PortfolioImage site={item} />
               <p className="mt-6 text-xs font-black uppercase tracking-[0.18em] text-neon">
                 Site desenvolvido
               </p>

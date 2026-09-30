@@ -43,10 +43,10 @@ export default function Footer() {
             <ul className="mt-4 space-y-2">
               {[
                 { label: 'Entregas', href: '#entregas' },
-                { label: 'Exemplos', href: '#portfolio' },
+                { label: 'Portfólio', href: '#portfolio' },
                 { label: 'Quem somos', href: '#quem-somos' },
                 { label: 'Planos', href: '#planos' },
-                { label: 'Portfólio', href: '/portfolio' },
+                { label: 'Portfólio completo', href: '/portfolio' },
                 { label: 'Dúvidas', href: '#faq' },
                 { label: 'WhatsApp', href: buildWhatsappUrl() },
               ].map(item => (

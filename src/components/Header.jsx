@@ -4,7 +4,7 @@ import { IconMenu, IconClose, IconBolt } from './Icons'
 
 const NAV = [
   { label: 'Entregas', href: '#entregas' },
-  { label: 'Exemplos', href: '#portfolio' },
+  { label: 'Portfólio', href: '#portfolio' },
   { label: 'Planos', href: '#planos' },
   { label: 'Dúvidas', href: '#faq' },
 ]

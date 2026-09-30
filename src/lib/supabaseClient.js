@@ -1,3 +1,5 @@
+import { portfolioImageFields, validatePortfolioImage } from './portfolioImages'
+
 const SUPABASE_BASE_URL =
   import.meta.env.VITE_SUPABASE_URL || 'https://yeqcojnwxxpffvfxoiwc.supabase.co'
 const SUPABASE_REST_URL = `${SUPABASE_BASE_URL}/rest/v1`
@@ -513,13 +515,58 @@ function normalizeSiteUrl(value) {
   return url.toString()
 }
 
+const PORTFOLIO_EVENT = 'zap-page:portfolio-changed'
+const PORTFOLIO_CHANNEL = 'zap-page-portfolio'
+
+function notifyClientSitesChanged() {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(PORTFOLIO_EVENT))
+  if ('BroadcastChannel' in window) {
+    try {
+      const channel = new BroadcastChannel(PORTFOLIO_CHANNEL)
+      channel.postMessage({ type: 'changed' })
+      channel.close()
+    } catch { /* Realtime and polling also synchronize open pages. */ }
+  }
+}
+
+export function subscribeToClientSites(onChange) {
+  if (typeof window === 'undefined') return () => {}
+  let disposed = false
+  let realtimeChannel
+  let broadcastChannel
+  const handleChange = () => { if (!disposed) onChange() }
+  window.addEventListener(PORTFOLIO_EVENT, handleChange)
+  if ('BroadcastChannel' in window) {
+    try {
+      broadcastChannel = new BroadcastChannel(PORTFOLIO_CHANNEL)
+      broadcastChannel.addEventListener('message', handleChange)
+    } catch { /* Polling remains available. */ }
+  }
+  getPublicRealtimeClient().then(client => {
+    if (disposed) return
+    realtimeChannel = client.channel(`portfolio-${Math.random().toString(16).slice(2)}`)
+      // A public revision exposes no project data and also signals hidden/deleted rows.
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'portfolio_revision' }, handleChange)
+      .subscribe(status => { if (status === 'SUBSCRIBED') handleChange() })
+  }).catch(() => { /* Focus, reconnect and polling are fallback paths. */ })
+  return () => {
+    disposed = true
+    window.removeEventListener(PORTFOLIO_EVENT, handleChange)
+    broadcastChannel?.close()
+    if (realtimeChannel) {
+      getPublicRealtimeClient().then(client => client.removeChannel(realtimeChannel)).catch(() => {})
+    }
+  }
+}
+
 export async function getClientSites({ admin = false, landing = false, limit } = {}) {
   const publishedFilter = admin ? '' : '&is_published=eq.true'
   const landingFilter = landing && !admin ? '&show_on_landing=eq.true' : ''
   const rowLimit = Number(limit || (landing ? 6 : 0))
   const limitFilter = rowLimit > 0 ? `&limit=${rowLimit}` : ''
   return restRequest(
-    `/client_sites?select=*&order=featured.desc,created_at.desc${publishedFilter}${landingFilter}${limitFilter}`,
+    `/client_sites?select=*&order=featured.desc,created_at.desc,id.asc${publishedFilter}${landingFilter}${limitFilter}`,
     admin ? undefined : { token: SUPABASE_ANON_KEY },
   )
 }
@@ -534,7 +581,8 @@ export async function saveClientSite(item) {
     site_url: normalizeSiteUrl(item.site_url),
     is_published: Boolean(item.is_published),
     featured: Boolean(item.featured),
-    show_on_landing: Boolean(item.show_on_landing),
+    show_on_landing: Boolean(item.is_published && item.show_on_landing),
+    ...portfolioImageFields(item),
   }
 
   const rows = await restRequest('/client_sites?on_conflict=id&select=*', {
@@ -542,11 +590,30 @@ export async function saveClientSite(item) {
     body: payload,
     prefer: 'resolution=merge-duplicates,return=representation',
   })
-  return rows?.[0]
+  const saved = rows?.[0]
+  if (!saved) throw new Error('Não foi possível confirmar o trabalho salvo.')
+  notifyClientSitesChanged()
+  return saved
 }
 
 export async function deleteClientSite(id) {
   await restRequest(`/client_sites?id=eq.${encodeURIComponent(id)}`, { method: 'DELETE' })
+  notifyClientSitesChanged()
+}
+
+export async function uploadPortfolioImage(file) {
+  const session = getSession()
+  if (!session?.access_token || !session?.user?.id) throw new Error('Sessão inválida.')
+  validatePortfolioImage(file)
+  const extension = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' }[file.type]
+  const path = `${session.user.id}/${crypto.randomUUID()}.${extension}`
+  const response = await fetch(`${SUPABASE_BASE_URL}/storage/v1/object/portfolio-images/${path}`, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${session.access_token}`, 'Content-Type': file.type },
+    body: file,
+  })
+  await parseResponse(response)
+  return `${SUPABASE_BASE_URL}/storage/v1/object/public/portfolio-images/${path}`
 }
 
 export async function getTestimonials({ admin = false } = {}) {
