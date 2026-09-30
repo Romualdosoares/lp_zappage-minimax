@@ -34,5 +34,6 @@ backups/
 graphify-out/
 docs/qa/
 output/
+.worktrees/
 
 .env*
