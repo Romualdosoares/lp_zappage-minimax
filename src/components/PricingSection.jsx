@@ -17,6 +17,7 @@ const DEFAULT_PLANS = [
     badge: 'Presença essencial',
     name: siteConfig.planExpress.name,
     price: siteConfig.planExpress.price,
+    installment: siteConfig.planExpress.installment,
     description: siteConfig.planExpress.description,
     highlight: false,
     microcopy: 'Uma presença digital com a identidade da sua barbearia.',
@@ -38,6 +39,7 @@ const DEFAULT_PLANS = [
     badge: 'Página completa',
     name: siteConfig.planProfessional.name,
     price: siteConfig.planProfessional.price,
+    installment: siteConfig.planProfessional.installment,
     description: siteConfig.planProfessional.description,
     highlight: true,
     microcopy: 'Apresente sua barbearia e comece a divulgar.',
@@ -65,6 +67,7 @@ const DEFAULT_PLANS = [
     badge: 'Mais criativos',
     name: siteConfig.planTurbo.name,
     price: siteConfig.planTurbo.price,
+    installment: siteConfig.planTurbo.installment,
     description: siteConfig.planTurbo.description,
     highlight: false,
     microcopy: 'Mais opções de artes para divulgar sua barbearia.',
@@ -133,6 +136,12 @@ function PlanCard({ plan, popular }) {
         </span>
         <span className="pb-1.5 text-sm text-ink-light">à vista</span>
       </div>
+      {plan.installment && (
+        <p className="mt-3 text-lg font-bold text-neon">
+          <span className="text-sm font-normal text-ink-light">ou </span>
+          {plan.installment}
+        </p>
+      )}
 
       {/* Items */}
       {plan.items === null ? (
