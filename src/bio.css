@@ -32,7 +32,7 @@ body { margin: 0; min-width: 320px; }
 .bio-vignette {
   z-index: -1;
   background:
-    radial-gradient(ellipse 42% 45% at 72% 35%, rgba(231,184,37,.1), transparent 78%),
+    radial-gradient(ellipse 42% 45% at 72% 35%, rgba(212,175,55,.1), transparent 78%),
     linear-gradient(90deg, #010101 0%, rgba(1,1,1,.98) 21%, rgba(1,1,1,.84) 40%, rgba(1,1,1,.15) 78%),
     linear-gradient(0deg, #010101 0%, transparent 22%, transparent 72%, rgba(1,1,1,.24) 100%);
 }
@@ -51,7 +51,7 @@ body { margin: 0; min-width: 320px; }
   display: flex;
   align-items: center;
   gap: 11px;
-  color: #ffe071;
+  color: #e8cb78;
   font-size: 10px;
   font-weight: 750;
   letter-spacing: .18em;
@@ -59,7 +59,7 @@ body { margin: 0; min-width: 320px; }
   text-transform: uppercase;
   white-space: nowrap;
 }
-.bio-kicker span { flex: 0 0 18px; height: 1px; background: linear-gradient(90deg, transparent, #e7b825); }
+.bio-kicker span { flex: 0 0 18px; height: 1px; background: linear-gradient(90deg, transparent, #d4af37); }
 .bio-kicker span:last-child { transform: rotate(180deg); }
 
 .bio-logo-wrap {
@@ -70,7 +70,7 @@ body { margin: 0; min-width: 320px; }
   padding: 2px;
   overflow: hidden;
   border-radius: 24px;
-  background: linear-gradient(135deg, rgba(255,240,176,.64), rgba(231,184,37,.16) 35%, rgba(231,184,37,.04) 70%, rgba(255,224,113,.36));
+  background: linear-gradient(135deg, rgba(255,240,176,.64), rgba(212,175,55,.16) 35%, rgba(212,175,55,.04) 70%, rgba(232,203,120,.36));
   box-shadow: 0 18px 50px rgba(0,0,0,.32);
 }
 .bio-logo-wrap::before {
@@ -79,7 +79,7 @@ body { margin: 0; min-width: 320px; }
   inset: 17% 10%;
   z-index: -1;
   border-radius: 50%;
-  background: rgba(231,184,37,.23);
+  background: rgba(212,175,55,.23);
   filter: blur(53px);
   animation: bio-breathe 5s ease-in-out infinite alternate;
 }
@@ -97,7 +97,7 @@ body { margin: 0; min-width: 320px; }
 }
 .bio-copy h1 em {
   font-style: normal;
-  background: linear-gradient(100deg, #fff0b0, #ffe071 36%, #e7b825 75%, #b98112);
+  background: linear-gradient(100deg, #f4e1a3, #e8cb78 36%, #d4af37 75%, #9e7824);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -126,7 +126,7 @@ body { margin: 0; min-width: 320px; }
 }
 .bio-button:hover { transform: translateY(-3px); }
 .bio-button:active { transform: translateY(0) scale(.985); }
-.bio-button:focus-visible { outline: 3px solid #ffe071; outline-offset: 4px; }
+.bio-button:focus-visible { outline: 3px solid #e8cb78; outline-offset: 4px; }
 .bio-button-icon { display: flex; align-items: center; justify-content: center; flex: 0 0 30px; }
 .bio-button-icon svg { width: 27px; height: 27px; }
 .bio-arrow { width: 20px; height: 20px; margin-left: auto; transition: transform .22s ease; }
@@ -134,8 +134,8 @@ body { margin: 0; min-width: 320px; }
 .bio-button-primary {
   overflow: hidden;
   color: #010101;
-  background: linear-gradient(106deg, #fff0b0 0%, #ffe071 22%, #e7b825 68%, #c88e12 100%);
-  border-color: #ffe071;
+  background: linear-gradient(106deg, #f4e1a3 0%, #e8cb78 22%, #d4af37 68%, #a57a22 100%);
+  border-color: #e8cb78;
   box-shadow: 0 13px 36px rgba(196,135,9,.25), inset 0 1px rgba(255,255,255,.7);
 }
 .bio-button-primary::after {
@@ -148,14 +148,14 @@ body { margin: 0; min-width: 320px; }
   transition: left .5s ease;
 }
 .bio-button-primary:hover::after { left: 120%; }
-.bio-button-primary:hover { box-shadow: 0 17px 42px rgba(231,184,37,.4), inset 0 1px rgba(255,255,255,.8); }
+.bio-button-primary:hover { box-shadow: 0 17px 42px rgba(212,175,55,.4), inset 0 1px rgba(255,255,255,.8); }
 .bio-button-secondary {
-  color: #ffe071;
+  color: #e8cb78;
   background: linear-gradient(#080705, #080705) padding-box,
-              linear-gradient(120deg, #fff0b0, #e7b825 55%, #79570c) border-box;
+              linear-gradient(120deg, #f4e1a3, #d4af37 55%, #70531b) border-box;
   box-shadow: 0 8px 28px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.05);
 }
-.bio-button-secondary:hover { background: linear-gradient(#171109, #171109) padding-box, linear-gradient(120deg, #fff0b0, #e7b825 55%, #79570c) border-box; }
+.bio-button-secondary:hover { background: linear-gradient(#171109, #171109) padding-box, linear-gradient(120deg, #f4e1a3, #d4af37 55%, #70531b) border-box; }
 .bio-footnote {
   width: min(100%, 430px);
   margin: 22px 0 0;
@@ -173,7 +173,7 @@ body { margin: 0; min-width: 320px; }
   .bio-vignette {
     background:
       linear-gradient(180deg, rgba(1,1,1,.36) 0%, rgba(1,1,1,.78) 30%, #010101 68%),
-      radial-gradient(ellipse at 50% 18%, rgba(231,184,37,.12), transparent 60%);
+      radial-gradient(ellipse at 50% 18%, rgba(212,175,55,.12), transparent 60%);
   }
   .bio-layout { align-items: center; justify-content: center; padding: 29px 23px 38px; }
   .bio-content { width: min(100%, 460px); text-align: center; }

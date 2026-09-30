@@ -15,6 +15,7 @@ export default defineConfig({
       input: {
         main: resolve(import.meta.dirname, 'index.html'),
         bio: resolve(import.meta.dirname, 'bio.html'),
+        landingV2: resolve(import.meta.dirname, 'landing-v2/index.html'),
       },
       output: {
         // Mantém assets com hash para cache-busting confiável

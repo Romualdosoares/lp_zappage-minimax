@@ -7,7 +7,7 @@ import {
   updateCrmTask,
 } from '../lib/supabaseClient'
 
-const panelClass = 'admin-panel rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(231,184,37,0.08)] sm:p-5'
+const panelClass = 'admin-panel rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(212,175,55,0.08)] sm:p-5'
 const inputClass = 'admin-field w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-sm text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25'
 const PIPELINE = ['Novo lead', 'Contato feito', 'Proposta enviada', 'Pago', 'Briefing', 'Em produção', 'Entregue']
 

@@ -12,9 +12,9 @@ export default {
           cardPremium: '#171109',
         },
         neon: {
-          DEFAULT: '#E7B825',
-          secondary: '#FFE071',
-          dark: '#6D4C0D',
+          DEFAULT: '#d4af37',
+          secondary: '#e8cb78',
+          dark: '#70531b',
         },
         ink: {
           white: '#FFFFFF',
@@ -33,21 +33,21 @@ export default {
         ],
       },
       boxShadow: {
-        neon: '0 10px 28px rgba(0, 0, 0, 0.28), 0 0 8px rgba(231, 184, 37, 0.052)',
-        'neon-sm': '0 6px 18px rgba(0, 0, 0, 0.22), 0 0 5px rgba(231, 184, 37, 0.038)',
+        neon: '0 10px 28px rgba(0, 0, 0, 0.28), 0 0 8px rgba(212,175,55, 0.052)',
+        'neon-sm': '0 6px 18px rgba(0, 0, 0, 0.22), 0 0 5px rgba(212,175,55, 0.038)',
         'neon-strong':
-          '0 14px 36px rgba(0, 0, 0, 0.32), 0 0 12px rgba(231, 184, 37, 0.068)',
+          '0 14px 36px rgba(0, 0, 0, 0.32), 0 0 12px rgba(212,175,55, 0.068)',
       },
       borderColor: {
-        neon: 'rgba(231, 184, 37, 0.25)',
+        neon: 'rgba(212,175,55, 0.25)',
       },
       backgroundImage: {
         'radial-gold':
-          'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(231, 184, 37, 0.12), transparent 58%)',
+          'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,175,55, 0.12), transparent 58%)',
         'radial-gold-bottom':
-          'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(255, 224, 113, 0.10), transparent 58%)',
+          'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(232,203,120, 0.10), transparent 58%)',
         'grid-lines':
-          "linear-gradient(rgba(231, 184, 37, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(231, 184, 37, 0.05) 1px, transparent 1px)",
+          "linear-gradient(rgba(212,175,55, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55, 0.05) 1px, transparent 1px)",
       },
       backgroundSize: {
         grid: '40px 40px',

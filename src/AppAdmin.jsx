@@ -51,7 +51,7 @@ const inputClass =
   'admin-field w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
 const labelClass = 'text-xs font-bold uppercase tracking-wider text-ink-light'
 const panelClass =
-  'admin-panel rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(231,184,37,0.08)] sm:p-5'
+  'admin-panel rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(212,175,55,0.08)] sm:p-5'
 
 function BackButton({ href = '/', label = 'Voltar' }) {
   return (
@@ -340,7 +340,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
             alt={`${siteConfig.brandName} logo`}
             width={256}
             height={256}
-            className="h-12 w-12 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(231,184,37,0.18)]"
+            className="h-12 w-12 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(212,175,55,0.18)]"
           />
           <div>
             <p className="text-2xl font-black text-white">{siteConfig.brandName}</p>
@@ -435,7 +435,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
         <button
           type="submit"
           disabled={busy}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
         >
           {busy ? 'Aguarde...' : mode === 'register' ? 'Criar acesso' : 'Entrar'}
           <IconArrowRight className="h-5 w-5" />
@@ -467,7 +467,7 @@ function AdminHeader({ active, setActive, onLogout }) {
             alt={`${siteConfig.brandName} logo`}
             width={256}
             height={256}
-            className="h-10 w-10 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(231,184,37,0.18)]"
+            className="h-10 w-10 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(212,175,55,0.18)]"
           />
           <div className="leading-tight">
             <p className="text-lg font-black text-white">Painel Zap Page</p>
@@ -483,7 +483,7 @@ function AdminHeader({ active, setActive, onLogout }) {
               onClick={() => setActive(key)}
               className={`shrink-0 rounded-xl px-3 py-2 text-sm font-bold transition sm:px-4 ${
                 active === key
-                  ? 'bg-neon text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]'
+                  ? 'bg-neon text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]'
                   : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
               }`}
             >
@@ -670,7 +670,7 @@ function AdminDashboard({ briefings, analyticsEvents }) {
                 onClick={() => setRangeMode(key)}
                 className={`rounded-xl px-3 py-2.5 text-sm font-black transition sm:px-4 ${
                   rangeMode === key
-                    ? 'bg-neon text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]'
+                    ? 'bg-neon text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]'
                     : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
                 }`}
               >
@@ -1005,7 +1005,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={form.consentConfirmed}
               onChange={event => setForm({ ...form, consentConfirmed: event.target.checked })}
-              className="mt-1 h-4 w-4 accent-[#e7b825]"
+              className="mt-1 h-4 w-4 accent-[#d4af37]"
               required
             />
             <span>Confirmo que o cliente autorizou o uso público do texto, nome, segmento e foto.</span>
@@ -1015,7 +1015,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={Boolean(form.is_published)}
               onChange={event => setForm({ ...form, is_published: event.target.checked })}
-              className="h-4 w-4 accent-[#e7b825]"
+              className="h-4 w-4 accent-[#d4af37]"
             />
             Publicar esta avaliação na landing page
           </label>
@@ -1024,7 +1024,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#e7b825]"
+              className="h-4 w-4 accent-[#d4af37]"
             />
             Destacar no topo da lista
           </label>
@@ -1033,7 +1033,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
         <button
           type="submit"
           disabled={uploading}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
         >
           {editingId ? 'Salvar alterações' : 'Salvar avaliação'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1222,7 +1222,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#e7b825]"
+              className="h-4 w-4 accent-[#d4af37]"
             />
             <span className="text-sm font-bold text-white">Mostrar como destaque</span>
           </label>
@@ -1230,7 +1230,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
 
         <button
           type="submit"
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
         >
           {editingId ? 'Salvar alterações' : 'Salvar item'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1448,7 +1448,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               type="checkbox"
               checked={Boolean(form.is_published)}
               onChange={event => setForm({ ...form, is_published: event.target.checked })}
-              className="h-4 w-4 accent-[#e7b825]"
+              className="h-4 w-4 accent-[#d4af37]"
             />
             <span className="text-sm font-bold text-white">Publicar na página compartilhável</span>
           </label>
@@ -1457,7 +1457,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#e7b825]"
+              className="h-4 w-4 accent-[#d4af37]"
             />
             <span className="text-sm font-bold text-white">Mostrar primeiro na lista</span>
           </label>
@@ -1467,7 +1467,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               checked={Boolean(form.show_on_landing)}
               onChange={event => setForm({ ...form, show_on_landing: event.target.checked })}
               disabled={!form.show_on_landing && landingSelectedCount >= 6}
-              className="mt-0.5 h-4 w-4 accent-[#e7b825] disabled:cursor-not-allowed disabled:opacity-40"
+              className="mt-0.5 h-4 w-4 accent-[#d4af37] disabled:cursor-not-allowed disabled:opacity-40"
             />
             <span>
               <span className="block text-sm font-bold text-white">Exibir na seção Portfólio da landing page</span>
@@ -1478,7 +1478,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
 
         <button
           type="submit"
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
         >
           {editingId ? 'Salvar alterações' : 'Adicionar ao portfólio'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1562,7 +1562,7 @@ function BriefingPromptPanel({ briefing }) {
         <button
           type="button"
           onClick={copyPrompt}
-          className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]"
+          className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]"
         >
           Copiar prompt
           <IconCopy className="h-5 w-5" />
@@ -1781,7 +1781,7 @@ function AdminBriefingCreator({ initialBriefing, onSaved, onCancel, setMessage }
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
+        className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
       >
         {busy ? 'Salvando...' : editing ? 'Salvar alterações' : 'Salvar novo briefing'}
         <IconCheckCircle className="h-5 w-5" />
@@ -1852,7 +1852,7 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
               setEditingId('')
               setSelectedId('')
             }}
-            className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]"
+            className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]"
           >
             Novo briefing
           </button>
@@ -2486,7 +2486,7 @@ function ProgressBar({ value }) {
   return (
     <div className="h-2 overflow-hidden rounded-full bg-white/10">
       <div
-        className="h-full rounded-full bg-neon shadow-[0_0_14px_rgba(231,184,37,0.18)] transition-all"
+        className="h-full rounded-full bg-neon shadow-[0_0_14px_rgba(212,175,55,0.18)] transition-all"
         style={{ width: `${value}%` }}
       />
     </div>
@@ -2523,7 +2523,7 @@ function CheckboxGroup({ value, onChange }) {
             type="checkbox"
             checked={value.includes(option)}
             onChange={() => toggle(option)}
-            className="h-4 w-4 accent-[#e7b825]"
+            className="h-4 w-4 accent-[#d4af37]"
           />
           <span className="text-sm font-bold text-white">{option}</span>
         </label>
@@ -2702,8 +2702,8 @@ function BriefingForm({ session, onLogout }) {
         </header>
 
         <main className="container-page flex min-h-[calc(100vh-5rem)] items-center py-10">
-          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(231,184,37,0.1)] sm:p-8">
-            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]">
+          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(212,175,55,0.1)] sm:p-8">
+            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]">
               <IconCheckCircle className="h-7 w-7" />
             </span>
             <p className="mt-5 text-xs font-black uppercase tracking-wider text-neon">
@@ -2720,7 +2720,7 @@ function BriefingForm({ session, onLogout }) {
               href={getBriefingWhatsappUrl(submittedBriefing)}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black uppercase tracking-wide text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] sm:w-auto"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black uppercase tracking-wide text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] sm:w-auto"
             >
               Confirmar envio no WhatsApp
               <IconWhatsapp className="h-5 w-5" />
@@ -2789,7 +2789,7 @@ function BriefingForm({ session, onLogout }) {
                   type="button"
                   onClick={() => persist('Enviado')}
                   disabled={Boolean(uploading)}
-                  className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)] disabled:cursor-wait disabled:opacity-60"
+                  className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
                 >
                   Enviar briefing
                 </button>
@@ -3113,7 +3113,7 @@ function PublicPortfolioApp() {
           <button
             type="button"
             onClick={sharePortfolio}
-            className="inline-flex items-center gap-2 admin-action rounded-full bg-neon px-4 py-2.5 text-sm font-black text-black shadow-[0_0_14px_rgba(231,184,37,0.18)]"
+            className="inline-flex items-center gap-2 admin-action rounded-full bg-neon px-4 py-2.5 text-sm font-black text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]"
           >
             <IconCopy className="h-4 w-4" />
             Compartilhar
@@ -3162,7 +3162,7 @@ function PublicPortfolioApp() {
               key={item.id}
               className={`group flex min-h-72 flex-col overflow-hidden rounded-[1.5rem] border p-6 transition hover:-translate-y-1 hover:border-neon/60 ${
                 item.featured
-                  ? 'border-neon bg-neon/10 shadow-[0_0_24px_rgba(231,184,37,0.18)]'
+                  ? 'border-neon bg-neon/10 shadow-[0_0_24px_rgba(212,175,55,0.18)]'
                   : 'border-neon/20 bg-[#0C0905]'
               }`}
             >
@@ -3183,7 +3183,7 @@ function PublicPortfolioApp() {
                 href={item.site_url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="mt-auto inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
+                className="mt-auto inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
               >
                 Visitar site
                 <IconArrowRight className="h-5 w-5" />
@@ -3202,7 +3202,7 @@ function PublicPortfolioApp() {
             href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Olá! Vi o portfólio da Zap Page e quero criar um site para minha empresa.')}`}
             target="_blank"
             rel="noreferrer noopener"
-            className="mt-5 inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(231,184,37,0.18)]"
+            className="mt-5 inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
           >
             Pedir meu site
             <IconWhatsapp className="h-5 w-5" />
