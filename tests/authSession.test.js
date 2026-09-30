@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { createSessionManager } from '../src/lib/authSession.js'
 
 const jwt = exp => `header.${btoa(JSON.stringify({ exp })).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')}.signature`
+const tick = () => new Promise(resolve => setImmediate(resolve))
 
 test('expired session refreshes and saves returned session', async () => {
   const now = 1_700_000_000_000
@@ -42,4 +43,28 @@ test('refresh failure clears stored session then rethrows error', async () => {
 
   await assert.rejects(manager.getValidSession(), failure)
   assert.deepEqual(events, ['refresh', 'clear'])
+})
+
+test('concurrent expired-session requests share one refresh', async () => {
+  const now = 1_700_000_000_000
+  const current = { access_token: jwt(Math.floor(now / 1000) - 1), refresh_token: 'refresh-token' }
+  const refreshed = { access_token: jwt(Math.floor(now / 1000) + 3_600), refresh_token: 'next-refresh-token' }
+  let refreshCalls = 0
+  let releaseRefresh
+  const pendingRefresh = new Promise(resolve => { releaseRefresh = resolve })
+  const manager = createSessionManager({
+    load: () => current,
+    save: () => {},
+    clear: () => {},
+    refresh: async () => { refreshCalls += 1; return pendingRefresh },
+    now: () => now,
+  })
+
+  const first = manager.getValidSession()
+  const second = manager.getValidSession()
+  await tick()
+
+  assert.equal(refreshCalls, 1)
+  releaseRefresh(refreshed)
+  assert.deepEqual(await Promise.all([first, second]), [refreshed, refreshed])
 })

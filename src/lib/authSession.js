@@ -19,6 +19,27 @@ function getTokenExpiry(accessToken) {
 }
 
 export function createSessionManager({ load, save, clear, refresh, now = () => Date.now() }) {
+  let refreshPromise
+
+  function refreshSession(session) {
+    if (!refreshPromise) {
+      refreshPromise = (async () => {
+        try {
+          const refreshedSession = await refresh(session)
+          save(refreshedSession)
+          return refreshedSession
+        } catch (error) {
+          clear()
+          throw error
+        } finally {
+          refreshPromise = null
+        }
+      })()
+    }
+
+    return refreshPromise
+  }
+
   return {
     async getValidSession({ forceRefresh = false } = {}) {
       const session = await load()
@@ -32,14 +53,7 @@ export function createSessionManager({ load, save, clear, refresh, now = () => D
         throw new Error('Sua sessão expirou. Entre novamente.')
       }
 
-      try {
-        const refreshedSession = await refresh(session)
-        save(refreshedSession)
-        return refreshedSession
-      } catch (error) {
-        clear()
-        throw error
-      }
+      return refreshSession(session)
     },
   }
 }
