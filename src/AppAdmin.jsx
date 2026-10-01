@@ -53,7 +53,7 @@ const inputClass =
   'admin-field w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-base text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25 sm:text-sm'
 const labelClass = 'text-xs font-bold uppercase tracking-wider text-ink-light'
 const panelClass =
-  'admin-panel rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(212,175,55,0.08)] sm:p-5'
+  'admin-panel rounded-2xl border border-neon/20 bg-[#000000] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(55,196,0,0.08)] sm:p-5'
 
 function BackButton({ href = '/', label = 'Voltar' }) {
   return (
@@ -342,7 +342,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
             alt={`${siteConfig.brandName} logo`}
             width={256}
             height={256}
-            className="h-12 w-12 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(212,175,55,0.18)]"
+            className="h-12 w-12 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(55,196,0,0.18)]"
           />
           <div>
             <p className="text-2xl font-black text-white">{siteConfig.brandName}</p>
@@ -437,7 +437,7 @@ function AuthBox({ title, subtitle, admin = false, onReady }) {
         <button
           type="submit"
           disabled={busy}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)] disabled:cursor-wait disabled:opacity-60"
         >
           {busy ? 'Aguarde...' : mode === 'register' ? 'Criar acesso' : 'Entrar'}
           <IconArrowRight className="h-5 w-5" />
@@ -469,7 +469,7 @@ function AdminHeader({ active, setActive, onLogout }) {
             alt={`${siteConfig.brandName} logo`}
             width={256}
             height={256}
-            className="h-10 w-10 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(212,175,55,0.18)]"
+            className="h-10 w-10 rounded-xl border border-neon/30 object-cover shadow-[0_0_14px_rgba(55,196,0,0.18)]"
           />
           <div className="leading-tight">
             <p className="text-lg font-black text-white">Painel Zap Page</p>
@@ -485,7 +485,7 @@ function AdminHeader({ active, setActive, onLogout }) {
               onClick={() => setActive(key)}
               className={`shrink-0 rounded-xl px-3 py-2 text-sm font-bold transition sm:px-4 ${
                 active === key
-                  ? 'bg-neon text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]'
+                  ? 'bg-neon text-black shadow-[0_0_14px_rgba(55,196,0,0.18)]'
                   : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
               }`}
             >
@@ -519,7 +519,7 @@ function StatCard({ icon: Icon, label, value }) {
 
 function MetricCard({ label, value, detail }) {
   return (
-    <article className="rounded-2xl border border-neon/20 bg-[#0C0905] p-5">
+    <article className="rounded-2xl border border-neon/20 bg-[#000000] p-5">
       <p className="text-xs font-black uppercase tracking-wider text-ink-dark">{label}</p>
       <p className="mt-3 break-words text-2xl font-black text-white sm:text-3xl">{value}</p>
       {detail && <p className="mt-2 text-sm leading-relaxed text-ink-light">{detail}</p>}
@@ -672,7 +672,7 @@ function AdminDashboard({ briefings, analyticsEvents }) {
                 onClick={() => setRangeMode(key)}
                 className={`rounded-xl px-3 py-2.5 text-sm font-black transition sm:px-4 ${
                   rangeMode === key
-                    ? 'bg-neon text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]'
+                    ? 'bg-neon text-black shadow-[0_0_14px_rgba(55,196,0,0.18)]'
                     : 'border border-neon/20 text-ink-light hover:bg-neon/10 hover:text-white'
                 }`}
               >
@@ -1007,7 +1007,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={form.consentConfirmed}
               onChange={event => setForm({ ...form, consentConfirmed: event.target.checked })}
-              className="mt-1 h-4 w-4 accent-[#d4af37]"
+              className="mt-1 h-4 w-4 accent-[#37c400]"
               required
             />
             <span>Confirmo que o cliente autorizou o uso público do texto, nome, segmento e foto.</span>
@@ -1017,7 +1017,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={Boolean(form.is_published)}
               onChange={event => setForm({ ...form, is_published: event.target.checked })}
-              className="h-4 w-4 accent-[#d4af37]"
+              className="h-4 w-4 accent-[#37c400]"
             />
             Publicar esta avaliação na landing page
           </label>
@@ -1026,7 +1026,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#d4af37]"
+              className="h-4 w-4 accent-[#37c400]"
             />
             Destacar no topo da lista
           </label>
@@ -1035,7 +1035,7 @@ function TestimonialAdmin({ testimonials, setTestimonials, setMessage }) {
         <button
           type="submit"
           disabled={uploading}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)] disabled:cursor-wait disabled:opacity-60"
         >
           {editingId ? 'Salvar alterações' : 'Salvar avaliação'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1224,7 +1224,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#d4af37]"
+              className="h-4 w-4 accent-[#37c400]"
             />
             <span className="text-sm font-bold text-white">Mostrar como destaque</span>
           </label>
@@ -1232,7 +1232,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
 
         <button
           type="submit"
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)]"
         >
           {editingId ? 'Salvar alterações' : 'Salvar item'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1502,7 +1502,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               type="checkbox"
               checked={Boolean(form.is_published)}
               onChange={event => setForm({ ...form, is_published: event.target.checked, show_on_landing: event.target.checked && form.show_on_landing })}
-              className="h-4 w-4 accent-[#d4af37]"
+              className="h-4 w-4 accent-[#37c400]"
             />
             <span className="text-sm font-bold text-white">Publicar na página compartilhável</span>
           </label>
@@ -1511,7 +1511,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={event => setForm({ ...form, featured: event.target.checked })}
-              className="h-4 w-4 accent-[#d4af37]"
+              className="h-4 w-4 accent-[#37c400]"
             />
             <span className="text-sm font-bold text-white">Mostrar primeiro na lista</span>
           </label>
@@ -1521,7 +1521,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
               checked={Boolean(form.show_on_landing)}
               onChange={event => setForm({ ...form, show_on_landing: event.target.checked })}
               disabled={!form.is_published || (!form.show_on_landing && landingSelectedCount >= 6)}
-              className="mt-0.5 h-4 w-4 accent-[#d4af37] disabled:cursor-not-allowed disabled:opacity-40"
+              className="mt-0.5 h-4 w-4 accent-[#37c400] disabled:cursor-not-allowed disabled:opacity-40"
             />
             <span>
               <span className="block text-sm font-bold text-white">Exibir na seção Portfólio da página principal</span>
@@ -1533,7 +1533,7 @@ function ClientSitesAdmin({ portfolio, setPortfolio, setMessage }) {
         <button
           type="submit"
           disabled={saving || uploading}
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
+          className="mt-5 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3.5 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)]"
         >
           {saving ? 'Salvando…' : editingId ? 'Salvar alterações' : 'Adicionar ao portfólio'}
           <IconCheckCircle className="h-5 w-5" />
@@ -1566,7 +1566,7 @@ function AssetLinks({ logo, images }) {
           <button
             type="button"
             onClick={() => openAsset(logo)}
-            className="rounded-xl border border-neon/15 bg-[#0C0905] px-3 py-2 text-sm font-bold text-white hover:border-neon"
+            className="rounded-xl border border-neon/15 bg-[#000000] px-3 py-2 text-sm font-bold text-white hover:border-neon"
           >
             Logo: {logo.name || 'abrir arquivo'}
           </button>
@@ -1576,7 +1576,7 @@ function AssetLinks({ logo, images }) {
             key={`${image.path || image.url}-${index}`}
             type="button"
             onClick={() => openAsset(image)}
-            className="rounded-xl border border-neon/15 bg-[#0C0905] px-3 py-2 text-sm font-bold text-white hover:border-neon"
+            className="rounded-xl border border-neon/15 bg-[#000000] px-3 py-2 text-sm font-bold text-white hover:border-neon"
           >
             Imagem {index + 1}: {image.name || 'abrir arquivo'}
           </button>
@@ -1617,14 +1617,14 @@ function BriefingPromptPanel({ briefing }) {
         <button
           type="button"
           onClick={copyPrompt}
-          className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]"
+          className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(55,196,0,0.18)]"
         >
           Copiar prompt
           <IconCopy className="h-5 w-5" />
         </button>
       </div>
       {copyStatus && <p className="mt-3 text-xs font-bold text-neon">{copyStatus}</p>}
-      <pre className="mt-4 max-h-[520px] overflow-auto whitespace-pre-wrap rounded-xl border border-neon/15 bg-[#080705] p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
+      <pre className="mt-4 max-h-[520px] overflow-auto whitespace-pre-wrap rounded-xl border border-neon/15 bg-[#000000] p-4 text-xs leading-relaxed text-ink-light sm:text-sm">
         {prompt}
       </pre>
     </section>
@@ -1836,7 +1836,7 @@ function AdminBriefingCreator({ initialBriefing, onSaved, onCancel, setMessage }
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
+        className="inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)] disabled:cursor-wait disabled:opacity-60"
       >
         {busy ? 'Salvando...' : editing ? 'Salvar alterações' : 'Salvar novo briefing'}
         <IconCheckCircle className="h-5 w-5" />
@@ -1907,7 +1907,7 @@ function BriefingsAdmin({ briefings, setBriefings, setMessage }) {
               setEditingId('')
               setSelectedId('')
             }}
-            className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]"
+            className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_14px_rgba(55,196,0,0.18)]"
           >
             Novo briefing
           </button>
@@ -2206,7 +2206,7 @@ function AdminApp() {
 
   if (loading) {
     return (
-      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#080705] text-white">
+      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#000000] text-white">
         <p className="font-black text-neon">Carregando painel...</p>
       </div>
     )
@@ -2214,7 +2214,7 @@ function AdminApp() {
 
   if (!isAdminProfile(profile)) {
     return (
-      <div className="admin-shell mx-auto flex min-h-screen max-w-3xl items-center bg-[#080705] px-5 text-white">
+      <div className="admin-shell mx-auto flex min-h-screen max-w-3xl items-center bg-[#000000] px-5 text-white">
         <div className={panelClass}>
           <IconShield className="h-10 w-10 text-neon" />
           <h1 className="mt-4 text-3xl font-black">Usuário sem acesso administrativo</h1>
@@ -2245,7 +2245,7 @@ function AdminApp() {
   }
 
   return (
-    <div className="admin-shell min-h-screen bg-[#080705] text-white">
+    <div className="admin-shell min-h-screen bg-[#000000] text-white">
       <div
         aria-hidden
         className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
@@ -2379,7 +2379,7 @@ function AdminBriefingRoute({ orderNumber }) {
 
   if (loading) {
     return (
-      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#080705] text-white">
+      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#000000] text-white">
         <p className="font-black text-neon">Carregando briefing interno...</p>
       </div>
     )
@@ -2387,7 +2387,7 @@ function AdminBriefingRoute({ orderNumber }) {
 
   if (!isAdminProfile(profile)) {
     return (
-      <div className="admin-shell mx-auto flex min-h-screen max-w-3xl items-center bg-[#080705] px-5 text-white">
+      <div className="admin-shell mx-auto flex min-h-screen max-w-3xl items-center bg-[#000000] px-5 text-white">
         <div className={panelClass}>
           <IconShield className="h-10 w-10 text-neon" />
           <h1 className="mt-4 text-3xl font-black">Acesso interno bloqueado</h1>
@@ -2416,7 +2416,7 @@ function AdminBriefingRoute({ orderNumber }) {
   }
 
   return (
-    <div className="admin-shell min-h-screen bg-[#080705] text-white">
+    <div className="admin-shell min-h-screen bg-[#000000] text-white">
       <div
         aria-hidden
         className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
@@ -2516,7 +2516,7 @@ function AdminBriefingRoute({ orderNumber }) {
                 ['Referências', briefing.reference_links],
                 ['Observações', briefing.notes],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-2xl border border-neon/15 bg-[#0C0905] p-4">
+                <div key={label} className="rounded-2xl border border-neon/15 bg-[#000000] p-4">
                   <p className="text-xs font-bold uppercase tracking-wider text-neon">
                     {label}
                   </p>
@@ -2541,7 +2541,7 @@ function ProgressBar({ value }) {
   return (
     <div className="h-2 overflow-hidden rounded-full bg-white/10">
       <div
-        className="h-full rounded-full bg-neon shadow-[0_0_14px_rgba(212,175,55,0.18)] transition-all"
+        className="h-full rounded-full bg-neon shadow-[0_0_14px_rgba(55,196,0,0.18)] transition-all"
         style={{ width: `${value}%` }}
       />
     </div>
@@ -2578,7 +2578,7 @@ function CheckboxGroup({ value, onChange }) {
             type="checkbox"
             checked={value.includes(option)}
             onChange={() => toggle(option)}
-            className="h-4 w-4 accent-[#d4af37]"
+            className="h-4 w-4 accent-[#37c400]"
           />
           <span className="text-sm font-bold text-white">{option}</span>
         </label>
@@ -2714,7 +2714,7 @@ function BriefingForm({ session, onLogout }) {
 
   if (loading) {
     return (
-      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#080705] text-white">
+      <div className="admin-shell flex min-h-screen items-center justify-center bg-[#000000] text-white">
         <p className="font-black text-neon">Carregando briefing...</p>
       </div>
     )
@@ -2722,7 +2722,7 @@ function BriefingForm({ session, onLogout }) {
 
   if (submittedBriefing) {
     return (
-      <div className="admin-shell min-h-screen bg-[#080705] text-white">
+      <div className="admin-shell min-h-screen bg-[#000000] text-white">
         <div
           aria-hidden
           className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
@@ -2757,8 +2757,8 @@ function BriefingForm({ session, onLogout }) {
         </header>
 
         <main className="container-page flex min-h-[calc(100vh-5rem)] items-center py-10">
-          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(212,175,55,0.1)] sm:p-8">
-            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]">
+          <section className="mx-auto w-full max-w-2xl rounded-[1.5rem] border border-neon/25 bg-[#000000] p-6 text-center shadow-[0_12px_32px_rgba(0,0,0,0.3),0_0_12px_rgba(55,196,0,0.1)] sm:p-8">
+            <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neon text-black shadow-[0_0_14px_rgba(55,196,0,0.18)]">
               <IconCheckCircle className="h-7 w-7" />
             </span>
             <p className="mt-5 text-xs font-black uppercase tracking-wider text-neon">
@@ -2775,7 +2775,7 @@ function BriefingForm({ session, onLogout }) {
               href={getBriefingWhatsappUrl(submittedBriefing)}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black uppercase tracking-wide text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] sm:w-auto"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-4 text-sm font-black uppercase tracking-wide text-black shadow-[0_0_24px_rgba(55,196,0,0.18)] sm:w-auto"
             >
               Confirmar envio no WhatsApp
               <IconWhatsapp className="h-5 w-5" />
@@ -2787,7 +2787,7 @@ function BriefingForm({ session, onLogout }) {
   }
 
   return (
-    <div className="admin-shell min-h-screen bg-[#080705] text-white">
+    <div className="admin-shell min-h-screen bg-[#000000] text-white">
       <header className="sticky top-0 z-40 border-b border-neon/15 bg-black/85 backdrop-blur-xl">
         <div className="container-page flex min-h-16 items-center justify-between gap-3 py-3">
           <a href="/" className="flex min-w-0 items-center gap-3">
@@ -2844,7 +2844,7 @@ function BriefingForm({ session, onLogout }) {
                   type="button"
                   onClick={() => persist('Enviado')}
                   disabled={Boolean(uploading)}
-                  className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)] disabled:cursor-wait disabled:opacity-60"
+                  className="admin-action rounded-full bg-neon px-4 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)] disabled:cursor-wait disabled:opacity-60"
                 >
                   Enviar briefing
                 </button>
@@ -2968,7 +2968,7 @@ function BriefingForm({ session, onLogout }) {
                     <p className="mt-2 text-xs font-bold text-neon">Enviando logo...</p>
                   )}
                   {form.logo_file?.url && (
-                    <div className="mt-3 rounded-xl border border-neon/15 bg-[#0C0905] p-3">
+                    <div className="mt-3 rounded-xl border border-neon/15 bg-[#000000] p-3">
                       <a
                         href={form.logo_file.url}
                         target="_blank"
@@ -3014,7 +3014,7 @@ function BriefingForm({ session, onLogout }) {
                       {form.page_images.map((image, index) => (
                         <div
                           key={`${image.url}-${index}`}
-                          className="rounded-xl border border-neon/15 bg-[#0C0905] p-3"
+                          className="rounded-xl border border-neon/15 bg-[#000000] p-3"
                         >
                           <a
                             href={image.url}
@@ -3145,7 +3145,7 @@ function PublicPortfolioApp() {
   }
 
   return (
-    <div className="admin-shell min-h-screen bg-[#080705] text-white">
+    <div className="admin-shell min-h-screen bg-[#000000] text-white">
       <div
         aria-hidden
         className="admin-atmosphere pointer-events-none fixed inset-0 -z-10"
@@ -3168,7 +3168,7 @@ function PublicPortfolioApp() {
           <button
             type="button"
             onClick={sharePortfolio}
-            className="inline-flex items-center gap-2 admin-action rounded-full bg-neon px-4 py-2.5 text-sm font-black text-black shadow-[0_0_14px_rgba(212,175,55,0.18)]"
+            className="inline-flex items-center gap-2 admin-action rounded-full bg-neon px-4 py-2.5 text-sm font-black text-black shadow-[0_0_14px_rgba(55,196,0,0.18)]"
           >
             <IconCopy className="h-4 w-4" />
             Compartilhar
@@ -3202,7 +3202,7 @@ function PublicPortfolioApp() {
         )}
 
         {!loading && portfolio.length === 0 && !message && (
-          <section className="mx-auto mt-12 max-w-2xl rounded-[1.5rem] border border-neon/20 bg-[#0C0905] p-8 text-center">
+          <section className="mx-auto mt-12 max-w-2xl rounded-[1.5rem] border border-neon/20 bg-[#000000] p-8 text-center">
             <IconSparkles className="mx-auto h-8 w-8 text-neon" />
             <h2 className="mt-4 text-2xl font-black text-white">Novos projetos em breve</h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-light">
@@ -3217,8 +3217,8 @@ function PublicPortfolioApp() {
               key={item.id}
               className={`group flex min-h-72 flex-col overflow-hidden rounded-[1.5rem] border p-6 transition hover:-translate-y-1 hover:border-neon/60 ${
                 item.featured
-                  ? 'border-neon bg-neon/10 shadow-[0_0_24px_rgba(212,175,55,0.18)]'
-                  : 'border-neon/20 bg-[#0C0905]'
+                  ? 'border-neon bg-neon/10 shadow-[0_0_24px_rgba(55,196,0,0.18)]'
+                  : 'border-neon/20 bg-[#000000]'
               }`}
             >
               {item.featured && (
@@ -3236,7 +3236,7 @@ function PublicPortfolioApp() {
                 href={item.site_url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="mt-auto inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
+                className="mt-auto inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)]"
               >
                 Visitar site
                 <IconArrowRight className="h-5 w-5" />
@@ -3245,7 +3245,7 @@ function PublicPortfolioApp() {
           ))}
         </section>
 
-        <section className="mt-10 rounded-[1.5rem] border border-neon/25 bg-[#0C0905] p-6 text-center sm:p-8">
+        <section className="mt-10 rounded-[1.5rem] border border-neon/25 bg-[#000000] p-6 text-center sm:p-8">
           <h2 className="text-2xl font-black text-white">Quer um site profissional para sua empresa?</h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-light">
             Fale com a Zap Page pelo WhatsApp e conte o que você precisa. Vamos transformar
@@ -3255,7 +3255,7 @@ function PublicPortfolioApp() {
             href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent('Olá! Vi o portfólio da Zap Page e quero criar um site para minha empresa.')}`}
             target="_blank"
             rel="noreferrer noopener"
-            className="mt-5 inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(212,175,55,0.18)]"
+            className="mt-5 inline-flex items-center justify-center gap-2 admin-action rounded-full bg-neon px-5 py-3 text-sm font-black text-black shadow-[0_0_24px_rgba(55,196,0,0.18)]"
           >
             Pedir meu site
             <IconWhatsapp className="h-5 w-5" />

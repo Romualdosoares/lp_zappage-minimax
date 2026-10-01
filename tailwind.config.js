@@ -4,22 +4,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Preto e ouro da identidade Zap Page.
+        // Preto e verde da identidade Zap Page.
         bg: {
-          primary: '#010101',
-          secondary: '#080705',
-          card: '#100D08',
-          cardPremium: '#171109',
+          primary: '#000000',
+          secondary: '#000000',
+          card: '#000000',
+          cardPremium: '#000000',
         },
         neon: {
-          DEFAULT: '#d4af37',
-          secondary: '#e8cb78',
-          dark: '#70531b',
+          DEFAULT: '#37c400',
+          secondary: '#41d108',
+          dark: '#37c400',
         },
         ink: {
           white: '#FFFFFF',
-          light: '#C9C9C9',
-          dark: '#A9A9A9',
+          light: '#e9ede8',
+          dark: '#e9ede8',
         },
       },
       fontFamily: {
@@ -33,21 +33,21 @@ export default {
         ],
       },
       boxShadow: {
-        neon: '0 10px 28px rgba(0, 0, 0, 0.28), 0 0 8px rgba(212,175,55, 0.052)',
-        'neon-sm': '0 6px 18px rgba(0, 0, 0, 0.22), 0 0 5px rgba(212,175,55, 0.038)',
+        neon: '0 10px 28px rgba(0, 0, 0, 0.28), 0 0 8px rgba(55,196,0, 0.052)',
+        'neon-sm': '0 6px 18px rgba(0, 0, 0, 0.22), 0 0 5px rgba(55,196,0, 0.038)',
         'neon-strong':
-          '0 14px 36px rgba(0, 0, 0, 0.32), 0 0 12px rgba(212,175,55, 0.068)',
+          '0 14px 36px rgba(0, 0, 0, 0.32), 0 0 12px rgba(55,196,0, 0.068)',
       },
       borderColor: {
-        neon: 'rgba(212,175,55, 0.25)',
+        neon: 'rgba(55,196,0, 0.25)',
       },
       backgroundImage: {
         'radial-gold':
-          'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,175,55, 0.12), transparent 58%)',
+          'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(55,196,0, 0.12), transparent 58%)',
         'radial-gold-bottom':
-          'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(232,203,120, 0.10), transparent 58%)',
+          'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(65,209,8, 0.10), transparent 58%)',
         'grid-lines':
-          "linear-gradient(rgba(212,175,55, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55, 0.05) 1px, transparent 1px)",
+          "linear-gradient(rgba(55,196,0, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(55,196,0, 0.05) 1px, transparent 1px)",
       },
       backgroundSize: {
         grid: '40px 40px',

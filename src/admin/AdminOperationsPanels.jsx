@@ -7,7 +7,7 @@ import {
   updateCrmTask,
 } from '../lib/supabaseClient'
 
-const panelClass = 'admin-panel rounded-2xl border border-neon/20 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(212,175,55,0.08)] sm:p-5'
+const panelClass = 'admin-panel rounded-2xl border border-neon/20 bg-[#000000] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(55,196,0,0.08)] sm:p-5'
 const inputClass = 'admin-field w-full rounded-xl border border-neon/20 bg-black px-3 py-3 text-sm text-white outline-none transition focus:border-neon focus:ring-2 focus:ring-neon/25'
 const PIPELINE = ['Novo lead', 'Contato feito', 'Proposta enviada', 'Pago', 'Briefing', 'Em produção', 'Entregue']
 
@@ -30,7 +30,7 @@ function eventCount(events, name) {
 
 function Card({ label, value, detail }) {
   return (
-    <article className="rounded-2xl border border-neon/20 bg-[#0C0905] p-5">
+    <article className="rounded-2xl border border-neon/20 bg-[#000000] p-5">
       <p className="text-xs font-black uppercase tracking-wider text-ink-dark">{label}</p>
       <p className="mt-3 text-2xl font-black text-white sm:text-3xl">{value}</p>
       {detail && <p className="mt-2 text-sm text-ink-light">{detail}</p>}
@@ -184,7 +184,7 @@ function CrmPanel({ briefings, setBriefings, crmTasks, setCrmTasks, setMessage }
         </form>
         <section className={panelClass}><p className="text-xs font-black uppercase tracking-wider text-neon">Próximas ações</p><div className="mt-4 grid gap-3">{crmTasks.slice(0, 8).map(task => <button key={task.id} type="button" onClick={() => toggleTask(task)} className="flex items-center justify-between rounded-xl border border-neon/15 bg-black p-3 text-left"><span><span className="block font-bold text-white">{task.title}</span><span className="text-xs text-ink-light">{task.assignee || 'Sem responsável'} · {dateLabel(task.due_at)}</span></span><span className={task.status === 'done' ? 'text-neon' : 'text-amber-200'}>{task.status === 'done' ? 'Feita' : 'Pendente'}</span></button>)}{!crmTasks.length && <p className="text-sm text-ink-light">Nenhuma tarefa cadastrada.</p>}</div></section>
       </div>
-      <section className={panelClass}><p className="text-xs font-black uppercase tracking-wider text-neon">Leads recentes</p><div className="mt-4 grid gap-3">{briefings.slice(0, 10).map(item => <div key={item.id} className="flex flex-col gap-3 rounded-xl border border-neon/15 bg-black p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-black text-white">{item.business_name || item.email}</p><p className="text-xs text-ink-light">{item.email}</p></div><select className="rounded-lg border border-neon/20 bg-[#0C0905] px-3 py-2 text-sm text-white" value={item.pipeline_stage || item.status || 'Novo lead'} onChange={event => moveLead(item, event.target.value)}>{PIPELINE.map(stage => <option key={stage}>{stage}</option>)}</select></div>)}</div></section>
+      <section className={panelClass}><p className="text-xs font-black uppercase tracking-wider text-neon">Leads recentes</p><div className="mt-4 grid gap-3">{briefings.slice(0, 10).map(item => <div key={item.id} className="flex flex-col gap-3 rounded-xl border border-neon/15 bg-black p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-black text-white">{item.business_name || item.email}</p><p className="text-xs text-ink-light">{item.email}</p></div><select className="rounded-lg border border-neon/20 bg-[#000000] px-3 py-2 text-sm text-white" value={item.pipeline_stage || item.status || 'Novo lead'} onChange={event => moveLead(item, event.target.value)}>{PIPELINE.map(stage => <option key={stage}>{stage}</option>)}</select></div>)}</div></section>
     </section>
   )
 }

@@ -1,0 +1,13 @@
+{
+  "name": "Zap Page — Preto e Verde",
+  "updated": "2026-10-01",
+  "colors": {
+    "black": "#000000",
+    "primary": "#37c400",
+    "secondary": "#41d108",
+    "gray": "#e9ede8",
+    "white": "#ffffff"
+  },
+  "gradient": "linear-gradient(110deg, #41d108, #37c400)",
+  "logo": "/assets/zap-page-logo-green.png"
+}

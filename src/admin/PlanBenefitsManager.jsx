@@ -180,7 +180,7 @@ export default function PlanBenefitsManager({ benefits, setBenefits, setMessage,
   }
 
   return (
-    <section className="admin-panel rounded-2xl border border-neon/25 bg-[#0C0905] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(212,175,55,0.08)] sm:p-5">
+    <section className="admin-panel rounded-2xl border border-neon/25 bg-[#000000] p-4 shadow-[0_10px_28px_rgba(0,0,0,0.28),0_0_10px_rgba(55,196,0,0.08)] sm:p-5">
       <div className="flex flex-col gap-3 border-b border-neon/15 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-wider text-neon">Página de vendas</p>
@@ -190,7 +190,7 @@ export default function PlanBenefitsManager({ benefits, setBenefits, setMessage,
           </p>
         </div>
         <div className="inline-flex w-fit items-center gap-2 rounded-full border border-neon/20 bg-black px-3 py-2 text-xs font-bold text-ink-light">
-          <span className="h-2 w-2 rounded-full bg-neon shadow-[0_0_14px_rgba(212,175,55,0.18)]" />
+          <span className="h-2 w-2 rounded-full bg-neon shadow-[0_0_14px_rgba(55,196,0,0.18)]" />
           Sincronização automática
         </div>
       </div>
@@ -225,7 +225,7 @@ export default function PlanBenefitsManager({ benefits, setBenefits, setMessage,
                       key={item.id}
                       className={`rounded-xl border p-3 transition ${
                         item.is_active
-                          ? 'border-neon/20 bg-[#0C0905]'
+                          ? 'border-neon/20 bg-[#000000]'
                           : 'border-white/10 bg-white/[0.025] opacity-65'
                       }`}
                     >
@@ -236,7 +236,7 @@ export default function PlanBenefitsManager({ benefits, setBenefits, setMessage,
                             checked={Boolean(item.is_active)}
                             disabled={rowBusy}
                             onChange={event => toggleBenefit(item, event.target.checked)}
-                            className="h-4 w-4 accent-[#d4af37]"
+                            className="h-4 w-4 accent-[#37c400]"
                             aria-label={`${item.is_active ? 'Ocultar' : 'Ativar'} ${item.benefit_text}`}
                           />
                           {item.is_active ? 'Ativo' : 'Oculto'}
