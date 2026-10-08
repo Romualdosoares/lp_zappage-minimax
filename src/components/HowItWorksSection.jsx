@@ -35,7 +35,7 @@ const STEPS = [
     num: '05',
     icon: IconLink,
     title: 'Você começa a divulgar',
-    text: 'Coloque a bio personalizada no Instagram e divulgue a página no WhatsApp e nos seus anúncios.',
+    text: 'Divulgue a página no Instagram, no WhatsApp e nos seus anúncios. Nos planos Profissional e Turbo, use também a Bio Link personalizada.',
   },
 ]
 
@@ -95,7 +95,7 @@ export default function HowItWorksSection() {
         {/* Selo final */}
         <div data-reveal className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3 rounded-full border border-white/10 bg-bg-primary px-5 py-3 text-sm font-medium text-ink-light">
           <IconWhatsapp className="h-5 w-5 text-neon" />
-          Sua página e sua bio personalizada, prontas para divulgar.
+          Sua página pronta para divulgar. Bio Link nos planos Profissional e Turbo.
         </div>
       </div>
     </section>

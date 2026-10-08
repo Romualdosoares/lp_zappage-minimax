@@ -29,7 +29,7 @@ const DEFAULT_PLANS = [
       'Lista básica de serviços',
       'Visual moderno',
       'Otimizada para celular',
-      'Bio personalizada para o Instagram',
+      'Link pronto para divulgar',
       'Suporte técnico inicial',
       '3 revisões incluídas',
     ],
@@ -54,7 +54,7 @@ const DEFAULT_PLANS = [
       'Design premium',
       'Otimizada para celular',
       'Bio personalizada para o Instagram',
-      '4 arquivos finais de criativos, incluindo adaptações',
+      '6 criativos para divulgação',
       'Artes para Meta Ads, WhatsApp e Instagram',
       'Suporte técnico',
       '3 revisões incluídas',
@@ -77,7 +77,7 @@ const DEFAULT_PLANS = [
       'Bio personalizada para o Instagram',
       'Página com estrutura mais persuasiva',
       'Copy de venda aprimorada',
-      '10 arquivos finais de criativos no total, incluindo adaptações',
+      '15 criativos para anúncio no total',
       'Texto principal para Facebook/Instagram Ads',
       'Título e descrição para anúncio',
       'Direcionamento inicial para campanha',
@@ -311,7 +311,7 @@ export default function PricingSection() {
             <span className="text-gradient-neon">Seu plano.</span>
           </h2>
           <p className="mt-5 text-base text-ink-light sm:text-lg">
-            Página e bio personalizada nos três planos. Criativos no
+            Página nos três planos. Bio Link personalizada e criativos no
             Profissional e Turbo. Confirme tudo pelo WhatsApp antes de iniciar. A entrega
             acontece de 3 a 5 dias após a confirmação do pagamento.
           </p>

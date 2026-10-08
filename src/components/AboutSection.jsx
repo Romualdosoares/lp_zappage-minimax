@@ -2,7 +2,7 @@ import { IconCheckCircle, IconRocket, IconShield } from './Icons'
 
 const commitments = [
   'Sua marca, seus serviços e suas fotos no centro do projeto.',
-  'Página e bio personalizada pensadas para quem acessa pelo celular.',
+  'Página pensada para celular, com Bio Link personalizada nos planos Profissional e Turbo.',
   'Entregas, prazo e revisões combinados antes da produção.',
 ]
 

@@ -9,7 +9,7 @@ import {
 
 const BULLETS = [
   'Página com a identidade da barbearia',
-  'Bio personalizada em uma página separada',
+  'Bio Link nos planos Profissional e Turbo',
   'Botões diretos para o seu WhatsApp',
 
   '3 revisões em todos os planos',

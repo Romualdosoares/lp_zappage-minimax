@@ -9,7 +9,7 @@ const FAQS = [
   },
   {
     q: 'O que é a bio personalizada incluída nos planos?',
-    a: 'É uma página separada, com a identidade da sua barbearia e dois botões principais: Contato e Agendamento. Você coloca o endereço dessa página na bio do Instagram. Está incluída nos três planos.',
+    a: 'É uma página separada, com a identidade da sua barbearia e dois botões principais: Contato e Agendamento. Você coloca o endereço dessa página na bio do Instagram. Está incluída somente nos planos Profissional e Turbo. O Express não inclui Bio Link.',
   },
   {
     q: 'O cliente fala direto no meu WhatsApp?',
@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: 'Quantos criativos recebo e onde posso usar?',
-    a: 'O Profissional inclui 4 arquivos finais e o Turbo inclui 10 arquivos finais no total, já contando adaptações de formato. São artes para divulgar sua barbearia no Meta Ads, Instagram e WhatsApp. O Express não inclui criativos. Os formatos são combinados no briefing.',
+    a: 'O Profissional inclui 6 criativos e o Turbo inclui 15 criativos no total. São artes para divulgar sua barbearia no Meta Ads, Instagram e WhatsApp. O Express não inclui criativos. Os formatos são combinados no briefing.',
   },
   {
     q: 'Vocês também gerenciam meus anúncios?',
