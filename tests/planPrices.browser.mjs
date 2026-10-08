@@ -23,7 +23,7 @@ await admin.locator('#price-express').waitFor();
 await admin.waitForFunction(()=>document.querySelector('#price-express')?.value==='197,00');
 const home=await context.newPage();home.on('pageerror',error=>errors.push(error.message));await home.goto('http://127.0.0.1:5173/');
 const v2=await context.newPage();v2.on('pageerror',error=>errors.push(error.message));await v2.goto('http://127.0.0.1:5173/landing-v2/');
-for(const [key,value,installment] of [['express','240,00','12x de R$ 20,00 sem juros'],['professional','360,00','12x de R$ 30,00 sem juros'],['turbo','600,00','12x de R$ 50,00 sem juros']]) {
+for(const [key,value,installment] of [['express','240,00','até 10x de R$ 24,00 sem juros'],['professional','360,00','até 10x de R$ 36,00 sem juros'],['turbo','600,00','até 10x de R$ 60,00 sem juros']]) {
  await admin.locator('#price-'+key).fill(value);
  const form=admin.locator('#price-'+key).locator('..');
  await form.getByRole('button',{name:'Salvar valor'}).click();
@@ -39,6 +39,6 @@ await admin.locator('#price-express').fill('-1');assert.equal(await admin.locato
 fail=true;await admin.locator('#price-express').fill('250,00');await admin.locator('#price-express').locator('..').getByRole('button',{name:'Salvar valor'}).click();await admin.getByText('Erro ao salvar preço:',{exact:false}).waitFor();assert.equal(posts.length,3);
 for(const page of [admin,home,v2]) {await page.setViewportSize({width:390,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true)}
 await admin.locator('#price-express').fill('240,00');await admin.locator('#price-express').scrollIntoViewIfNeeded();await admin.screenshot({path:'output/admin-precos-mobile.png'});
-await home.locator('#pricing-title').scrollIntoViewIfNeeded();await home.waitForTimeout(800);await home.locator('#planos').screenshot({path:'output/planos-12x-mobile.png'});
+await home.locator('#pricing-title').scrollIntoViewIfNeeded();await home.waitForTimeout(800);await home.locator('#planos').screenshot({path:'output/planos-10x-mobile.png'});
 assert.deepEqual(errors,[]);console.log('PASS: salvamento dos 3 planos, recarga, principal/V2, WhatsApp, validação, falha de gravação e celular.');
 await browser.close();

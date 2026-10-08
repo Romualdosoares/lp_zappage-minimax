@@ -1,6 +1,6 @@
 # Zap Page — landing page B
 
-Página de vendas alternativa para donos de barbearia. A versão A permanece na raiz do projeto. A versão B usa a mesma marca, a mesma paleta e os mesmos preços administrados na aba Planos da versão A, com atualização automática e 12 parcelas sem juros.
+Página de vendas alternativa para donos de barbearia. A versão A permanece na raiz do projeto. A versão B usa a mesma marca, a mesma paleta e os mesmos preços administrados na aba Planos da versão A, com atualização automática e parcelamento em até 10x sem juros.
 
 ## Publicação estática
 

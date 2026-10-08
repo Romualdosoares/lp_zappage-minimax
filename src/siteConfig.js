@@ -25,7 +25,7 @@ export const siteConfig = {
     name: 'Página Express',
     badge: 'Presença essencial',
     price: 'R$197',
-    installment: '12x de R$ 16,42 sem juros',
+    installment: 'até 10x de R$ 19,70 sem juros',
     description:
       'O essencial para apresentar os serviços da sua barbearia e facilitar o primeiro contato.',
   },
@@ -33,7 +33,7 @@ export const siteConfig = {
     name: 'Página Profissional',
     badge: 'Presença + divulgação',
     price: 'R$297',
-    installment: '12x de R$ 24,75 sem juros',
+    installment: 'até 10x de R$ 29,70 sem juros',
     description:
       'Uma apresentação completa para valorizar sua barbearia e apoiar sua divulgação.',
   },
@@ -41,7 +41,7 @@ export const siteConfig = {
     name: 'Turbo Vendas',
     badge: 'Mais criativos',
     price: 'R$497',
-    installment: '12x de R$ 41,42 sem juros',
+    installment: 'até 10x de R$ 49,70 sem juros',
     description:
       'Uma estrutura mais completa para quem quer investir na divulgação da barbearia.',
   },

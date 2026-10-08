@@ -13,12 +13,12 @@ export function formatPrice(cents) {
 }
 export function planPriceDetails(cents) {
   // A última parcela absorve o arredondamento, preservando o total sem juros.
-  const installmentCents = Math.round(cents / 12)
-  const lastCents = cents - installmentCents * 11
+  const installmentCents = Math.round(cents / 10)
+  const lastCents = cents - installmentCents * 9
   return {
     price: formatPrice(cents),
-    installment: '12x de ' + formatPrice(installmentCents) + ' sem juros',
-    installmentNote: lastCents === installmentCents ? '' : '11 parcelas de ' + formatPrice(installmentCents) + ' e última de ' + formatPrice(lastCents) + '. Total: ' + formatPrice(cents) + '.',
+    installment: 'até 10x de ' + formatPrice(installmentCents) + ' sem juros',
+    installmentNote: lastCents === installmentCents ? '' : '9 parcelas de ' + formatPrice(installmentCents) + ' e última de ' + formatPrice(lastCents) + '. Total: ' + formatPrice(cents) + '.',
     installmentCents, lastCents,
   }
 }

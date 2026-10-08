@@ -33,7 +33,7 @@ export default function PlanPricesManager({ setMessage }) {
   return <section className="admin-panel rounded-2xl border border-neon/25 bg-black p-5">
     <p className="text-xs font-black uppercase tracking-wider text-neon">Página de vendas</p>
     <h2 className="mt-1 text-2xl font-black text-white">Valores dos planos</h2>
-    <p className="mt-2 text-sm text-ink-light">Altere o valor à vista. As 12 parcelas sem juros são calculadas automaticamente e publicadas ao salvar.</p>
+    <p className="mt-2 text-sm text-ink-light">Altere o valor à vista. O parcelamento em até 10x sem juros é calculado automaticamente e publicadas ao salvar.</p>
     {error ? <p role="alert" className="mt-4 text-sm text-red-200">{error}</p> : <div className="mt-5 grid gap-5 lg:grid-cols-3">
       {plans.map(plan => {
         let cents, invalid = ''

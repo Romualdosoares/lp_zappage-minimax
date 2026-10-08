@@ -1,6 +1,6 @@
 # Valores dos planos
 
-Na aba Planos, o administrador edita o preço à vista de Express, Profissional e Turbo. O parcelamento é fixo em 12 vezes sem juros. O cálculo utiliza centavos inteiros, ajustando a última parcela para preservar o valor total.
+Na aba Planos, o administrador edita o preço à vista de Express, Profissional e Turbo. O parcelamento é em até 10 vezes sem juros. O cálculo utiliza centavos inteiros, ajustando a última parcela para preservar o valor total.
 
 Os preços são persistidos na tabela existente public.portfolio_services, nos registros exclusivos plan-pricing-express, plan-pricing-professional e plan-pricing-turbo. Esses registros não aparecem no catálogo de serviços. As permissões existentes permitem leitura dos valores ativos e escrita apenas por administradores. Não é necessária migração. Quando ainda não há registro, usam-se R$ 197,00, R$ 297,00 e R$ 497,00. A gravação inicial ocorre ao salvar um valor alterado.
 

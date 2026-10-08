@@ -7,14 +7,23 @@ test('preços em reais, vírgula e ponto sem perder centavos', () => {
   assert.equal(parsePriceCents('19.90'),1990)
   for (const value of ['', '0,99', '-1', '0', 'abc', '19,999', 'Infinity', '1e4']) assert.throws(() => parsePriceCents(value))
 })
-test('12 parcelas sem juros preservam o total com ajuste na última', () => {
+test('10 parcelas sem juros preservam o total com ajuste na última', () => {
   for (let cents = 100; cents < 10000; cents += 7) {
     const details = planPriceDetails(cents)
-    assert.equal(details.installmentCents * 11 + details.lastCents, cents)
+    assert.equal(details.installmentCents * 9 + details.lastCents, cents)
     assert.ok(details.lastCents > 0)
   }
-  assert.equal(planPriceDetails(19700).installment, '12x de R$ 16,42 sem juros')
-  assert.equal(planPriceDetails(19700).lastCents,1638)
+  assert.equal(planPriceDetails(19700).installment, 'até 10x de R$ 19,70 sem juros')
+  assert.equal(planPriceDetails(19700).lastCents,1970)
   assert.equal(planPriceDetails(29700).installmentNote,'')
-  assert.equal(planPriceDetails(49700).lastCents,4138)
+  assert.equal(planPriceDetails(49700).lastCents,4970)
+})
+
+test('parcelas dos três planos atuais são exatas e não precisam de ajuste', () => {
+  for (const [total, parcel] of [[19700,1970],[29700,2970],[49700,4970]]) {
+    const details = planPriceDetails(total)
+    assert.equal(details.installmentCents, parcel)
+    assert.equal(details.lastCents, parcel)
+    assert.equal(details.installmentNote, '')
+  }
 })
