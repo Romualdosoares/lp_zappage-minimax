@@ -1,3 +1,4 @@
+import usePlanPrices from '../hooks/usePlanPrices.js'
 import { buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import {
   IconArrowRight,
@@ -10,11 +11,12 @@ const BULLETS = [
   'Página com a identidade da barbearia',
   'Bio personalizada em uma página separada',
   'Botões diretos para o seu WhatsApp',
-  'Planos a partir de R$197',
+
   '3 revisões em todos os planos',
 ]
 
 export default function FinalCTASection() {
+  const prices = usePlanPrices()
   return (
     <section
       className="relative py-20 sm:py-28"
@@ -45,7 +47,7 @@ export default function FinalCTASection() {
               </p>
 
               <ul className="mt-6 grid gap-2 sm:grid-cols-2">
-                {BULLETS.map(b => (
+                {[...BULLETS, 'Planos a partir de ' + prices.express.price].map(b => (
                   <li
                     key={b}
                     className="flex items-start gap-2.5 text-sm text-white"

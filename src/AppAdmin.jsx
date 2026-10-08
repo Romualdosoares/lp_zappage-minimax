@@ -31,6 +31,7 @@ import {
   uploadBriefingAsset,
   uploadTestimonialPhoto,
 } from './lib/supabaseClient'
+import PlanPricesManager from './admin/PlanPricesManager.jsx'
 import PlanBenefitsManager from './admin/PlanBenefitsManager.jsx'
 import PortfolioImage from './components/PortfolioImage.jsx'
 import { uploadPortfolioImage } from './lib/supabaseClient'
@@ -1098,6 +1099,7 @@ function PlansAdmin({ plans, setPlans, planBenefits, setPlanBenefits, planBenefi
 
   return (
     <div className="grid gap-5">
+      <PlanPricesManager setMessage={setMessage} />
       <PlanBenefitsManager
         benefits={planBenefits}
         setBenefits={setPlanBenefits}

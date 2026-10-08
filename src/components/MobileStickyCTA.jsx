@@ -1,7 +1,9 @@
+import usePlanPrices from '../hooks/usePlanPrices.js'
 import { buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import { IconWhatsapp } from './Icons'
 
 export default function MobileStickyCTA() {
+  const prices = usePlanPrices()
   return (
     <div
       className="mobile-sticky-cta fixed inset-x-0 bottom-0 z-40 border-t border-neon/20 bg-bg-primary/95 px-3 py-2 backdrop-blur-xl transition-[transform,opacity] duration-300 sm:hidden"
@@ -13,7 +15,7 @@ export default function MobileStickyCTA() {
             Feito para barbearias
           </p>
           <p className="text-sm font-extrabold text-white">
-            Página + bio desde <span className="text-neon">R$197</span>
+            Página + bio desde <span className="text-neon">{prices.express.price}</span>
           </p>
         </div>
         <a

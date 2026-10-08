@@ -1,12 +1,12 @@
 # Zap Page — landing page B
 
-Página de vendas alternativa para donos de barbearia. A versão A permanece na raiz do projeto. A versão B usa a mesma marca, a mesma paleta e os mesmos preços publicados no código da versão A: Express R$197, Profissional R$297 e Turbo R$497.
+Página de vendas alternativa para donos de barbearia. A versão A permanece na raiz do projeto. A versão B usa a mesma marca, a mesma paleta e os mesmos preços administrados na aba Planos da versão A, com atualização automática e 12 parcelas sem juros.
 
 ## Publicação estática
 
-O ZIP entregue contém `index.html`, `styles.css` e a pasta `assets/`. Extraia tudo na raiz de uma hospedagem de sites estáticos. O `index.html` deve ficar na raiz. Também é possível abrir o arquivo diretamente no navegador, sem servidor local.
+O ZIP original entregue contém `index.html`, `styles.css` e a pasta `assets/`. Extraia tudo na raiz de uma hospedagem de sites estáticos. O `index.html` deve ficar na raiz. Também é possível abrir o arquivo diretamente no navegador, sem servidor local.
 
-No projeto Vite da Zap Page, a prévia local está em `/landing-v2/`. O projeto Vercel foi configurado para servir a versão B em `/v2` quando uma publicação futura for solicitada. Esta entrega não foi publicada.
+No projeto Vite da Zap Page, a prévia local está em `/landing-v2/`. O projeto Vercel foi configurado para servir a versão B em `/v2` quando uma publicação futura for solicitada. A versão integrada ao projeto usa preços dinâmicos e precisa ser gerada com npm run build; o ZIP original é uma entrega estática anterior.
 
 ## Ajustes de conteúdo
 

@@ -1,3 +1,4 @@
+import { PLAN_KEYS, DEFAULT_PLAN_PRICES, parsePriceCents } from './planPricing.js'
 import { portfolioImageFields, validatePortfolioImage } from './portfolioImages'
 import { createSessionManager, withSessionRetry } from './authSession'
 
@@ -366,7 +367,7 @@ export async function getMyProfile() {
 export async function getPortfolioServices({ admin = false } = {}) {
   const filter = admin ? '' : '&status=eq.Ativo'
   const rows = await restRequest(
-    `/portfolio_services?select=*&order=featured.desc,created_at.desc${filter}`,
+    `/portfolio_services?select=*&order=featured.desc,created_at.desc&id=not.like.plan-pricing-*${filter}`,
     admin ? undefined : { token: SUPABASE_ANON_KEY },
   )
   return rows.length ? rows : admin ? portfolioSeed : []
@@ -939,5 +940,50 @@ export function getSupabaseProjectInfo() {
   return {
     url: SUPABASE_BASE_URL,
     restUrl: SUPABASE_REST_URL,
+  }
+}
+
+export async function getPlanPrices({ admin = false } = {}) {
+  const rows = await restRequest('/portfolio_services?select=id,price,updated_at&id=in.(plan-pricing-express,plan-pricing-professional,plan-pricing-turbo)', admin ? undefined : { token: SUPABASE_ANON_KEY })
+  return PLAN_KEYS.map(planKey => {
+    const row = rows.find(item => item.id === 'plan-pricing-' + planKey)
+    return { plan_key: planKey, price_cents: row ? parsePriceCents(row.price) : DEFAULT_PLAN_PRICES[planKey], updated_at: row?.updated_at }
+  })
+}
+export async function savePlanPrice(planKey, priceCents) {
+  if (!PLAN_KEYS.includes(planKey) || !Number.isSafeInteger(priceCents) || priceCents < 100 || priceCents > 100000000) throw new Error('Plano ou valor inválido.')
+  const rows = await restRequest('/portfolio_services?on_conflict=id&select=*', {
+    method: 'POST', body: {
+      id: 'plan-pricing-' + planKey, title: 'Valor do plano ' + planKey,
+      niche: 'Configuração dos planos', price: (priceCents / 100).toFixed(2),
+      status: 'Ativo', featured: false,
+      description: 'Valor de venda administrado na seção Planos.', deliverables: '',
+    },
+    prefer: 'resolution=merge-duplicates,return=representation',
+  })
+  if (!rows?.[0]) throw new Error('O banco não retornou o preço salvo.')
+  window.dispatchEvent(new Event('zap-page:plan-prices-changed'))
+  try {
+    const channel = new BroadcastChannel('zap-page-plan-prices')
+    channel.postMessage('changed'); channel.close()
+  } catch { /* Realtime e polling também atualizam a página pública. */ }
+  return { plan_key: planKey, price_cents: parsePriceCents(rows[0].price), updated_at: rows[0].updated_at }
+}
+export function subscribeToPlanPrices(onChange) {
+  let disposed = false, channel, broadcast
+  const change = () => { if (!disposed) onChange() }
+  window.addEventListener('zap-page:plan-prices-changed', change)
+  try { broadcast = new BroadcastChannel('zap-page-plan-prices'); broadcast.onmessage = change } catch { /* Fallback por polling. */ }
+  getPublicRealtimeClient().then(client => {
+    if (disposed) return
+    channel = client.channel('plan-prices-' + Math.random().toString(16).slice(2))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'portfolio_services' }, change)
+      .subscribe(status => { if (status === 'SUBSCRIBED') change() })
+  }).catch(() => {})
+  return () => {
+    disposed = true
+    window.removeEventListener('zap-page:plan-prices-changed', change)
+    broadcast?.close()
+    if (channel) getPublicRealtimeClient().then(client => client.removeChannel(channel)).catch(() => {})
   }
 }

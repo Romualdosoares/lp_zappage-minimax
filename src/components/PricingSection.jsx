@@ -1,3 +1,4 @@
+import usePlanPrices from '../hooks/usePlanPrices.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { siteConfig, buildWhatsappUrl, whatsappMessages } from '../siteConfig'
 import { getPlanBenefits, subscribeToPlanBenefits } from '../lib/supabaseClient'
@@ -143,6 +144,8 @@ function PlanCard({ plan, popular }) {
         </p>
       )}
 
+      {plan.installmentNote && <p className="mt-1 text-xs text-ink-light">{plan.installmentNote}</p>}
+
       {/* Items */}
       {plan.items === null ? (
         <div className="mt-6 space-y-2.5" aria-label={`Carregando benefícios do ${plan.name}`} aria-busy="true">
@@ -210,6 +213,7 @@ function PlanCard({ plan, popular }) {
 }
 
 export default function PricingSection() {
+  const prices = usePlanPrices()
   const [liveBenefits, setLiveBenefits] = useState(null)
   const [benefitsFailed, setBenefitsFailed] = useState(false)
   const [liveRevision, setLiveRevision] = useState(0)
@@ -317,7 +321,7 @@ export default function PricingSection() {
           {plans.map(p => (
             <PlanCard
               key={p.key}
-              plan={p}
+              plan={{ ...p, ...prices[p.key] }}
               popular={p.key === 'professional'}
             />
           ))}

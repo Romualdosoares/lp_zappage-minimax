@@ -1,6 +1,8 @@
+import usePlanPrices from '../hooks/usePlanPrices.js'
 import { IconArrowRight, IconBolt } from './Icons'
 
 export default function TopOfferBar() {
+  const prices = usePlanPrices()
   return (
     <a
       href="#planos"
@@ -13,7 +15,7 @@ export default function TopOfferBar() {
         </span>
         <p className="text-xs font-medium text-ink-light sm:text-sm">
           <span className="font-bold text-white">Sua página + bio personalizada</span>{' '}
-          <span className="font-bold text-neon">a partir de R$197</span>
+          <span className="font-bold text-neon">a partir de {prices.express.price}</span>
         </p>
         <span className="inline-flex items-center gap-1 text-xs font-semibold text-neon hover:text-glow-sm">
           Ver planos <IconArrowRight className="h-3.5 w-3.5" />

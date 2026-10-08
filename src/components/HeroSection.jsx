@@ -1,7 +1,9 @@
+import usePlanPrices from '../hooks/usePlanPrices.js'
 import { buildWhatsappUrl, siteConfig, whatsappMessages } from '../siteConfig'
 import { IconArrowRight, IconCheck, IconWhatsapp } from './Icons'
 
 export default function HeroSection() {
+  const prices = usePlanPrices()
   return (
     <section className="barber-hero" aria-labelledby="hero-title">
       <img
@@ -27,7 +29,7 @@ export default function HeroSection() {
           </div>
           <div className="barber-hero-details">
             <span><IconCheck className="h-4 w-4" /> Bio personalizada em todos os planos</span>
-            <span>A partir de <strong>{siteConfig.planExpress.price}</strong> à vista</span>
+            <span>A partir de <strong>{prices.express.price}</strong> à vista</span>
           </div>
         </div>
       </div>
